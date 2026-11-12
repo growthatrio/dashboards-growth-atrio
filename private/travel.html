@@ -1,0 +1,1392 @@
+<!doctype html>
+<html lang="pt-BR" data-dash="travel">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard Travel Week</title>
+<link rel="stylesheet" href="/assets/theme.css">
+<script src="/assets/d3.min.js"></script>
+<script src="/assets/shim.js"></script>
+</head>
+<body>
+<style>
+.ai { --b-gold: #DB9B0E; --b-gold-dk: #A87208; --b-grey: #A5ACAD; --b-white: #F7F3EB; max-width: 1280px; margin-inline: auto; font-family: 'Funkis', var(--font-anthropic-sans), system-ui, sans-serif; color: var(--color-fg); line-height: 1.5; }
+.ai * { box-sizing: border-box; }
+.ai .mast { display: flex; align-items: center; gap: var(--cds-gap-md); flex-wrap: wrap; background: var(--b-white); color: #000; border-radius: var(--cds-radius); border-bottom: 4px solid var(--b-gold); padding: 14px 20px; }
+.ai .mast img { height: 34px; width: auto; display: block; }
+.ai .mast .tt { flex: 1 1 18rem; min-width: 0; padding-left: var(--cds-gap-md); border-left: 1px solid var(--b-grey); }
+.ai h1 { font-weight: 600; font-size: var(--cds-font-size-heading); letter-spacing: .01em; margin: 0; color: #000; }
+.ai .mast .sub { color: #3a3a3a; font-size: var(--cds-font-size-caption); margin: 2px 0 0; }
+.ai h2 { display: flex; align-items: center; gap: 10px; font-size: var(--cds-font-size-heading); font-weight: 600; margin: var(--cds-gap-xl) 0 var(--cds-gap-sm); }
+.ai h2::before { content: ''; width: 6px; height: 1.1em; border-radius: 2px; background: var(--b-gold); flex: none; }
+.ai h3 { font-size: var(--cds-font-size-body); font-weight: 600; margin: 0 0 2px; }
+.ai .note { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); margin: 4px 0; }
+.ai .bar { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: flex-end; margin: var(--cds-gap-md) 0; }
+.ai .fld { display: flex; flex-direction: column; gap: 3px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); position: relative; }
+.ai select, .ai button.ctl { font: inherit; font-size: var(--cds-font-size-body); color: var(--color-fg); background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: 0 12px; min-height: 44px; cursor: pointer; }
+.ai select { min-width: 12rem; max-width: 20rem; }
+.ai select:focus-visible, .ai button:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
+.ai .tabs { display: flex; gap: var(--cds-gap-xs); border-bottom: 1px solid var(--color-border-line); margin-bottom: var(--cds-gap-md); }
+.ai .tabs button { font: inherit; min-height: 44px; border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: transparent; padding: 8px 18px; color: var(--color-fg-muted); cursor: pointer; }
+.ai .tabs button[aria-selected=true] { color: var(--color-fg); border-bottom-color: var(--b-gold); font-weight: 600; }
+.ai .grid { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.ai .grid2 { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); }
+.ai .card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; }
+.ai .kpi { border-top: 3px solid var(--b-gold); }
+.ai .kpi .v { font-weight: 600; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; display: block; margin: 4px 0; }
+.ai .kpi .l { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.ai table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.ai th, .ai td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--color-border-line); vertical-align: middle; }
+.ai th:first-child, .ai td:first-child, .ai td.t, .ai th.t { text-align: left; }
+.ai th { color: var(--color-fg-muted); font-weight: 600; position: sticky; top: 0; background: var(--color-panel); }
+.ai .scroll { overflow: auto; max-height: 30rem; }
+.ai .thumb { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; display: block; background: var(--b-white); }
+.ai .nothumb { width: 48px; height: 48px; border-radius: 6px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 9px; line-height: 1.1; color: #3a3a3a; background: var(--b-white); border: 1px dashed var(--b-grey); }
+.ai .cap { color: var(--color-fg-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 22rem; white-space: normal; }
+.ai .nm { font-weight: 600; max-width: 22rem; white-space: normal; }
+.ai .chart { position: relative; min-height: 220px; }
+.ai .chart svg { display: block; width: 100%; height: auto; }
+.ai .tip { position: absolute; pointer-events: none; display: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; z-index: 2; }
+.ai .legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-bottom: 4px; }
+.ai .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; }
+.ai .hb { display: grid; grid-template-columns: minmax(6rem, 38%) 1fr auto; gap: 8px; align-items: center; font-size: var(--cds-font-size-caption); margin: 5px 0; font-variant-numeric: tabular-nums; }
+.ai .hb .tr { background: var(--cds-chart-grid); border-radius: 3px; height: 10px; }
+.ai .hb .fi { height: 10px; border-radius: 3px; background: var(--b-gold); }
+.ai .msg { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); padding: 1rem 0; }
+.ai .fail { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 120px; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.ai .fail::before { content: ''; width: .375rem; height: .375rem; border-radius: 50%; background: var(--color-bad); }
+.ai .obs { border-left: 3px solid var(--b-gold); padding: 4px 0 4px var(--cds-pad-md); margin: 0; list-style: none; }
+.ai .obs li { margin: 4px 0; font-size: var(--cds-font-size-body); }
+.ai .drp { position: absolute; top: calc(100% + 4px); left: 0; z-index: 20; background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-md); display: flex; gap: var(--cds-gap-md); flex-wrap: wrap; width: max-content; max-width: min(92vw, 30rem); }
+.ai .drp .pre { display: flex; flex-direction: column; gap: 4px; min-width: 10rem; }
+.ai .drp .pre button { font: inherit; font-size: var(--cds-font-size-caption); text-align: left; min-height: 36px; padding: 0 10px; background: transparent; border: 1px solid transparent; border-radius: var(--cds-radius); color: var(--color-fg); cursor: pointer; }
+.ai .drp .pre button:hover { background: var(--b-white); color: #000; }
+.ai .cal { width: 17.5rem; }
+.ai .cal .hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; font-weight: 600; }
+.ai .cal .hd button { font: inherit; width: 36px; height: 36px; background: transparent; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); color: var(--color-fg); cursor: pointer; }
+.ai .cal .gr { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.ai .cal .wd { font-size: 11px; color: var(--color-fg-muted); text-align: center; padding: 4px 0; }
+.ai .cal .dy { font: inherit; font-size: var(--cds-font-size-caption); height: 36px; background: transparent; border: 0; border-radius: 6px; color: var(--color-fg); cursor: pointer; }
+.ai .cal .dy:hover:not(:disabled) { background: var(--b-white); color: #000; }
+.ai .cal .dy:disabled { color: var(--color-fg-muted); opacity: .35; cursor: default; }
+.ai .cal .dy.rg { background: rgba(219, 155, 14, .22); border-radius: 0; }
+.ai .cal .dy.ed { background: var(--b-gold); color: #000; font-weight: 600; border-radius: 6px; }
+.ai .cal .hint { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 6px 0 0; }
+.ai [data-dash-source-state=empty] { color: transparent; }
+.ai [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+.ai [hidden] { display: none !important; }
+@media (prefers-reduced-motion: no-preference) { .ai .hb .fi { transition: width var(--cds-dur-slow) var(--cds-ease-out); } }
+</style>
+<style>
+.ai .ch-h { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
+.ai .cmp { display: inline-flex; align-items: center; gap: 8px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); min-height: 44px; cursor: pointer; }
+.ai .cmp input { width: 2.25rem; height: 1.25rem; accent-color: var(--b-gold); cursor: pointer; margin: 0; }
+.ai .cmp input:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
+.ai .cmp-l { display: block; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; margin-top: 2px; }
+.ai .cmp-l b { font-weight: 600; }
+.ai input[type=search] { font: inherit; font-size: var(--cds-font-size-body); color: var(--color-fg); background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: 0 12px; min-height: 44px; min-width: 15rem; max-width: 22rem; }
+.ai input[type=search]:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
+</style>
+<style>
+.ai { --sp: 8px; }
+.ai h2 { margin: calc(var(--sp) * 5) 0 calc(var(--sp) * 1.5); }
+.ai h2:first-of-type { margin-top: calc(var(--sp) * 3); }
+.ai .tb { position: sticky; top: 0; z-index: 15; background: var(--color-bg); padding: 12px 0; margin: 12px 0 8px; border-bottom: 1px solid var(--color-border-line); }
+.ai .tb .fld { flex: 0 1 auto; }
+.ai .tb .fld > select, .ai .tb .fld > input { width: 100%; }
+.ai .ctl.ghost, .ai #f-reset { background: transparent; border-color: transparent; color: var(--color-fg-muted); text-decoration: underline; text-underline-offset: 3px; }
+.ai #f-reset:hover { color: var(--color-fg); }
+.ai .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 8px; }
+.ai .chip { font: inherit; font-size: var(--cds-font-size-caption); min-height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--b-gold); background: transparent; color: var(--color-fg); cursor: pointer; }
+.ai .chip:hover { background: rgba(219, 155, 14, .16); }
+.ai .chip span { margin-left: 4px; font-weight: 600; }
+.ai .sec-nav { display: flex; gap: 4px; flex-wrap: wrap; margin: 4px 0 12px; }
+.ai .sec-nav button { font: inherit; font-size: var(--cds-font-size-caption); min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--color-border-line); background: transparent; color: var(--color-fg-muted); cursor: pointer; }
+.ai .sec-nav button:hover { color: var(--color-fg); border-color: var(--b-grey); }
+.ai .grid.k1 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+.ai .grid.k1 .kpi { padding: calc(var(--sp) * 2.5); }
+.ai .grid.k1 .kpi .v { font-size: clamp(1.75rem, 2.6vw, 2.25rem); line-height: 1.15; }
+.ai .grid.k2 { margin-top: calc(var(--sp) * 2); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+.ai .grid.k2 .kpi .v { font-size: 1.5rem; }
+.ai .kpi { display: flex; flex-direction: column; gap: 2px; }
+.ai .kpi .l { line-height: 1.35; }
+.ai .cmp-l { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.ai .cmp-l > b:first-child { padding: 1px 8px; border-radius: 999px; background: var(--color-border-line); font-size: var(--cds-font-size-caption); }
+.ai .card h3 { margin-bottom: 4px; }
+.ai table tbody tr:nth-child(even) td { background: rgba(165, 172, 173, .10); }
+.ai table tbody tr:hover td { background: rgba(219, 155, 14, .14); }
+.ai td.t { max-width: 20rem; overflow-wrap: anywhere; }
+.ai .scroll { border-radius: var(--cds-radius); }
+.ai .scroll th { box-shadow: 0 1px 0 var(--color-border-line); }
+.ai .chart { min-height: 240px; }
+.ai .kpi .v[data-dash-source-state=loading], .ai .chart[data-dash-source-state=loading] { background: linear-gradient(90deg, rgba(165, 172, 173, .15), rgba(165, 172, 173, .32), rgba(165, 172, 173, .15)); background-size: 200% 100%; border-radius: var(--cds-radius); color: transparent; }
+@media (prefers-reduced-motion: no-preference) { .ai .kpi .v[data-dash-source-state=loading], .ai .chart[data-dash-source-state=loading] { animation: aishim 1.4s linear infinite; } }
+@keyframes aishim { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@media (max-width: 640px) {
+  .ai .tb { position: static; }
+  .ai .tb .fld, .ai .tb .fld > select, .ai .tb .fld > input, .ai .tb .ctl { width: 100%; max-width: none; }
+  .ai .drp { position: fixed; left: 8px; right: 8px; top: 12vh; max-width: none; width: auto; max-height: 76vh; overflow: auto; }
+  .ai .mast .tt { border-left: 0; padding-left: 0; }
+  .ai .grid2 { grid-template-columns: 1fr; }
+}
+</style>
+<style>
+.ai .tb-top { display: flex; justify-content: flex-end; align-items: flex-end; gap: 12px; margin-bottom: 10px; }
+.ai .tb-top .drp { left: auto; right: 0; }
+.ai .tb-row { display: flex; gap: 12px; flex-wrap: nowrap; }
+.ai .tb-row .fld { flex: 1 1 0; min-width: 0; }
+.ai .tb-row select, .ai .tb-row input[type=search] { width: 100%; min-width: 0; max-width: none; }
+@media (max-width: 1000px) { .ai .tb-row { flex-wrap: wrap; } .ai .tb-row .fld { flex: 1 1 calc(50% - 12px); } .ai .tb-top { justify-content: space-between; } }
+@media (max-width: 640px) { .ai .tb-row .fld { flex: 1 1 100%; } }
+.ai .grid.kp { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.ai .kpi.wide { grid-column: span 2; }
+@media (max-width: 760px) { .ai .kpi.wide { grid-column: span 1; } }
+.ai .kpi .sm { display: block; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.4; }
+.ai .kpi .sm b { color: var(--color-fg); font-weight: 600; }
+.ai .seg { display: inline-flex; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
+.ai .seg button { font: inherit; font-size: var(--cds-font-size-caption); min-height: 36px; padding: 0 14px; border: 0; background: transparent; color: var(--color-fg-muted); cursor: pointer; }
+.ai .seg button[aria-pressed=true] { background: var(--b-gold); color: #000; font-weight: 600; }
+.ai .al-neg { background: rgba(214, 69, 69, .07); border-color: rgba(214, 69, 69, .5); border-top: 3px solid #D64545; }
+.ai .al-pos { background: rgba(46, 160, 90, .07); border-color: rgba(46, 160, 90, .5); border-top: 3px solid #2EA05A; }
+.ai .al-neg h3::before, .ai .al-pos h3::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+.ai .al-neg h3::before { background: #D64545; }
+.ai .al-pos h3::before { background: #2EA05A; }
+.ai .tag-atencao { color: #D64545; font-weight: 600; white-space: nowrap; }
+.ai .tag-oportunidade { color: #2EA05A; font-weight: 600; white-space: nowrap; }
+.ai .tag-info { color: var(--color-fg-muted); font-weight: 600; white-space: nowrap; }
+.ai td.t.mot { min-width: 15rem; max-width: 26rem; white-space: normal; font-size: 0.95rem; font-weight: 600; line-height: 1.7; }
+.ai th.t.mot { font-size: var(--cds-font-size-body); color: var(--color-fg); }
+.ai .pill { display: inline-block; padding: 1px 10px; border-radius: 999px; margin: 2px 4px 2px 0; border: 1px solid; font-weight: 600; }
+.ai .sep { font-size: 0; }
+.ai .al-neg .pill { background: rgba(214, 69, 69, .16); border-color: rgba(214, 69, 69, .75); }
+.ai .al-pos .pill { background: rgba(46, 160, 90, .16); border-color: rgba(46, 160, 90, .75); }
+.ai .al-neg tbody td:first-child { border-left: 4px solid #D64545; }
+.ai .al-pos tbody td:first-child { border-left: 4px solid #2EA05A; }
+.ai .stack { display: grid; gap: var(--cds-gap-md); }
+.ai .stage-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
+.ai .stage-tab { font: inherit; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px; padding: 8px 16px; border-radius: var(--cds-radius); border: 1px solid var(--color-border-line); background: transparent; color: var(--color-fg); cursor: pointer; text-align: left; }
+.ai .stage-tab .sm { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.ai .stage-tab[aria-selected=true] { background: var(--b-gold); border-color: var(--b-gold); color: #000; }
+.ai .stage-tab[aria-selected=true] .sm { color: #000; }
+.ai .stage-tab:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
+.ai [hidden] { display: none !important; }
+.ai .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--cds-gap-md); }
+.ai .gauge-card { text-align: center; }
+.ai .gauge { display: flex; justify-content: center; min-height: 130px; }
+.ai .gv { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: -2px; }
+.ai .gv .v { font-size: 1.75rem; line-height: 1.2; }
+.ai .pager { display: flex; gap: 12px; align-items: center; justify-content: flex-end; margin-top: 8px; flex-wrap: wrap; }
+.ai .pager[hidden] { display: none; }
+.ai th[data-field] { cursor: pointer; user-select: none; }
+.ai table[data-nosort] th { cursor: default; }
+.ai th[aria-sort=descending]::after { content: ' ▼'; font-size: .75em; }
+.ai th[aria-sort=ascending]::after { content: ' ▲'; font-size: .75em; }
+.ai th[data-field]:focus-visible { outline: 2px solid var(--b-gold); outline-offset: -2px; }
+</style>
+<div class="ai" id="ai-root">
+  <header class="mast">
+    <img alt="Atrio" src="data:image/png;base64,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">
+    <div class="tt"><h1 id="titulo">Dashboard Travel Week</h1>
+    <p class="sub">Campanhas Travel Week (nome com "travel") do Meta Ads e do Google Ads de todos os hotéis e marcas da Atrio, com metas, reservas Web Direto e alertas.</p></div>
+  </header>
+  <div class="tb" id="filtros">
+    <div class="tb-top">
+      <div class="fld" id="w-date"><span id="dr-label">Período</span>
+        <button class="ctl" id="dr-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="dr-label dr-btn">—</button>
+        <div class="drp" id="dr-pop" role="dialog" aria-label="Selecionar período" hidden>
+          <div class="pre" id="dr-pre"></div>
+          <div class="cal"><div class="hd"><button type="button" id="cal-prev" aria-label="Mês anterior">‹</button><span id="cal-title"></span><button type="button" id="cal-next" aria-label="Próximo mês">›</button></div><div class="gr" id="cal-grid"></div><p class="hint" id="cal-hint"></p></div>
+        </div>
+      </div>
+      <button class="ctl" id="f-reset" type="button">Limpar filtros</button>
+    </div>
+    <div class="tb-row">
+      <label class="fld">Plataforma<select id="f-platform" aria-label="Plataforma"></select></label>
+      <label class="fld">Grupo de hotéis<select id="f-grupo" aria-label="Grupo de hotéis"></select></label>
+      <label class="fld">Marca<select id="f-marca" aria-label="Marca"></select></label>
+      <label class="fld">Hotel<input id="f-hotel" type="search" list="dl-hotel" placeholder="Digite ou escolha" autocomplete="off" aria-label="Hotel" data-source="filter_hotels"><datalist id="dl-hotel"></datalist></label>
+      <label class="fld">Agência<select id="f-agencia" aria-label="Agência"></select></label>
+      <label class="fld">Nome da campanha (contém)<input id="f-campaign" type="search" list="dl-campaign" placeholder="Ex.: ESQUENTA" autocomplete="off" aria-label="Nome da campanha (contém)" data-source="filter_campaigns"><datalist id="dl-campaign"></datalist></label>
+    </div>
+  </div>
+  <div class="chips" id="chips" aria-live="polite" hidden></div>
+  <nav class="sec-nav" aria-label="Seções do dashboard"><button type="button" data-go="metas">Metas</button><button type="button" data-go="geral">Métricas gerais</button><button type="button" data-go="funil">Funil</button><button type="button" data-go="invest">Evolução</button><button type="button" data-go="hoteis">Hotéis e marcas</button><button type="button" data-go="campanhas">Campanhas</button><button type="button" data-go="anuncios">Anúncios</button><button type="button" data-go="alertas">Alertas</button><button type="button" data-go="insights">Insights</button><button type="button" data-go="obs">Observações</button></nav>
+  <p class="note">Nos campos de hotel e de campanha, digite parte do nome e pressione Enter (busca por "contém") ou escolha na lista. O período padrão são os últimos 30 dias, e a comparação usa o período imediatamente anterior, com o mesmo número de dias. Dados do Meta e do Google até <b data-source="meta_info" data-field="ate" data-row="0" data-fmt="txt">—</b>.</p>
+
+  <div class="stage-tabs" role="tablist" aria-label="Etapas da Travel Week">
+    <button type="button" role="tab" class="stage-tab" data-stage="todo" aria-selected="false"><b>Todo o Período</b><span class="sm">03/11 a 06/12</span></button>
+    <button type="button" role="tab" class="stage-tab" data-stage="pre" aria-selected="false"><b>Cadastro Pré-Esquenta</b><span class="sm">03/11 a 16/11</span></button>
+    <button type="button" role="tab" class="stage-tab" data-stage="esquenta" aria-selected="false"><b>Esquenta</b><span class="sm">17/11 a 18/11</span></button>
+    <button type="button" role="tab" class="stage-tab" data-stage="tw" aria-selected="false"><b>Travel Week</b><span class="sm">19/11 a 03/12</span></button>
+    <button type="button" role="tab" class="stage-tab" data-stage="ressaca" aria-selected="false"><b>Ressaca</b><span class="sm">04/12 a 06/12</span></button>
+  </div>
+  <h2 id="metas">Metas da etapa</h2>
+  <p class="note" id="stage-note"></p>
+  <div class="grid3">
+    <div class="card gauge-card" data-stages="todo pre"><h3>Leads</h3><p class="note">Meta de 8.000 leads, de 03/11 a 16/11: generate_lead (clique de 1 dia) e form lead das contas de anúncio.</p><div class="gauge" id="gauge-leads" data-source="gauges"></div><div class="gv"><b class="v" data-source="gauges" data-field="valor" data-row="0" data-fmt="int">—</b><span class="l">de <b data-source="gauges" data-field="meta" data-row="0" data-fmt="int">—</b> · <b data-source="gauges" data-field="pct" data-row="0" data-fmt="pct2">—</b></span><span class="sm" id="gs-leads"><b data-source="gauges" data-field="status" data-row="0" data-fmt="txt">—</b></span></div></div>
+    <div class="card gauge-card" data-stages="todo esquenta tw ressaca"><h3>Clique em Reservar</h3><p class="note">Meta de 4.500 cliques (3% de 150 mil), acumulados desde 17/11. Fonte: GA4 do Destinos Atrio.</p><div class="gauge" id="gauge-cliques" data-source="gauges"></div><div class="gv"><b class="v" data-source="gauges" data-field="valor" data-row="1" data-fmt="int">—</b><span class="l">de <b data-source="gauges" data-field="meta" data-row="1" data-fmt="int">—</b> · <b data-source="gauges" data-field="pct" data-row="1" data-fmt="pct2">—</b></span><span class="sm" id="gs-cliques"><b data-source="gauges" data-field="status" data-row="1" data-fmt="txt">—</b></span></div></div>
+    <div class="card gauge-card" data-stages="todo esquenta tw ressaca"><h3>Receita Web Direto</h3><p class="note">Meta de R$ 4.720.000, acumulada desde 17/11.</p><div class="gauge" id="gauge-receita" data-source="gauges"></div><div class="gv"><b class="v" data-source="gauges" data-field="valor" data-row="2" data-fmt="brl">—</b><span class="l">de <b data-source="gauges" data-field="meta" data-row="2" data-fmt="brl">—</b> · <b data-source="gauges" data-field="pct" data-row="2" data-fmt="pct2">—</b></span><span class="sm" id="gs-receita"><b data-source="gauges" data-field="status" data-row="2" data-fmt="txt">—</b></span></div></div>
+    <div class="card gauge-card" data-stages="todo esquenta tw ressaca"><h3>ROAS Web Direto</h3><p class="note">Receita Web Direto desde 17/11 ÷ investimento Travel Week até o fim da etapa.</p><div class="gauge" id="gauge-roas" data-source="gauges"></div><div class="gv"><b class="v" data-source="gauges" data-field="valor" data-row="3" data-fmt="x">—</b><span class="l">meta: <b data-source="gauges" data-field="meta" data-row="3" data-fmt="x">—</b> · <b data-source="gauges" data-field="pct" data-row="3" data-fmt="pct2">—</b></span><span class="sm" id="gs-roas"><b data-source="gauges" data-field="status" data-row="3" data-fmt="txt">—</b></span></div></div>
+    <div class="card kpi" data-stages="todo esquenta tw ressaca"><span class="l">Reservas Web Direto (desde 17/11)</span><b class="v" data-source="g_reservas" data-field="valor" data-row="0" data-fmt="int">—</b><span class="sm">Sem meta definida. Fonte: Reservas Atrio, dados até 27/10.</span></div>
+  </div>
+
+  <h2 id="geral">Métricas gerais</h2>
+  <div class="grid kp"><div class="card kpi wide"><span class="l">Investimento total</span><b class="v" data-source="kpi_total" data-field="gasto" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="gasto_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="gasto_prev" data-row="0" data-fmt="brl">—</b></span></span><table data-source="kpi_platform" data-row-key="plataforma" id="t-platform"><thead><tr><th class="t" data-field="plataforma">Plataforma</th><th data-field="gasto" data-fmt="brl">Investido</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="conversoes" data-fmt="int">Conversões</th></tr></thead><tbody></tbody></table></div><div class="card kpi "><span class="l">Alcance (soma dos dias)</span><b class="v" data-source="kpi_total" data-field="alcance" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="alc_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="alc_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">Só o Meta informa alcance.</span></div><div class="card kpi "><span class="l">Impressões</span><b class="v" data-source="kpi_total" data-field="impressoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="imp_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="imp_prev" data-row="0" data-fmt="int">—</b></span></span></div><div class="card kpi "><span class="l">Cliques</span><b class="v" data-source="kpi_total" data-field="cliques" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="clk_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="clk_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">CTR <b data-source="kpi_total" data-field="ctr" data-row="0" data-fmt="pct2">—</b> · CPC <b data-source="kpi_total" data-field="cpc" data-row="0" data-fmt="brl">—</b></span><span class="cmp-l"><b data-source="cmp_perf" data-field="ctr_pp" data-row="0" data-fmt="pp">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="ctr_prev" data-row="0" data-fmt="pct2">—</b></span></span></div><div class="card kpi "><span class="l">Conversões</span><b class="v" data-source="kpi_total" data-field="conversoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="conv_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="conv_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">generate_lead <b data-source="kpi_total" data-field="gleads" data-row="0" data-fmt="int">—</b> · clique_reservar <b data-source="kpi_total" data-field="cliqres" data-row="0" data-fmt="int">—</b></span><span class="sm">form lead <b data-source="kpi_total" data-field="leads" data-row="0" data-fmt="int">—</b> · Google Ads <b data-source="kpi_total" data-field="conv_google" data-row="0" data-fmt="int">—</b></span></div><div class="card kpi "><span class="l">Custo por conversão</span><b class="v" data-source="kpi_total" data-field="cpa" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="cpa_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="cpa_prev" data-row="0" data-fmt="brl">—</b></span></span><span class="sm">Investimento total ÷ conversões.</span></div><div class="card kpi "><span class="l">Reservas Web Direto</span><b class="v" data-source="res_total" data-field="reservas" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="resv_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="resv_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">Fonte: Reservas Atrio (Web Direto), dados até 27/10.</span></div><div class="card kpi "><span class="l">Receita Web Direto</span><b class="v" data-source="res_total" data-field="receita" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="rec_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="rec_prev" data-row="0" data-fmt="brl">—</b></span></span></div><div class="card kpi "><span class="l">ROAS</span><b class="v" data-source="cmp_perf" data-field="roas" data-row="0" data-fmt="x">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="roas_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="roas_prev" data-row="0" data-fmt="x">—</b></span></span><span class="sm">Receita Web Direto ÷ investimento total do período (todas as plataformas e campanhas), sem influência dos filtros de plataforma e campanha.</span></div></div>
+
+  <h2 id="funil">Funil de conversão</h2>
+  <div class="grid2">
+    <div class="card"><h3>Do alcance à conversão</h3><p class="note">Alcance e impressões, cliques com CTR e conversões no filtro atual.</p><div id="hb-funnel" data-source="funnel"></div></div>
+    <div class="card"><h3>Conversões por tipo</h3><p class="note">generate_lead, clique_reservar e form lead do Meta, e conversões configuradas no Google Ads.</p><table data-source="funnel_conv" data-row-key="tipo" id="t-fconv"><thead><tr><th class="t" data-field="tipo">Conversões por tipo</th><th data-field="valor" data-fmt="int">Total</th></tr></thead><tbody></tbody></table></div>
+  </div>
+
+  <h2 id="invest">Investimento e conversões</h2>
+  <div class="ch-h" style="margin-bottom:8px"><p class="note" style="margin:0">Agrupe os gráficos por dia, semana ou mês.</p><div class="seg" role="group" aria-label="Agrupar o gráfico por"><button type="button" data-g="dia" aria-pressed="true">Dia</button><button type="button" data-g="semana" aria-pressed="false">Semana</button><button type="button" data-g="mes" aria-pressed="false">Mês</button></div></div>
+  <div class="grid2"><div class="card"><div class="ch-h"><div><h3>Investimento</h3><p class="note">Em reais, por plataforma.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="spend"> Comparar com o período anterior</label></div><div class="chart" id="ch-spend" data-source="spend_daily spend_daily_prev"></div></div><div class="card"><div class="ch-h"><div><h3>Conversões</h3><p class="note">Meta: generate_lead, clique_reservar e form lead. Google: conversões configuradas.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="conv"> Comparar com o período anterior</label></div><div class="chart" id="ch-conv" data-source="conv_daily conv_daily_prev"></div></div></div>
+
+  <h2 id="hoteis">Hotéis e marcas</h2>
+  <div class="card"><p class="note">Todos os hotéis e marcas, por investimento. ROAS = receita Web Direto ÷ investimento total do hotel. Clique no título para ordenar.</p><div class="scroll"><table data-source="hotels_table" data-row-key="hotel" data-pagesize="20" id="t-hotels"><thead><tr><th class="t" data-field="hotel">Hotel</th><th class="t" data-field="marca">Marca</th><th data-field="gasto" data-fmt="brl">Gasto</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpa" data-fmt="brl">Custo por conversão</th><th data-field="reservas" data-fmt="int">Reservas Web Direto</th><th data-field="receita" data-fmt="brl">Receita Web Direto</th><th data-field="roas" data-fmt="x">ROAS</th></tr></thead><tbody></tbody></table></div><div class="pager" data-for="t-hotels"></div></div>
+
+  <h2 id="campanhas">Campanhas</h2>
+  <div class="card"><p class="note">Campanhas por investimento (até 200). Clique no título para ordenar.</p><div class="scroll"><table data-source="campaigns_table" data-row-key="chave" id="t-campaigns"><thead><tr><th class="t" data-field="hotel">Hotel</th><th class="t" data-field="plataforma">Plataforma</th><th class="t" data-field="campanha">Campanha</th><th data-field="gasto" data-fmt="brl">Gasto</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpa" data-fmt="brl">Custo por conversão</th></tr></thead><tbody></tbody></table></div></div>
+
+  <h2 id="anuncios">Anúncios</h2>
+  <div class="card"><p class="note">Anúncios por investimento (até 100). Alcance só no Meta. Clique no título para ordenar.</p><div class="scroll"><table data-source="ads_table" data-row-key="chave" id="t-ads"><thead><tr><th class="t" data-field="hotel">Hotel</th><th class="t" data-field="campanha">Campanha</th><th class="t" data-field="anuncio">Anúncio</th><th class="t" data-field="plataforma">Plataforma</th><th data-field="alcance" data-fmt="nd">Alcance</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpa" data-fmt="brl">Custo por conversão</th><th data-field="gasto" data-fmt="brl">Gasto</th></tr></thead><tbody></tbody></table></div></div>
+
+  <h2 id="alertas">Alertas de performance</h2>
+  <p class="note">Só campanhas ativas, comparadas à média do mesmo objetivo e plataforma (critérios nas observações). Dados até <b data-source="meta_info" data-field="ate" data-row="0" data-fmt="txt">—</b>.</p>
+  <div class="stack">
+    <div class="card al-neg"><h3>Atenção: verba alta e baixa performance</h3><p class="note">Ranking do 1º ao 10º por maior gasto.</p><div class="scroll"><table data-source="alerts_neg" data-row-key="chave" id="t-aneg"><thead><tr><th data-field="rn" data-fmt="int">#</th><th class="t mot" data-field="motivo" data-fmt="pills">Por que está em alerta</th><th class="t" data-field="hotel">Hotel</th><th class="t" data-field="campanha">Campanha</th><th class="t" data-field="objetivo">Objetivo</th><th data-field="gasto" data-fmt="brl">Gasto</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpa" data-fmt="brl">Custo por conv.</th><th data-field="cpc" data-fmt="brl">CPC</th><th data-field="cpm" data-fmt="brl">CPM</th></tr></thead><tbody></tbody></table></div></div>
+    <div class="card al-pos"><h3>Destaques: boa performance</h3><p class="note">Ranking do 1º ao 10º por mais conversões.</p><div class="scroll"><table data-source="alerts_pos" data-row-key="chave" id="t-apos"><thead><tr><th data-field="rn" data-fmt="int">#</th><th class="t mot" data-field="motivo" data-fmt="pills">Por que se destaca</th><th class="t" data-field="hotel">Hotel</th><th class="t" data-field="campanha">Campanha</th><th class="t" data-field="objetivo">Objetivo</th><th data-field="gasto" data-fmt="brl">Gasto</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpa" data-fmt="brl">Custo por conv.</th><th data-field="cpc" data-fmt="brl">CPC</th><th data-field="cpm" data-fmt="brl">CPM</th></tr></thead><tbody></tbody></table></div></div>
+  </div>
+
+  <h2 id="insights">Insights e sugestões</h2>
+  <div class="card"><p class="note">Últimos 7 dias de dados (<b data-source="ins_info" data-field="semana" data-row="0" data-fmt="txt">—</b>), só campanhas e anúncios ativos. Atualiza a cada sincronização semanal.</p><div class="scroll"><table data-source="insights" data-row-key="id" data-nosort="1" id="t-ins"><thead><tr><th class="t" data-field="tipo" data-fmt="tag">Tipo</th><th class="t" data-field="texto">Sugestão</th></tr></thead><tbody></tbody></table></div></div>
+
+  <h2 id="obs">Observações</h2>
+  <ul class="obs">
+    <li>Só campanhas com "travel" no nome (Meta e Google).</li>
+    <li>Conversões: generate_lead (clique de 1 dia), clique_reservar e form lead do Meta, mais as conversões configuradas no Google Ads. O custo por conversão é o investimento total ÷ essas conversões. Nas campanhas Travel Week o Meta registra tudo no mesmo evento (generate_lead), então clique_reservar aparece zerado aqui; o velocímetro de Clique em Reservar usa o GA4 do Destinos Atrio.</li>
+    <li>Metas: Leads 8.000 (generate_lead com clique de 1 dia e form lead, das contas de anúncio, de 03/11 a 16/11); Clique em Reservar 4.500 (GA4) e Receita Web Direto R$ 4.720.000, acumulados desde 17/11. O ROAS Web Direto ainda não tem meta. Os velocímetros não mudam com os filtros.</li>
+    <li>Reservas e receita Web Direto: fonte Reservas Atrio, com dados até 27/10. ROAS = receita ÷ investimento do período.</li>
+    <li>Alertas e insights consideram só campanhas ativas (investimento nos 2 últimos dias com dados) e comparam com a média do mesmo objetivo e plataforma.</li>
+  </ul>
+<script>
+dash.loader('filter_hotels', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["hotel"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('filter_campaigns', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["campanha"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('kpi_total', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('kpi_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('kpi_platform', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["plataforma"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('spend_daily', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "plataforma"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('spend_daily_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "plataforma"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('conv_daily', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "serie"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('conv_daily_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "serie"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('campaigns_table', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["chave", "hotel", "plataforma", "campanha"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('hotels_table', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["hotel", "marca"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ads_table', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["chave", "hotel", "campanha", "anuncio", "plataforma"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('alerts', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["tipo", "chave", "hotel", "plataforma", "campanha", "objetivo", "motivo", "semana"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ins_camp', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["tipo", "chave", "hotel", "plataforma", "campanha", "objetivo", "motivo", "semana"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ins_ads', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["tipo", "chave", "hotel", "plataforma", "campanha", "anuncio", "objetivo", "motivo", "semana"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('res_total', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('res_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('inv_total', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('inv_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('g_leads', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('g_cliques', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('g_receita', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('g_reservas', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_conv', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["evento"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_conv_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["evento"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('g_roas', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+const $ = (s) => document.querySelector(s);
+const PAL = {
+  light: ['#DB9B0E', '#1F1F1F', '#A5ACAD', '#8A5A00', '#F0CE7A', '#5B6466', '#D9D2C0', '#7A6A4F'],
+  dark: ['#DB9B0E', '#F7F3EB', '#A5ACAD', '#B8720A', '#F0CE7A', '#8B9597', '#8C7F63', '#D9D2C0'],
+};
+let COL = PAL.light;
+const NAMEIDX = { 'Meta Ads': 0, 'Google Ads': 1, 'Conversões': 0 };
+const colOf = (name, i) => COL[(Object.prototype.hasOwnProperty.call(NAMEIDX, name) ? NAMEIDX[name] : i) % 8];
+function applyTheme() {
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:absolute;visibility:hidden;background:var(--color-panel)';
+  $('#ai-root').append(probe);
+  const m = (getComputedStyle(probe).backgroundColor.match(/\d+(\.\d+)?/g) || [255, 255, 255]).map(Number);
+  probe.remove();
+  COL = 0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2] < 128 ? PAL.dark : PAL.light;
+}
+const nf = new Intl.NumberFormat('pt-BR');
+const bf = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const pf = (v, d) => (v == null || isNaN(v) ? '—' : (v * 100).toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%');
+const FMT = {
+  int: (v) => (v == null || isNaN(v) ? '—' : nf.format(v)),
+  nd: (v) => (v == null || isNaN(v) ? 'n/d' : nf.format(v)),
+  brl: (v) => (v == null || isNaN(v) ? '—' : bf.format(v)),
+  pct: (v) => pf(v, 1),
+  pct2: (v) => pf(v, 2),
+  secs: (v) => (v == null || isNaN(v) ? '—' : Math.floor(v / 60) + ' min ' + String(Math.round(v % 60)).padStart(2, '0') + ' s'),
+  tag: (v) => ({ atencao: 'Atenção', oportunidade: 'Oportunidade', info: 'Informação' }[v] || v),
+  delta: (v) => (v == null || isNaN(v) ? 'sem período anterior' : (v >= 0 ? '▲ ' : '▼ ') + pf(Math.abs(v), 1)),
+  pp: (v) => (v == null || isNaN(v) ? 'sem período anterior' : (v >= 0 ? '▲ ' : '▼ ') + (Math.abs(v) * 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' p.p.'),
+  x: (v) => (v == null || isNaN(v) ? '—' : v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + 'x'),
+  date: (v) => (v ? v.slice(8, 10) + '/' + v.slice(5, 7) + '/' + v.slice(0, 4) : '—'),
+  txt: (v) => (v == null ? '—' : String(v)),
+};
+const parseDay = (s) => new Date(s + 'T00:00:00Z');
+const fdate = d3.utcFormat('%d/%m');
+const rowsOf = (id) => { const d = dash.data(id); return d.status === 'ok' ? d.data : null; };
+const failed = (id) => ['error', 'connect', 'declined'].includes(dash.data(id).status);
+const failBox = (el) => { const d = document.createElement('div'); d.className = 'fail'; d.textContent = 'Falha ao carregar'; el.replaceChildren(d); };
+const msgBox = (el, t) => { const d = document.createElement('div'); d.className = 'msg'; d.textContent = t; el.replaceChildren(d); };
+
+function tipOf(el) { let t = el.querySelector('.tip'); if (!t) { t = document.createElement('div'); t.className = 'tip'; el.append(t); } return t; }
+function showTip(el, ev, lines) {
+  const t = tipOf(el);
+  t.replaceChildren(...lines.map((l) => { const d = document.createElement('div'); if (l.color) { const s = document.createElement('span'); s.className = 'sw'; s.style.background = l.color; d.append(s); } d.append(document.createTextNode(l.text)); return d; }));
+  t.style.display = 'block';
+  const r = el.getBoundingClientRect();
+  let x = ev.clientX - r.left + 12;
+  if (x + t.offsetWidth > r.width) x = ev.clientX - r.left - t.offsetWidth - 12;
+  t.style.left = Math.max(0, x) + 'px';
+  t.style.top = Math.max(0, ev.clientY - r.top - 10) + 'px';
+}
+const hideTip = (el) => { const t = el.querySelector('.tip'); if (t) t.style.display = 'none'; };
+
+function windowN() {
+  const p = dash.params();
+  const a = p.start || addDays(TODAY, -29), z = p.end || TODAY;
+  return Math.max(1, Math.round((parseDay(z) - parseDay(a)) / 86400000) + 1);
+}
+const cmpOn = {};
+const fmtV = (money) => (money ? FMT.brl : FMT.int);
+
+function stacked(el, rows, o) {
+  const w = el.clientWidth;
+  if (!w) return;
+  const prev = o.prev || null;
+  if (!rows.length && !(prev && prev.length)) { msgBox(el, 'Nenhum resultado para os filtros escolhidos. Campanhas novas só aparecem depois da próxima sincronização (domingo à noite).'); return; }
+  el.replaceChildren();
+  const nl = windowN();
+  const n = prev ? (o.noShift ? 0 : nl) : 0;
+  const FX = o.fx || ((sv) => fdate(parseDay(sv)));
+  const keys = [...new Set(rows.map((r) => r[o.s]))];
+  const prevTot = new Map();
+  if (prev) prev.forEach((r) => { const d = addDays(r[o.x], n); prevTot.set(d, (prevTot.get(d) || 0) + (r[o.y] || 0)); });
+  const days = [...new Set([...rows.map((r) => r[o.x]), ...prevTot.keys()])].sort();
+  const by = new Map(days.map((d) => [d, {}]));
+  rows.forEach((r) => { by.get(r[o.x])[r[o.s]] = r[o.y] || 0; });
+  const data = days.map((d) => ({ day: d, vals: by.get(d) }));
+  const tot = new Map(days.map((dd) => [dd, keys.reduce((s0, k0) => s0 + ((by.get(dd) || {})[k0] || 0), 0)]));
+  const stack = keys.length ? [days.map((dd) => { const seg = [0, tot.get(dd)]; seg.data = { day: dd }; return seg; })] : [];
+  const H = 220, m = { t: 8, r: 8, b: 22, l: 48 }, iw = w - m.l - m.r, ih = H - m.t - m.b;
+  const x = d3.scaleBand(days, [0, iw]).padding(0.15);
+  const maxCur = stack.length ? d3.max(stack[stack.length - 1], (d) => d[1]) : 0;
+  const maxPrev = prevTot.size ? d3.max([...prevTot.values()]) : 0;
+  const y = d3.scaleLinear([0, Math.max(maxCur, maxPrev) || 1], [ih, 0]).nice();
+  if (prev) {
+    const lg = document.createElement('div'); lg.className = 'legend';
+    { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = COL[0]; sp.append(sw, document.createTextNode('Total do período')); lg.append(sp); }
+    if (prev) { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = 'transparent'; sw.style.border = '2px dashed var(--color-fg)'; sw.style.height = '0'; sw.style.borderRadius = '0'; sp.append(sw, document.createTextNode('Período anterior (total do período)')); lg.append(sp); }
+    el.append(lg);
+  }
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${H}`).attr('width', '100%');
+  const g = svg.append('g').attr('transform', `translate(${m.l},${m.t})`);
+  y.ticks(4).forEach((t) => {
+    g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', y(t)).attr('y2', y(t)).attr('stroke', 'var(--cds-chart-grid)');
+    g.append('text').attr('x', -6).attr('y', y(t)).attr('dy', '0.32em').attr('text-anchor', 'end').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(o.money ? FMT.brl(t).replace(',00', '') : FMT.int(t));
+  });
+  stack.forEach((layer, i) => layer.forEach((seg) => {
+    g.append('rect').attr('x', x(seg.data.day)).attr('width', x.bandwidth()).attr('y', y(seg[1])).attr('height', Math.max(0, y(seg[0]) - y(seg[1]))).attr('rx', 2).attr('fill', COL[0]).attr('stroke', 'var(--color-panel)').attr('stroke-width', 1);
+  }));
+  if (prev && prevTot.size) {
+    const pts = days.filter((d) => prevTot.has(d)).map((d) => [x(d) + x.bandwidth() / 2, y(prevTot.get(d))]);
+    g.append('path').attr('d', d3.line()(pts)).attr('fill', 'none').attr('stroke', 'var(--color-fg)').attr('stroke-width', 2).attr('stroke-dasharray', '5 4').attr('stroke-linejoin', 'round');
+    pts.forEach((p) => g.append('circle').attr('cx', p[0]).attr('cy', p[1]).attr('r', 2.5).attr('fill', 'var(--color-fg)'));
+  }
+  const step = Math.ceil(days.length / 7);
+  days.forEach((d, i) => { if (i % step === 0) g.append('text').attr('x', x(d) + x.bandwidth() / 2).attr('y', ih + 15).attr('text-anchor', 'middle').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(FX(d)); });
+  const F = fmtV(o.money);
+  days.forEach((d) => {
+    g.append('rect').attr('x', x(d) - 1).attr('width', x.step()).attr('y', 0).attr('height', ih).attr('fill', 'transparent')
+      .on('mousemove', (ev) => {
+        const lines = [{ text: FX(d) }, { text: 'Total: ' + F(tot.get(d) || 0) }, ...keys.map((k, i) => ({ color: colOf(k, i), text: k + ': ' + F(by.get(d)[k] || 0) }))];
+        if (prev) lines.push({ text: 'Período anterior (' + fdate(parseDay(addDays(d, -nl))) + '): ' + (prevTot.has(d) ? F(prevTot.get(d)) : '—') });
+        showTip(el, ev, lines);
+      })
+      .on('mouseleave', () => hideTip(el));
+  });
+}
+
+function lineChart(el, rows, o) {
+  const w = el.clientWidth;
+  if (!w) return;
+  const prev = o.prev || null;
+  if (!rows.length && !(prev && prev.length)) { msgBox(el, 'Nenhum resultado para os filtros escolhidos. Campanhas novas só aparecem depois da próxima sincronização (domingo à noite).'); return; }
+  el.replaceChildren();
+  const n = prev ? windowN() : 0;
+  const pts = rows.map((r) => ({ d: parseDay(r[o.x]), v: r[o.y] || 0 })).sort((a, b) => a.d - b.d);
+  const pp = prev ? prev.map((r) => ({ d: parseDay(addDays(r[o.x], n)), v: r[o.y] || 0 })).sort((a, b) => a.d - b.d) : [];
+  const all = [...pts, ...pp];
+  if (prev) {
+    const lg = document.createElement('div'); lg.className = 'legend';
+    const a = document.createElement('span'); const s1 = document.createElement('span'); s1.className = 'sw'; s1.style.background = COL[0]; a.append(s1, document.createTextNode(o.label));
+    const b = document.createElement('span'); const s2 = document.createElement('span'); s2.className = 'sw'; s2.style.background = 'transparent'; s2.style.border = '2px dashed var(--color-fg)'; s2.style.height = '0'; s2.style.borderRadius = '0'; b.append(s2, document.createTextNode('Período anterior'));
+    lg.append(a, b); el.append(lg);
+  }
+  const H = 220, m = { t: 8, r: 10, b: 22, l: 40 }, iw = w - m.l - m.r, ih = H - m.t - m.b;
+  const x = d3.scaleUtc(d3.extent(all, (p) => p.d), [0, iw]);
+  const y = d3.scaleLinear([0, d3.max(all, (p) => p.v) || 1], [ih, 0]).nice();
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${H}`).attr('width', '100%');
+  const g = svg.append('g').attr('transform', `translate(${m.l},${m.t})`);
+  y.ticks(4).forEach((t) => {
+    g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', y(t)).attr('y2', y(t)).attr('stroke', 'var(--cds-chart-grid)');
+    g.append('text').attr('x', -6).attr('y', y(t)).attr('dy', '0.32em').attr('text-anchor', 'end').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(FMT.int(t));
+  });
+  x.ticks(6).forEach((t) => g.append('text').attr('x', x(t)).attr('y', ih + 15).attr('text-anchor', 'middle').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(fdate(t)));
+  const ln = d3.line().x((p) => x(p.d)).y((p) => y(p.v));
+  if (pp.length) g.append('path').attr('d', ln(pp)).attr('fill', 'none').attr('stroke', 'var(--color-fg)').attr('stroke-width', 2).attr('stroke-dasharray', '5 4').attr('stroke-linejoin', 'round');
+  if (pts.length) g.append('path').attr('d', ln(pts)).attr('fill', 'none').attr('stroke', COL[0]).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+  const dot = g.append('circle').attr('r', 4).attr('fill', COL[0]).attr('display', 'none');
+  const bis = d3.bisector((p) => p.d).center;
+  if (pts.length) g.append('rect').attr('width', iw).attr('height', ih).attr('fill', 'transparent')
+    .on('mousemove', (ev) => {
+      const [mx] = d3.pointer(ev);
+      const p = pts[bis(pts, x.invert(mx))];
+      dot.attr('display', null).attr('cx', x(p.d)).attr('cy', y(p.v));
+      const lines = [{ text: fdate(p.d) }, { text: o.label + ': ' + FMT.int(p.v) }];
+      if (prev) { const q = pp.find((r) => r.d.getTime() === p.d.getTime()); lines.push({ text: 'Período anterior: ' + (q ? FMT.int(q.v) : '—') }); }
+      showTip(el, ev, lines);
+    })
+    .on('mouseleave', () => { dot.attr('display', 'none'); hideTip(el); });
+}
+
+function hbars(el, rows, o) {
+  if (!rows.length) { msgBox(el, 'Nenhum resultado para os filtros escolhidos. Campanhas novas só aparecem depois da próxima sincronização (domingo à noite).'); return; }
+  const max = d3.max(rows, (r) => r[o.v]) || 1;
+  const frag = rows.map((r, idx) => {
+    const row = document.createElement('div'); row.className = 'hb';
+    const l = document.createElement('span'); l.textContent = r[o.l];
+    const tr = document.createElement('div'); tr.className = 'tr';
+    const fi = document.createElement('div'); fi.className = 'fi'; fi.style.width = (100 * r[o.v] / max) + '%'; if (o.colors) fi.style.background = COL[idx % 8]; tr.append(fi);
+    const v = document.createElement('span'); v.textContent = FMT.int(r[o.v]);
+    row.append(l, tr, v);
+    return row;
+  });
+  el.replaceChildren(...frag);
+}
+
+
+function clip(v, n) { if (!v) return ''; const t = String(v).replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
+
+
+function clip(v, n) { if (!v) return ''; const t = String(v).replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; }
+
+function pie(el, rows, prevRows) {
+  const w = el.clientWidth;
+  if (!w) return;
+  if (!rows.length) { msgBox(el, 'Nenhum resultado para os filtros escolhidos. Campanhas novas só aparecem depois da próxima sincronização (domingo à noite).'); return; }
+  const top = rows.slice(0, 6);
+  const data = top.map((r) => ({ l: r.canal, v: r.sessoes || 0, p: prevRows ? ((prevRows.find((q) => q.canal === r.canal) || {}).sessoes || 0) : null }));
+  const rest = rows.slice(6);
+  if (rest.length) {
+    const names = new Set(top.map((r) => r.canal));
+    data.push({ l: 'Outros canais', v: sumk(rest, 'sessoes'), p: prevRows ? sumk(prevRows.filter((q) => !names.has(q.canal)), 'sessoes') : null });
+  }
+  const total = d3.sum(data, (d) => d.v) || 1;
+  el.replaceChildren();
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center';
+  el.append(wrap);
+  const S = Math.min(220, w);
+  const svg = d3.select(wrap).append('svg').attr('viewBox', `0 0 ${S} ${S}`).style('width', S + 'px').style('height', S + 'px').style('flex', 'none');
+  const g = svg.append('g').attr('transform', `translate(${S / 2},${S / 2})`);
+  const arc = d3.arc().innerRadius(0).outerRadius(S / 2 - 2);
+  d3.pie().sort(null).value((d) => d.v)(data).forEach((a, i) => {
+    g.append('path').attr('d', arc(a)).attr('fill', COL[i % 8]).attr('stroke', 'var(--color-panel)').attr('stroke-width', 2)
+      .on('mousemove', (ev) => showTip(el, ev, [{ color: COL[i % 8], text: a.data.l + ': ' + FMT.int(a.data.v) + ' (' + pf(a.data.v / total, 1) + ')' }]))
+      .on('mouseleave', () => hideTip(el));
+  });
+  const lg = document.createElement('div');
+  lg.style.cssText = 'display:grid;gap:4px;font-size:var(--cds-font-size-caption);min-width:11rem;flex:1 1 11rem';
+  data.forEach((d, i) => {
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:8px;align-items:center;justify-content:space-between;font-variant-numeric:tabular-nums';
+    const l = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = COL[i % 8]; l.append(sw, document.createTextNode(d.l));
+    const v = document.createElement('span'); v.textContent = FMT.int(d.v) + ' · ' + pf(d.v / total, 1) + (d.p != null ? ' · ant. ' + FMT.int(d.p) + ' (' + FMT.delta(dlt(d.v, d.p)) + ')' : '');
+    row.append(l, v); lg.append(row);
+  });
+  wrap.append(lg);
+}
+const sortState = {};
+const pageState = {};
+function renderPager(t, pg, pages, n, ps) {
+  const el = document.querySelector('.pager[data-for="' + t.id + '"]');
+  if (!el) return;
+  el.replaceChildren();
+  const mkb = (txt, d, dis) => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'ctl'; bt.textContent = txt; bt.disabled = dis; bt.addEventListener('click', () => { pageState[t.id] = pg + d; draw(); }); return bt; };
+  const info = document.createElement('span'); info.className = 'note'; info.textContent = 'Página ' + pg + ' de ' + pages + ' · ' + ((pg - 1) * ps + 1) + '–' + Math.min(pg * ps, n) + ' de ' + n;
+  el.append(mkb('‹ Anterior', -1, pg <= 1), info, mkb('Próxima ›', 1, pg >= pages));
+  el.hidden = n <= ps;
+}
+const sortRows = (rows, st) => [...rows].sort((a, b) => {
+  const x = a[st.f], y = b[st.f];
+  const nx = x == null || x === '', ny = y == null || y === '';
+  if (nx || ny) return nx && ny ? 0 : nx ? 1 : -1;
+  const c = typeof x === 'number' && typeof y === 'number' ? x - y : String(x).localeCompare(String(y), 'pt-BR');
+  return st.d === 'asc' ? c : -c;
+});
+function initSort(t, ths) {
+  if (t.dataset.sortInit || t.dataset.nosort) return;
+  t.dataset.sortInit = '1';
+  ths.forEach((th) => {
+    const f = th.dataset.field;
+    if (!f) return;
+    th.tabIndex = 0; th.setAttribute('role', 'button');
+    const act = () => {
+      const st = sortState[t.id];
+      const num = !['txt', 'tag', 'pills', 'namecap', 'cap', 'date'].includes(th.dataset.fmt || 'txt');
+      const first = num ? 'desc' : 'asc', second = num ? 'asc' : 'desc';
+      if (!st || st.f !== f) sortState[t.id] = { f, d: first };
+      else if (st.d === first) sortState[t.id] = { f, d: second };
+      else delete sortState[t.id];
+      delete pageState[t.id];
+      draw();
+    };
+    th.addEventListener('click', act);
+    th.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); act(); } });
+  });
+}
+function fillTable(t) {
+  const id = t.dataset.source;
+  const body = t.querySelector('tbody');
+  const ths = [...t.querySelectorAll('thead th')];
+  initSort(t, ths);
+  const st0 = sortState[t.id];
+  ths.forEach((th) => th.setAttribute('aria-sort', st0 && st0.f === th.dataset.field ? (st0.d === 'desc' ? 'descending' : 'ascending') : 'none'));
+  const rows = rowsOf(id);
+  const one = (txt) => { const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = ths.length; td.className = 't'; td.textContent = txt; tr.append(td); body.replaceChildren(tr); };
+  if (!rows) { if (failed(id)) one('Falha ao carregar'); return; }
+  if (!rows.length) { one('Nenhum resultado para os filtros escolhidos. Campanhas novas só aparecem depois da próxima sincronização (domingo à noite).'); return; }
+  const key = t.dataset.rowKey;
+  const rowsA = st0 ? sortRows(rows, st0) : rows;
+  const ps = Number(t.dataset.pagesize) || 0;
+  let rowsS = rowsA;
+  if (ps) { const pages = Math.max(1, Math.ceil(rowsA.length / ps)); const pg = Math.min(pageState[t.id] || 1, pages); pageState[t.id] = pg; rowsS = rowsA.slice((pg - 1) * ps, pg * ps); renderPager(t, pg, pages, rowsA.length, ps); }
+  body.replaceChildren(...rowsS.map((r) => {
+    const tr = document.createElement('tr');
+    tr.dataset.key = r[key];
+    ths.forEach((th) => {
+      const td = document.createElement('td');
+      const f = th.dataset.fmt || 'txt';
+      const v = r[th.dataset.field];
+      if (f === 'namecap') { td.className = 't'; const n = document.createElement('div'); n.className = 'nm'; n.textContent = v == null ? '—' : String(v); td.append(n); if (r.legenda) { const c = document.createElement('div'); c.className = 'cap'; c.textContent = clip(r.legenda, 120); td.append(c); } }
+      else if (f === 'pills') { td.className = 't mot'; const parts = v ? String(v).split(' · ') : ['—']; parts.forEach((pt, i) => { if (i) { const sp = document.createElement('span'); sp.className = 'sep'; sp.textContent = ' · '; td.append(sp); } const s = document.createElement('span'); s.className = 'pill'; s.textContent = pt; td.append(s); }); }
+      else if (f === 'cap') { td.className = 't'; const c = document.createElement('div'); c.className = 'cap'; c.textContent = v ? clip(v, 140) : '—'; td.append(c); }
+      else { td.textContent = (FMT[f] || FMT.txt)(v); if (f === 'txt' || f === 'date') td.className = 't'; if (f === 'tag') td.className = 't tag-' + v; }
+      tr.append(td);
+    });
+    return tr;
+  }));
+}
+
+function fillMarks() {
+  document.querySelectorAll('#ai-root [data-fmt][data-field][data-row]').forEach((el) => {
+    const rows = rowsOf(el.dataset.source);
+    const row = rows ? rows[Number(el.dataset.row)] : null;
+    el.textContent = (FMT[el.dataset.fmt] || FMT.txt)(row ? row[el.dataset.field] : null);
+  });
+}
+
+
+/* ---- período: um filtro só, com calendário em dropdown ---- */
+const MIN = '2026-01-01';
+const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+const isoDay = (d) => d.toISOString().slice(0, 10);
+const TODAY = isoDay(new Date());
+const dBR = (iso) => iso.slice(8, 10) + '/' + iso.slice(5, 7) + '/' + iso.slice(0, 4);
+const addDays = (iso, n) => isoDay(new Date(parseDay(iso).getTime() + n * 86400000));
+let pick = null;
+let calMonth = null;
+function rangeNow() { const p = dash.params(); return { s: p.start || null, e: p.end || null }; }
+function updateRangeLabel() {
+  const { s, e } = rangeNow();
+  $('#dr-btn').textContent = s || e ? dBR(s || addDays(TODAY, -29)) + ' – ' + dBR(e || TODAY) : 'Últimos 30 dias (' + dBR(addDays(TODAY, -29)) + ' – ' + dBR(TODAY) + ')';
+}
+function setRange(s, e) { dash.setParams({ start: s, end: e }); pick = null; }
+function renderPresets() {
+  const pre = $('#dr-pre');
+  const cl = (d) => (d < MIN ? MIN : d);
+  const items = [['Últimos 7 dias', () => setRange(cl(addDays(TODAY, -6)), TODAY)], ['Últimos 30 dias (padrão)', () => setRange(null, null)], ['Últimos 90 dias', () => setRange(cl(addDays(TODAY, -89)), TODAY)], ['Este mês', () => setRange(TODAY.slice(0, 8) + '01', TODAY)], ['Este ano', () => setRange(TODAY.slice(0, 5) + '01-01', TODAY)], ['Todo o período', () => setRange(MIN, TODAY)]];
+  pre.replaceChildren(...items.map(([t, fn]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.addEventListener('click', () => { fn(); closeCal(); }); return b; }));
+}
+function renderCal() {
+  const { s, e } = rangeNow();
+  const lo = pick || s, hi = pick ? null : e;
+  const y = calMonth.getUTCFullYear(), m = calMonth.getUTCMonth();
+  $('#cal-title').textContent = MESES[m] + ' de ' + y;
+  const first = new Date(Date.UTC(y, m, 1));
+  const lead = first.getUTCDay();
+  const nd = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  const cells = [];
+  ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].forEach((w) => { const d = document.createElement('div'); d.className = 'wd'; d.textContent = w; cells.push(d); });
+  for (let i = 0; i < lead; i++) cells.push(document.createElement('div'));
+  for (let d = 1; d <= nd; d++) {
+    const iso = isoDay(new Date(Date.UTC(y, m, d)));
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'dy'; b.textContent = String(d);
+    b.setAttribute('aria-label', dBR(iso));
+    b.disabled = iso < MIN || iso > TODAY;
+    if (lo && hi && iso > lo && iso < hi) b.classList.add('rg');
+    if (iso === lo || (hi && iso === hi)) b.classList.add('ed');
+    b.addEventListener('click', () => {
+      if (!pick) { pick = iso; renderCal(); return; }
+      const a = pick < iso ? pick : iso, z = pick < iso ? iso : pick;
+      setRange(a, z); closeCal();
+    });
+    cells.push(b);
+  }
+  $('#cal-grid').replaceChildren(...cells);
+  $('#cal-hint').textContent = pick ? 'Agora escolha a data final.' : 'Escolha a data inicial e depois a final.';
+}
+function openCal() {
+  const { s } = rangeNow();
+  const base = s || TODAY;
+  calMonth = new Date(Date.UTC(Number(base.slice(0, 4)), Number(base.slice(5, 7)) - 1, 1));
+  pick = null;
+  $('#dr-pop').hidden = false; $('#dr-btn').setAttribute('aria-expanded', 'true');
+  renderPresets(); renderCal();
+}
+function closeCal() { $('#dr-pop').hidden = true; $('#dr-btn').setAttribute('aria-expanded', 'false'); pick = null; }
+$('#dr-btn').addEventListener('click', () => ($('#dr-pop').hidden ? openCal() : closeCal()));
+$('#cal-prev').addEventListener('click', () => { calMonth = new Date(Date.UTC(calMonth.getUTCFullYear(), calMonth.getUTCMonth() - 1, 1)); renderCal(); });
+$('#cal-next').addEventListener('click', () => { calMonth = new Date(Date.UTC(calMonth.getUTCFullYear(), calMonth.getUTCMonth() + 1, 1)); renderCal(); });
+document.addEventListener('click', (ev) => { if (!$('#dr-pop').hidden && !ev.composedPath().includes($('#w-date'))) closeCal(); });
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !$('#dr-pop').hidden) { closeCal(); $('#dr-btn').focus(); } });
+
+const plat = $('#f-platform');
+plat.replaceChildren(new Option('Todas as plataformas', ''), new Option('Meta Ads', 'Meta Ads'), new Option('Google Ads', 'Google Ads'));
+const mar = $('#f-marca');
+(function () {
+  const og = (label, names) => { const g = document.createElement('optgroup'); g.label = label; names.forEach((n) => g.append(new Option(n, n))); return g; };
+  mar.replaceChildren(new Option('Todas as marcas', ''), og('Hotéis Accor', ['ibis', 'ibis Styles', 'ibis Budget', 'Novotel', 'Mercure', 'Grand Mercure']), og('Marcas próprias e independentes', ['LK Design', 'Xtay', 'Aéra', 'K-Platz', 'Montissi', 'Himmelblau']));
+})();
+const ag = $('#f-agencia');
+ag.replaceChildren(new Option('Todas as agências', ''), ...['TAB', 'Prosperitas', 'H2M', 'Okey Comunicação', 'TMD', 'B2K', 'Bold Comunicação', 'Freelancer', 'Sem agência identificada'].map((n) => new Option(n, n)));
+const grp = $('#f-grupo');
+grp.replaceChildren(new Option('Todos os hotéis e marcas', ''), new Option('Hotéis Accor', 'Hotéis Accor'), new Option('Marcas próprias e independentes', 'Marcas próprias e independentes'));
+function fillList(id, rows, field) {
+  const dl = $(id);
+  const key = rows ? rows.length + ':' + (rows[0] ? rows[0][field] : '') : '';
+  if (dl.dataset.key === key) return;
+  dl.dataset.key = key;
+  dl.replaceChildren(...(rows || []).map((r) => { const o = document.createElement('option'); o.value = r[field]; return o; }));
+}
+function fillFilters() {
+  const p = dash.params();
+  plat.value = p.platform ?? '';
+  grp.value = p.grupo ?? '';
+  mar.value = p.marca ?? '';
+  ag.value = p.agencia ?? '';
+  if ($('#f-hotel') !== document.activeElement) $('#f-hotel').value = p.hotel ?? '';
+  if ($('#f-campaign') !== document.activeElement) $('#f-campaign').value = p.campaign ?? '';
+  fillList('#dl-hotel', rowsOf('filter_hotels'), 'hotel');
+  fillList('#dl-campaign', rowsOf('filter_campaigns'), 'campanha');
+  updateRangeLabel();
+  if (!$('#dr-pop').hidden) renderCal();
+}
+
+
+const sumk = (a, k) => a.reduce((t, r) => t + (Number(r[k]) || 0), 0);
+dash.calc('cmp_perf', {
+  inputs: ['kpi_total', 'kpi_prev', 'res_total', 'res_prev', 'inv_total', 'inv_prev'],
+  title: 'Comparação com o período anterior',
+  description: 'Variação das métricas gerais, incluindo reservas, receita e ROAS Web Direto.',
+  fn: (kt, kp, rt, rp, it, ip) => {
+    const c = kt[0] || {}, p = kp[0] || {}, rc = rt[0] || {}, rpv = rp[0] || {}, ic = it[0] || {}, ipv = ip[0] || {};
+    const dl = (a, b) => (b > 0 && a != null ? (a - b) / b : null);
+    const pp = (a, b) => (a != null && b != null ? a - b : null);
+    const roas = ic.gasto > 0 && rc.receita != null ? rc.receita / ic.gasto : null;
+    const roasp = ipv.gasto > 0 && rpv.receita != null ? rpv.receita / ipv.gasto : null;
+    return [{
+      gasto_prev: p.gasto || 0, gasto_delta: dl(c.gasto, p.gasto),
+      alc_prev: p.alcance || 0, alc_delta: dl(c.alcance, p.alcance),
+      imp_prev: p.impressoes || 0, imp_delta: dl(c.impressoes, p.impressoes),
+      clk_prev: p.cliques || 0, clk_delta: dl(c.cliques, p.cliques),
+      ctr_prev: p.ctr ?? null, ctr_pp: pp(c.ctr, p.ctr),
+      conv_prev: p.conversoes || 0, conv_delta: dl(c.conversoes, p.conversoes),
+      cpa_prev: p.cpa ?? null, cpa_delta: dl(c.cpa, p.cpa),
+      resv_prev: rpv.reservas || 0, resv_delta: dl(rc.reservas, rpv.reservas),
+      rec_prev: rpv.receita || 0, rec_delta: dl(rc.receita, rpv.receita),
+      roas, roas_prev: roasp, roas_delta: dl(roas, roasp),
+    }];
+  },
+});
+dash.calc('funnel', {
+  inputs: ['kpi_total'],
+  title: 'Funil',
+  description: 'Alcance, impressões, cliques (com CTR) e conversões no filtro atual.',
+  fn: (kt) => {
+    const k = kt[0] || {};
+    const ctr = k.ctr == null ? '—' : (k.ctr * 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+    return [['Alcance', k.alcance], ['Impressões', k.impressoes], ['Cliques (CTR ' + ctr + ')', k.cliques], ['Conversões', k.conversoes]].map(([etapa, valor]) => ({ etapa, valor: valor || 0 }));
+  },
+});
+dash.calc('funnel_conv', {
+  inputs: ['kpi_total'],
+  title: 'Conversões por tipo',
+  description: 'Conversões por tipo de evento no filtro atual.',
+  fn: (kt) => {
+    const k = kt[0] || {};
+    return [['generate_lead (clique de 1 dia)', k.gleads], ['clique_reservar', k.cliqres], ['form lead', k.leads], ['Google Ads (conversões configuradas)', k.conv_google]].map(([tipo, valor]) => ({ tipo, valor: valor || 0 }));
+  },
+});
+dash.calc('alerts_neg', { inputs: ['alerts'], title: 'Alertas negativos', description: 'Campanhas com verba alta e baixa performance.', fn: (a) => a.filter((r) => r.tipo === 'negativo') });
+dash.calc('alerts_pos', { inputs: ['alerts'], title: 'Destaques positivos', description: 'Campanhas com boa performance.', fn: (a) => a.filter((r) => r.tipo === 'positivo') });
+dash.calc('meta_info', {
+  inputs: ['spend_daily'],
+  title: 'Última data com dados',
+  description: 'Último dia com investimento no filtro atual.',
+  fn: (sd) => { const m = sd.reduce((x, r) => (r.dia > x ? r.dia : x), ''); return [{ ate: m ? m.slice(8, 10) + '/' + m.slice(5, 7) + '/' + m.slice(0, 4) : '—' }]; },
+});
+dash.calc('ins_info', {
+  inputs: ['ins_camp'],
+  title: 'Semana analisada',
+  description: 'Período de 7 dias usado nos insights.',
+  fn: (ic) => [{ semana: ic[0] ? ic[0].semana : '—' }],
+});
+dash.calc('insights', {
+  inputs: ['ins_camp', 'ins_ads'],
+  title: 'Insights e sugestões da semana',
+  description: 'Sugestões objetivas para campanhas e anúncios ativos, a partir dos últimos 7 dias de dados.',
+  fn: (ic, ia) => {
+    const nf = (v, d = 0) => Number(v).toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    const brl = (v) => 'R$ ' + nf(v, 2);
+    const who = (r, ad) => (ad ? 'o anúncio "' + r.anuncio + '" da campanha "' + r.campanha + '"' : 'a campanha "' + r.campanha + '"') + ' (' + r.hotel + ', ' + r.plataforma + ', objetivo ' + String(r.objetivo).toLowerCase() + ')';
+    const out = [];
+    ic.filter((r) => r.tipo === 'negativo').forEach((r) => out.push({ tipo: 'atencao', texto: (String(r.motivo).includes('sem conversões') ? 'Pausar ou revisar público, oferta e criativo d' : 'Reduzir a verba e revisar d') + who(r, false) + ': ' + brl(r.gasto) + ' na semana, ' + r.motivo + '.' }));
+    ic.filter((r) => r.tipo === 'positivo').forEach((r) => out.push({ tipo: 'oportunidade', texto: 'Aumentar em cerca de 20% a verba d' + who(r, false) + ' e acompanhar: ' + brl(r.gasto) + ' na semana, ' + nf(r.conversoes) + ' conversões, ' + r.motivo + '.' }));
+    ia.filter((r) => r.tipo === 'negativo').forEach((r) => out.push({ tipo: 'atencao', texto: 'Trocar a arte e o texto d' + who(r, true) + ': ' + brl(r.gasto) + ' na semana, ' + r.motivo + '.' }));
+    ia.filter((r) => r.tipo === 'positivo').forEach((r) => out.push({ tipo: 'oportunidade', texto: 'Replicar em outros públicos e campanhas ' + who(r, true) + ': ' + brl(r.gasto) + ' na semana, ' + r.motivo + '.' }));
+    return out.map((r, i) => ({ id: 'i' + i, ...r }));
+  },
+});
+
+dash.calc('gauges', {
+  inputs: ['g_leads', 'g_cliques', 'g_receita', 'g_roas'],
+  title: 'Metas Travel Week',
+  description: 'Progresso das metas de generate_lead, clique_reservar e receita Web Direto.',
+  fn: (a, c, r, ro) => {
+    const mk = (id, nome, row, o) => {
+      const meta = Number(row.meta) || 0;
+      let valor = row.valor == null ? null : Number(row.valor);
+      if (valor == null && o.zero) valor = 0;
+      const espV = Number(row.esp) || 0;
+      const pct = valor != null && meta ? valor / meta : null;
+      let status;
+      if (valor == null) status = o.semDado;
+      else if (valor === 0 && o.zeroMsg) status = o.zeroMsg;
+      else status = valor >= espV ? 'No ritmo ou acima do esperado' : 'Abaixo do ritmo esperado';
+      return { id, nome, valor, meta, pct, esp: meta ? espV / meta : 0, status };
+    };
+    const roasV = (ro[0] || {}).valor;
+    return [mk('leads', 'Leads', a[0] || {}, { semDado: 'Sem dado de leads nas contas de anúncio' }), mk('cliques', 'clique_reservar', c[0] || {}, { semDado: 'Aguardando o relatório de eventos do GA4 (Destinos Atrio)' }), mk('receita', 'Receita Web Direto', r[0] || {}, { zero: true, zeroMsg: 'Sem reservas da campanha na fonte ainda (dados até 27/10)' }), { id: 'roas', nome: 'ROAS Web Direto', valor: roasV == null ? null : Number(roasV), meta: null, pct: null, esp: 0, status: roasV == null ? 'Sem receita Web Direto na fonte ainda (dados até 27/10)' : 'Meta de ROAS ainda não definida' }];
+  },
+});
+const STAGES = [
+  { id: 'todo', nome: 'Todo o Período', ini: '2026-11-03', fim: '2026-12-06', obj: 'Visão geral: generate_lead no Pré-Esquenta e clique_reservar, reservas e receita Web Direto nas etapas seguintes.' },
+  { id: 'pre', nome: 'Cadastro Pré-Esquenta', ini: '2026-11-03', fim: '2026-11-16', obj: 'Objetivo: geração de leads (generate_lead do GA4 do Destinos Atrio).' },
+  { id: 'esquenta', nome: 'Esquenta', ini: '2026-11-17', fim: '2026-11-18', obj: 'Objetivo: clique_reservar (GA4), reservas e receita Web Direto.' },
+  { id: 'tw', nome: 'Travel Week', ini: '2026-11-19', fim: '2026-12-03', obj: 'Objetivo: clique_reservar (GA4), reservas e receita Web Direto.' },
+  { id: 'ressaca', nome: 'Ressaca', ini: '2026-12-04', fim: '2026-12-06', obj: 'Objetivo: clique_reservar (GA4), reservas e receita Web Direto.' },
+];
+const stageToday = () => 'todo';
+function setStage(id) { const s = STAGES.find((x) => x.id === id) || STAGES[0]; dash.setParams({ etapa: s.id, start: s.ini, end: s.fim }); }
+let stageInit = false;
+function applyStage() {
+  const p = dash.params();
+  if (!stageInit) { stageInit = true; if (!p.etapa && !p.start && !p.end) { setStage(stageToday()); return; } }
+  const s = STAGES.find((x) => x.id === (p.etapa || stageToday())) || STAGES[0];
+  document.querySelectorAll('#ai-root .stage-tab').forEach((bt) => { const on = bt.dataset.stage === s.id; bt.setAttribute('aria-selected', String(on)); bt.tabIndex = on ? 0 : -1; });
+  const nt = $('#stage-note'); if (nt) nt.textContent = s.nome + ': ' + s.obj + ' Período: ' + dBR(s.ini) + ' a ' + dBR(s.fim) + '.';
+  document.querySelectorAll('#ai-root [data-stages]').forEach((el) => { el.hidden = !el.dataset.stages.split(' ').includes(s.id); });
+}
+document.querySelectorAll('#ai-root .stage-tab').forEach((bt) => bt.addEventListener('click', () => setStage(bt.dataset.stage)));
+document.querySelectorAll('#ai-root .stage-tab').forEach((bt) => bt.addEventListener('keydown', (ev) => { const all = [...document.querySelectorAll('#ai-root .stage-tab')]; const i = all.indexOf(bt); if (ev.key === 'ArrowRight' || ev.key === 'ArrowLeft') { ev.preventDefault(); const nx = all[(i + (ev.key === 'ArrowRight' ? 1 : all.length - 1)) % all.length]; nx.focus(); setStage(nx.dataset.stage); } }));
+let tab = 'perf';
+let gran = 'dia';
+const applyText = (id, key) => { const v = $(id).value.trim(); if (v !== (dash.params()[key] ?? '')) dash.setParams({ [key]: v || null }); };
+plat.addEventListener('change', (e) => dash.setParams({ platform: e.target.value || null }));
+grp.addEventListener('change', (e) => dash.setParams({ grupo: e.target.value || null }));
+mar.addEventListener('change', (e) => dash.setParams({ marca: e.target.value || null }));
+ag.addEventListener('change', (e) => dash.setParams({ agencia: e.target.value || null }));
+[['#f-hotel', 'hotel', '#dl-hotel'], ['#f-campaign', 'campaign', '#dl-campaign']].forEach(([id, key, dl]) => {
+  const el = $(id);
+  el.addEventListener('change', () => applyText(id, key));
+  el.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { applyText(id, key); el.blur(); } });
+  el.addEventListener('input', () => { const v = el.value.trim(); if ([...$(dl).options].some((o) => o.value === v)) applyText(id, key); });
+});
+$('#f-reset').addEventListener('click', () => { dash.resetParams(); $('#f-hotel').value = ''; $('#f-campaign').value = ''; closeCal(); setStage(stageToday()); });
+function renderChips() {
+  const p = dash.params();
+  const items = [];
+  if (p.platform) items.push(['Plataforma', p.platform, 'platform']);
+  if (p.grupo) items.push(['Grupo', p.grupo, 'grupo']);
+  if (p.marca) items.push(['Marca', p.marca, 'marca']);
+  if (p.agencia) items.push(['Agência', p.agencia, 'agencia']);
+  if (p.hotel) items.push(['Hotel', p.hotel, 'hotel']);
+  if (p.campaign) items.push(['Campanha', p.campaign, 'campaign']);
+  const el = $('#chips');
+  el.replaceChildren(...items.map(([l, v, k]) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip';
+    b.setAttribute('aria-label', 'Remover filtro ' + l + ': ' + v);
+    const x = document.createElement('span'); x.textContent = '×'; x.setAttribute('aria-hidden', 'true');
+    b.append(document.createTextNode(l + ': ' + v), x);
+    b.addEventListener('click', () => { dash.setParams({ [k]: null }); if (k === 'hotel') $('#f-hotel').value = ''; if (k === 'campaign') $('#f-campaign').value = ''; });
+    return b;
+  }));
+  el.hidden = !items.length;
+}
+document.querySelectorAll('#ai-root .sec-nav [data-go]').forEach((b) => b.addEventListener('click', () => {
+  const tg = document.getElementById(b.dataset.go);
+  if (tg) tg.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+}));
+document.querySelectorAll('#ai-root .seg [data-g]').forEach((b) => b.addEventListener('click', () => {
+  gran = b.dataset.g;
+  document.querySelectorAll('#ai-root .seg [data-g]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  draw();
+}));
+const wkKey = (d) => { const t = parseDay(d); return isoDay(new Date(t.getTime() - ((t.getUTCDay() + 6) % 7) * 86400000)); };
+const keyOf = (d, g) => (g === 'semana' ? wkKey(d) : g === 'mes' ? d.slice(0, 7) + '-01' : d);
+function bucketRows(rows, o, shift) {
+  const m = new Map();
+  rows.forEach((r) => {
+    const d = shift ? addDays(r[o.x], shift) : r[o.x];
+    const k = keyOf(d, gran);
+    const kk = k + '|' + r[o.s];
+    const cur = m.get(kk) || { [o.x]: k, [o.s]: r[o.s], [o.y]: 0 };
+    cur[o.y] += r[o.y] || 0;
+    m.set(kk, cur);
+  });
+  return [...m.values()].sort((a, b) => (a[o.x] < b[o.x] ? -1 : a[o.x] > b[o.x] ? 1 : 0));
+}
+function chartOr(el, id, fn) { if (!el) return; const rows = rowsOf(id); if (rows) fn(rows); else if (failed(id)) failBox(el); }
+function timeChart(sel, id, idPrev, key, o) {
+  const el = $(sel);
+  chartOr(el, id, (rows) => {
+    const prevRaw = cmpOn[key] ? rowsOf(idPrev) || [] : null;
+    const fx = gran === 'mes' ? (s) => s.slice(5, 7) + '/' + s.slice(2, 4) : (s) => fdate(parseDay(s));
+    stacked(el, bucketRows(rows, o, 0), { ...o, prev: prevRaw ? bucketRows(prevRaw, o, windowN()) : null, noShift: true, fx });
+  });
+}
+function drawGauges() {
+  const rows = rowsOf('gauges');
+  ['leads', 'cliques', 'receita', 'roas'].forEach((id, i) => {
+    const el = $('#gauge-' + id);
+    if (!el) return;
+    if (!rows) { if (failed('gauges')) failBox(el); return; }
+    const r = rows[i] || {};
+    const ns = 'http://www.w3.org/2000/svg';
+    const W = 240, H = 134, cx = 120, cy = 120, R = 92;
+    const pt = (f, rad) => { const ang = Math.PI * (1 - f); return [cx + rad * Math.cos(ang), cy - rad * Math.sin(ang)]; };
+    const mkEl = (tag, at, st) => { const e = document.createElementNS(ns, tag); Object.entries(at).forEach(([k, v]) => e.setAttribute(k, v)); if (st) Object.assign(e.style, st); return e; };
+    const arc = (f0, f1, color) => { const [x0, y0] = pt(f0, R), [x1, y1] = pt(f1, R); return mkEl('path', { d: 'M ' + x0 + ' ' + y0 + ' A ' + R + ' ' + R + ' 0 0 1 ' + x1 + ' ' + y1, fill: 'none', 'stroke-width': 16, 'stroke-linecap': 'round' }, { stroke: color }); };
+    const p = r.pct == null ? 0 : Math.max(0, Math.min(1, r.pct));
+    const e = Math.max(0, Math.min(1, r.esp || 0));
+    const col = r.pct == null ? 'var(--color-border-line)' : r.pct >= (r.esp || 0) ? '#2EA05A' : r.pct >= (r.esp || 0) * 0.6 ? '#DB9B0E' : '#D64545';
+    const svg = mkEl('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': r.nome + ': ' + (r.pct == null ? 'sem dado' : Math.round(r.pct * 1000) / 10 + '% da meta') }, { width: '100%', maxWidth: '300px', height: 'auto' });
+    svg.append(arc(0, 1, 'var(--color-border-line)'));
+    if (p > 0.004) svg.append(arc(0, p, col));
+    const [a0, b0] = pt(e, R - 15), [a1, b1] = pt(e, R + 15);
+    svg.append(mkEl('line', { x1: a0, y1: b0, x2: a1, y2: b1, 'stroke-width': 3 }, { stroke: 'var(--color-fg)' }));
+    const [nx, ny] = pt(p, R - 24);
+    svg.append(mkEl('line', { x1: cx, y1: cy, x2: nx, y2: ny, 'stroke-width': 3, 'stroke-linecap': 'round' }, { stroke: 'var(--color-fg)' }));
+    svg.append(mkEl('circle', { cx, cy, r: 6 }, { fill: 'var(--color-fg)' }));
+    [['0', cx - R, cy + 14], ['100%', cx + R, cy + 14]].forEach(([t, x, y]) => { const tx = mkEl('text', { x, y, 'text-anchor': 'middle', 'font-size': 10 }, { fill: 'var(--color-fg-muted)' }); tx.textContent = t; svg.append(tx); });
+    el.replaceChildren(svg);
+    const gs = $('#gs-' + id);
+    if (gs) gs.style.color = r.pct == null ? '' : col;
+  });
+}
+function draw() {
+  applyTheme();
+  fillFilters();
+  renderChips();
+  fillMarks();
+  drawGauges();
+  applyStage();
+  document.querySelectorAll('#ai-root table[data-row-key]').forEach((t) => fillTable(t));
+  timeChart('#ch-spend', 'spend_daily', 'spend_daily_prev', 'spend', { x: 'dia', s: 'plataforma', y: 'gasto', money: true });
+  timeChart('#ch-conv', 'conv_daily', 'conv_daily_prev', 'conv', { x: 'dia', s: 'serie', y: 'valor' });
+  chartOr($('#hb-funnel'), 'funnel', (rows) => hbars($('#hb-funnel'), rows, { l: 'etapa', v: 'valor', colors: true }));
+}
+document.addEventListener('change', (ev) => {
+  const t = ev.target.closest && ev.target.closest('[data-cmp]');
+  if (t) { cmpOn[t.dataset.cmp] = t.checked; draw(); }
+});
+dash.onData(draw);
+</script>
+</div>
+<style>
+.pdfbtn { margin-left: auto; font: inherit; font-size: 13px; font-weight: 600; color: #000; background: #DB9B0E; border: 0; border-radius: 8px; padding: 8px 14px; cursor: pointer; white-space: nowrap; }
+.pdfbtn:hover { background: #A87208; color: #fff; }
+.pdfbtn[disabled] { opacity: .65; cursor: progress; }
+.pdfbtn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.pdfbtn.fixed { position: fixed; top: 10px; right: 120px; z-index: 40; }
+.pdfmsg { position: fixed; right: 14px; bottom: 14px; z-index: 70; max-width: min(420px, 92vw); background: var(--color-panel, #fff); color: var(--color-fg, #111); border: 1px solid var(--color-border-line, #ddd); border-left: 4px solid #DB9B0E; border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.4; box-shadow: 0 6px 24px rgba(0,0,0,.18); }
+.pdfmsg.err { border-left-color: #C2352B; }
+</style>
+<script src="html2canvas.js"></script>
+<script>
+(function () {
+  var root = document.getElementById('ai-root') || document.body;
+  var msgTimer = null;
+
+  function say(text, isErr, keep) {
+    var el = document.getElementById('pdfmsg');
+    if (!el) { el = document.createElement('div'); el.id = 'pdfmsg'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+    el.className = 'pdfmsg' + (isErr ? ' err' : ''); el.textContent = text; el.style.display = 'block';
+    clearTimeout(msgTimer); if (!keep) msgTimer = setTimeout(function () { el.style.display = 'none'; }, isErr ? 12000 : 5000);
+  }
+  function hideMsg() { var el = document.getElementById('pdfmsg'); if (el) el.style.display = 'none'; }
+
+  // Gerador mínimo de PDF: uma imagem JPEG por página (sem biblioteca externa).
+  function buildPdf(pages, PW, PH, M) {
+    var enc = new TextEncoder(), parts = [], xref = [], pos = 0;
+    function add(x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); pos += b.length; }
+    function obj(id, body) { xref[id] = pos; add(id + ' 0 obj\n' + body + '\nendobj\n'); }
+    add('%PDF-1.4\n');
+    var N = pages.length, kids = [];
+    for (var i = 0; i < N; i++) kids.push((3 + 3 * i) + ' 0 R');
+    obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+    obj(2, '<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + N + ' >>');
+    pages.forEach(function (pg, i) {
+      var pid = 3 + 3 * i, cid = pid + 1, iid = pid + 2, w = PW - 2 * M, h = w * pg.h / pg.w;
+      obj(pid, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + PW + ' ' + PH + '] /Resources << /XObject << /Im0 ' + iid + ' 0 R >> >> /Contents ' + cid + ' 0 R >>');
+      var cs = 'q ' + w.toFixed(2) + ' 0 0 ' + h.toFixed(2) + ' ' + M + ' ' + (PH - M - h).toFixed(2) + ' cm /Im0 Do Q';
+      obj(cid, '<< /Length ' + cs.length + ' >>\nstream\n' + cs + '\nendstream');
+      xref[iid] = pos;
+      add(iid + ' 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + pg.w + ' /Height ' + pg.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + pg.jpeg.length + ' >>\nstream\n');
+      add(pg.jpeg); add('\nendstream\nendobj\n');
+    });
+    var xpos = pos, total = 3 + 3 * N;
+    add('xref\n0 ' + total + '\n0000000000 65535 f \n');
+    for (var id = 1; id < total; id++) add(String(xref[id]).padStart(10, '0') + ' 00000 n \n');
+    add('trailer\n<< /Size ' + total + ' /Root 1 0 R >>\nstartxref\n' + xpos + '\n%%EOF');
+    return new Blob(parts, { type: 'application/pdf' });
+  }
+  window.__buildPdf = buildPdf;
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function fileName() {
+    var t = (document.querySelector('.mast h1, .mast .tt b, h1') || {}).textContent || document.title || 'Dashboard';
+    var d = new Date();
+    return t.trim().replace(/[^\wÀ-ÿ -]+/g, '').replace(/\s+/g, '-') + '_' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + '.pdf';
+  }
+  function toBlob(canvas) { return new Promise(function (res) { canvas.toBlob(res, 'image/jpeg', 0.9); }); }
+
+  function saveFile(blob, name) {
+    var use = window.claude && window.claude.use;
+    var p = use ? Promise.resolve(use.call(window.claude, 'downloads')).catch(function () { return null; }) : Promise.resolve(null);
+    return p.then(function (dl) {
+      if (dl && dl.save) return dl.save({ filename: name, data: blob }).then(function () { return 'claude'; });
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.style.display = 'none';
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+      return 'browser';
+    });
+  }
+
+
+  // A biblioteca de captura não entende gradientes e cores modernas (oklch, color-mix...). Converte ou remove no clone.
+  function sanitize(doc) {
+    var st = doc.createElement('style');
+    st.textContent = '*, *::before, *::after { background-image: none !important; border-image: none !important; mask: none !important; -webkit-mask: none !important; mask-image: none !important; -webkit-mask-image: none !important; animation: none !important; transition: none !important; }';
+    doc.head.appendChild(st);
+    var win = doc.defaultView, cv = doc.createElement('canvas'); cv.width = cv.height = 1;
+    var cx = cv.getContext('2d', { willReadFrequently: true });
+    var bad = /hsl|hwb|oklch|oklab|lab\(|lch\(|color\(|color-mix|light-dark/i;
+    function toRgb(v) {
+      try { cx.clearRect(0, 0, 1, 1); cx.fillStyle = '#000'; cx.fillStyle = v; cx.fillRect(0, 0, 1, 1); var d = cx.getImageData(0, 0, 1, 1).data; return 'rgba(' + d[0] + ',' + d[1] + ',' + d[2] + ',' + (d[3] / 255).toFixed(3) + ')'; } catch (e) { return null; }
+    }
+    var props = ['color', 'backgroundColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor', 'outlineColor', 'textDecorationColor'];
+    doc.querySelectorAll('*').forEach(function (el) {
+      var cs = win.getComputedStyle(el);
+      if (/gradient/i.test(cs.backgroundImage)) el.style.backgroundImage = 'none';
+      props.forEach(function (p) { var v = cs[p]; if (v && v !== 'transparent' && !/^rgba?\(/.test(v)) { var c = toRgb(v); if (c) el.style[p] = c; } });
+      ['boxShadow', 'textShadow'].forEach(function (p) { var v = cs[p]; if (v && v !== 'none' && bad.test(v)) el.style[p] = 'none'; });
+    });
+  }
+
+
+  function exportPdf(btn) {
+    var label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Gerando PDF...'; say('Gerando o PDF. Pode levar alguns segundos.', false, true);
+    if (!window.html2canvas) { btn.disabled = false; btn.textContent = label; say('Não foi possível carregar o gerador de PDF.', true); return; }
+    window.scrollTo(0, 0);
+    var rootTop = root.getBoundingClientRect().top, h = Math.max(root.scrollHeight, 1);
+    var scale = Math.min(1.6, 14000 / h);
+    var breaks = [];
+    root.querySelectorAll('h2, .card, .kpi, .gauge-card, .stage-tabs, table').forEach(function (el) {
+      var top = (el.getBoundingClientRect().top - rootTop) * scale; if (top > 4) breaks.push(top);
+    });
+    breaks.sort(function (a, b) { return a - b; });
+    var bg = getComputedStyle(document.body).backgroundColor;
+    if (!bg || /rgba\(0, 0, 0, 0\)|transparent/.test(bg)) bg = '#ffffff';
+    return window.html2canvas(root, {
+      scale: scale, backgroundColor: bg, useCORS: true, logging: false, windowWidth: Math.max(root.scrollWidth, 1100),
+      ignoreElements: function (el) { return el.classList && (el.classList.contains('pdfbtn') || el.classList.contains('pdfmsg') || el.id === 'dash-topbar' || el.id === 'dash-err' || el.classList.contains('tip')); },
+      onclone: function (doc) {
+        doc.querySelectorAll('.scroll, .tablewrap').forEach(function (e) { e.style.maxHeight = 'none'; e.style.overflow = 'visible'; });
+        sanitize(doc);
+      }
+    }).then(function (canvas) {
+      var PW = 842, PH = 595, M = 24, cw = canvas.width, ch = canvas.height;
+      var pageH = Math.floor(((PH - 2 * M) / (PW - 2 * M)) * cw), y = 0, jobs = [];
+      while (y < ch - 2) {
+        var end = Math.min(y + pageH, ch);
+        if (end < ch) {
+          var cand = breaks.filter(function (b) { return b > y + pageH * 0.45 && b <= end; });
+          if (cand.length) end = Math.floor(cand[cand.length - 1]);
+        }
+        var seg = document.createElement('canvas'); seg.width = cw; seg.height = end - y;
+        var ctx = seg.getContext('2d'); ctx.fillStyle = bg; ctx.fillRect(0, 0, cw, seg.height);
+        ctx.drawImage(canvas, 0, y, cw, end - y, 0, 0, cw, end - y);
+        jobs.push(toBlob(seg).then(function (b) { return b.arrayBuffer(); }).then((function (w, hh) { return function (buf) { return { jpeg: new Uint8Array(buf), w: w, h: hh }; }; })(cw, end - y)));
+        y = end;
+      }
+      return Promise.all(jobs);
+    }).then(function (pages) {
+      return saveFile(buildPdf(pages, 842, 595, 24), fileName());
+    }).then(function (how) {
+      say(how === 'claude' ? 'PDF enviado para salvar.' : 'PDF gerado. Verifique a pasta de downloads.', false);
+    }).catch(function (e) {
+      console.error(e);
+      var code = e && e.code;
+      if (code === 'declined') say('Download cancelado.', false);
+      else say('Não foi possível gerar o PDF: ' + ((e && e.message) || e), true);
+    }).then(function () { btn.disabled = false; btn.textContent = label; });
+  }
+
+  function addButton() {
+    if (document.querySelector('.pdfbtn')) return;
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'pdfbtn'; btn.textContent = 'Exportar PDF';
+    btn.setAttribute('aria-label', 'Exportar o dashboard em PDF');
+    btn.addEventListener('click', function () { exportPdf(btn); });
+    var mast = document.querySelector('.mast');
+    if (mast) mast.appendChild(btn); else { btn.className += ' fixed'; document.body.appendChild(btn); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addButton); else addButton();
+})();
+</script>
+
+</body>
+</html>

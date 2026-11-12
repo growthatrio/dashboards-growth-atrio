@@ -1,0 +1,17 @@
+{
+  "functions": {
+    "api/*.py": { "maxDuration": 60, "includeFiles": "private/**" }
+  },
+  "rewrites": [
+    { "source": "/menu", "destination": "/api/page?d=menu" },
+    { "source": "/travel", "destination": "/api/page?d=travel" },
+    { "source": "/growth", "destination": "/api/page?d=growth" }
+  ],
+  "headers": [
+    { "source": "/(.*)", "headers": [
+      { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "Referrer-Policy", "value": "same-origin" }
+    ] }
+  ]
+}
