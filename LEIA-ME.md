@@ -1,4 +1,4 @@
-# Dashboards Atrio (Travel Week e Growth Hotéis)
+# Dashboards Atrio (Growth Atrio, Growth Hotéis e Growth Travel Week)
 
 Versão para a equipe dos dashboards criados no Claude. Acesso só para quem estiver na lista, com e-mail e senha.
 Os dados vêm da Nekt, consultados pelo servidor. A chave da Nekt nunca vai para o navegador.
@@ -26,4 +26,3 @@ Os dados vêm da Nekt, consultados pelo servidor. A chave da Nekt nunca vai para
 - Cada dado é guardado por 10 minutos no servidor para não consultar a Nekt toda hora.
 - O plano gratuito da Vercel é só para testes. Para uso da empresa, use o plano Pro.
 - Se algum bloco mostrar "Falha ao carregar", o motivo aparece no canto inferior esquerdo da tela.
-

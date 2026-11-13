@@ -7,7 +7,7 @@ SESSION_SECONDS = 12 * 3600
 COOKIE = 'sess'
 _CACHE = {}          # (dashboard, dataset, params) -> (expira, resposta)
 CACHE_SECONDS = 600
-DASHBOARDS = {'travel': 'Dashboard Travel Week', 'growth': 'Dashboard Growth Hotéis'}
+DASHBOARDS = {'atrio': 'Growth Atrio', 'growth': 'Growth Hotéis', 'travel': 'Growth Travel Week'}
 
 
 # ---------- usuários e sessão
@@ -70,15 +70,23 @@ def cookie_header(value, max_age):
 
 
 # ---------- consultas
-def load_defs(name):
+def _load(name):
     if name not in DASHBOARDS:
         raise KeyError('dashboard desconhecido')
     with open(os.path.join(ROOT, 'private', 'datasets', name + '.json'), encoding='utf-8') as f:
-        return json.load(f)['datasets']
+        return json.load(f)
+
+
+def load_defs(name):
+    return _load(name)['datasets']
+
+
+def load_statics(name):
+    return _load(name).get('statics', {})
 
 
 _DATE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
-_ENUMS = {'platform': {'Meta Ads', 'Google Ads'}, 'etapa': {'todo', 'pre', 'esquenta', 'tw', 'ressaca'}}
+_ENUMS = {'platform': {'Meta Ads', 'Google Ads', 'LinkedIn Ads'}, 'etapa': {'todo', 'pre', 'esquenta', 'tw', 'ressaca'}}
 
 
 def _literal(name, value):
@@ -137,6 +145,9 @@ def run_nekt(sql):
 
 
 def dataset(name, ds, params):
+    statics = load_statics(name)
+    if ds in statics:
+        return {'status': 'succeeded', 'rows': statics[ds]}
     defs = load_defs(name)
     if ds not in defs:
         raise KeyError('dataset desconhecido')

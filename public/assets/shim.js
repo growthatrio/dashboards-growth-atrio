@@ -74,6 +74,7 @@
       Object.keys(p).forEach(function (k) { var v = p[k] === '' ? null : p[k]; if ((params[k] == null ? null : params[k]) !== (v == null ? null : v)) { changed.push(k); if (v == null) delete params[k]; else params[k] = v; } });
       if (changed.length) { refetch(changed); notify(); }
     },
+    setLink: function (name) { try { history.replaceState(null, '', '#' + (name || '')); } catch (e) {} },
     resetParams: function () { var changed = Object.keys(params); params = {}; if (changed.length) { refetch(changed); notify(); } }
   };
 
@@ -84,7 +85,11 @@
     var err = document.createElement('div'); err.id = 'dash-err'; document.body.appendChild(err);
     fetch('/api/manifest?d=' + encodeURIComponent(DASH), { credentials: 'same-origin' })
       .then(function (r) { if (r.status === 401) { location.href = '/'; throw new Error('401'); } return r.json(); })
-      .then(function (m) { manifest = m.datasets || {}; started = true; refetch(null); notify(); })
+      .then(function (m) {
+        manifest = m.datasets || {};
+        (m.statics || []).forEach(function (id) { manifest[id] = []; loaders[id] = { fn: function (x) { return { rows: x.answer.rows || [], columns: [], cut: false }; } }; });
+        started = true; refetch(null); notify();
+      })
       .catch(function (e) { err.style.display = 'block'; err.innerHTML = '<b>Não foi possível iniciar.</b> ' + String(e && e.message || e); });
   }
   if (document.readyState === 'complete') setTimeout(start, 0); else window.addEventListener('load', start);

@@ -12,7 +12,7 @@ class handler(BaseHTTPRequestHandler):
                 return _lib.send(self, 401, {'error': 'não autenticado'})
             name = (parse_qs(urlparse(self.path).query).get('d') or [''])[0]
             defs = _lib.load_defs(name)
-            return _lib.send(self, 200, {'datasets': {k: v['params'] for k, v in defs.items()}})
+            return _lib.send(self, 200, {'datasets': {k: v['params'] for k, v in defs.items()}, 'statics': list(_lib.load_statics(name))})
         except KeyError:
             return _lib.send(self, 404, {'error': 'dashboard desconhecido'})
         except Exception as e:
