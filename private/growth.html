@@ -76,6 +76,34 @@
 .ai [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
 .ai [hidden] { display: none !important; }
 @media (prefers-reduced-motion: no-preference) { .ai .hb .fi { transition: width var(--cds-dur-slow) var(--cds-ease-out); } }
+.ai .subtabs { display: flex; gap: 8px; margin: 4px 0 6px; flex-wrap: wrap; }
+.ai .subtab { font: inherit; display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--color-border-line); background: transparent; color: var(--color-fg); cursor: pointer; font-weight: 600; }
+.ai .subtab:hover { border-color: var(--b-gold); }
+.ai .subtab[aria-selected=true] { background: var(--b-gold); border-color: var(--b-gold); color: #000; }
+.ai .subtab:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
+.ai .chart { position: relative; }
+.ai .chart-badge { position: absolute; top: 0; right: 0; z-index: 2; text-align: right; background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 8px; padding: 4px 10px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.25; }
+.ai .chart-badge b { display: block; font-size: 1.15rem; color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.ai table.posts { width: 100%; border-collapse: collapse; }
+.ai table.posts td, .ai table.posts th { vertical-align: top; padding: 10px 8px; }
+.ai table.posts td.tema { min-width: 16rem; max-width: 26rem; white-space: normal; }
+.ai .p-title { display: block; font-weight: 700; color: var(--color-fg); text-decoration: none; margin-bottom: 2px; }
+.ai a.p-title:hover { text-decoration: underline; color: var(--b-gold); }
+.ai .p-cap { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.4; }
+.ai .thumb { width: 64px; height: 64px; border-radius: 8px; overflow: hidden; background: rgba(219, 155, 14, .14); border: 1px solid var(--color-border-line); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--color-fg-muted); text-align: center; }
+.ai .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ai .thumb.ph { padding: 4px; }
+.ai td.tc { width: 72px; }
+.ai .pager { display: flex; gap: 12px; align-items: center; justify-content: flex-end; margin-top: 10px; flex-wrap: wrap; }
+.ai .pager[hidden] { display: none; }
+.ai .ins-grid { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.ai .ins h3 { font-size: var(--cds-font-size-body); margin: 0 0 8px; }
+.ai .ins ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+.ai .ins li { line-height: 1.45; }
+.ai .ins-ok { border-top: 3px solid #2EA05A; }
+.ai .ins-opp { border-top: 3px solid var(--b-gold); }
+.ai .ins-mel { border-top: 3px solid #D64545; }
+.ai .p-hotel { font-size: var(--cds-font-size-caption); font-weight: 600; color: var(--b-gold); margin-bottom: 2px; }
 </style>
 <style>
 .ai .ch-h { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
@@ -189,15 +217,17 @@
       <button class="ctl" id="f-reset" type="button">Limpar filtros</button>
     </div>
     <div class="tb-row">
-      <label class="fld">Plataforma<select id="f-platform" aria-label="Plataforma"></select></label>
+      <label class="fld" id="w-platform">Plataforma<select id="f-platform" aria-label="Plataforma"></select></label>
       <label class="fld">Grupo de hotéis<select id="f-grupo" aria-label="Grupo de hotéis"></select></label>
       <label class="fld">Marca<select id="f-marca" aria-label="Marca"></select></label>
       <label class="fld">Hotel<input id="f-hotel" type="search" list="dl-hotel" placeholder="Digite ou escolha" autocomplete="off" aria-label="Hotel" data-source="filter_hotels"><datalist id="dl-hotel"></datalist></label>
       <label class="fld">Agência<select id="f-agencia" aria-label="Agência"></select></label>
-      <label class="fld">Nome da campanha (contém)<input id="f-campaign" type="search" list="dl-campaign" placeholder="Ex.: Travel Week" autocomplete="off" aria-label="Nome da campanha (contém)" data-source="filter_campaigns"><datalist id="dl-campaign"></datalist></label>
+      <label class="fld" id="w-campaign">Nome da campanha (contém)<input id="f-campaign" type="search" list="dl-campaign" placeholder="Ex.: Travel Week" autocomplete="off" aria-label="Nome da campanha (contém)" data-source="filter_campaigns"><datalist id="dl-campaign"></datalist></label>
     </div>
   </div>
   <div class="chips" id="chips" aria-live="polite" hidden></div>
+  <div class="subtabs" id="main-tabs" role="tablist" aria-label="Seções do dashboard"><button type="button" role="tab" class="subtab" id="tab-perf" aria-selected="true">Performance</button><button type="button" role="tab" class="subtab" id="tab-org" aria-selected="false">Social Orgânico</button></div>
+  <div id="perf">
   <nav class="sec-nav" aria-label="Seções do dashboard"><button type="button" data-go="geral">Métricas gerais</button><button type="button" data-go="funil">Funil</button><button type="button" data-go="invest">Evolução</button><button type="button" data-go="hoteis">Hotéis e marcas</button><button type="button" data-go="campanhas">Campanhas</button><button type="button" data-go="anuncios">Anúncios</button><button type="button" data-go="alertas">Alertas</button><button type="button" data-go="insights">Insights</button><button type="button" data-go="obs">Observações</button></nav>
   <p class="note">Nos campos de hotel e de campanha, digite parte do nome e pressione Enter (busca por "contém") ou escolha na lista. O período padrão são os últimos 30 dias, e a comparação usa o período imediatamente anterior, com o mesmo número de dias. Dados do Meta e do Google até <b data-source="meta_info" data-field="ate" data-row="0" data-fmt="txt">—</b>.</p>
 
@@ -246,6 +276,37 @@
     <li>Campanhas ativas: as que tiveram investimento nos 2 últimos dias com dados de cada plataforma. Alertas e insights consideram só essas campanhas. Como os dados sincronizam uma vez por semana, "ativa" vale para o último dia sincronizado.</li>
     <li>Alcance é a soma dos dias e dos anúncios, então uma pessoa pode ser contada mais de uma vez.</li>
   </ul>
+</div>
+  <div id="org" hidden>
+  
+    <p class="note">Instagram dos hotéis e marcas com conta conectada (LK Design, Grand Mercure SP Pinheiros, Xtay, Aéra Copacabana e Montissi), nos filtros de grupo, marca, hotel e agência. O filtro de data vale para a aba, exceto seguidores totais e demografia, que são o retrato mais recente. Os filtros de plataforma e campanha não se aplicam aqui.</p>
+    <h2 id="ig-geral">Alcance, seguidores e engajamento (Instagram)</h2>
+    <div class="grid">
+      <div class="card kpi"><span class="l">Seguidores</span><b class="v" data-source="ig_h_followers" data-field="seguidores" data-row="0" data-fmt="int">—</b>
+        <span class="l">Saldo no período (novos menos quem deixou de seguir): <b data-source="ig_h_totals" data-field="saldo_seguidores" data-row="0" data-fmt="int">—</b></span><span class="cmp-l"><b data-source="cmp_ig" data-field="saldo_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_ig" data-field="saldo_prev" data-row="0" data-fmt="int">—</b></span></span></div>
+      <div class="card kpi"><span class="l">Alcance (soma dos dias)</span><b class="v" data-source="ig_h_totals" data-field="alcance_soma_diaria" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_ig" data-field="alc_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_ig" data-field="alc_prev" data-row="0" data-fmt="int">—</b></span></span><span class="l">Contas alcançadas em cada dia, somadas.</span></div>
+      <div class="card kpi"><span class="l">Visualizações</span><b class="v" data-source="ig_h_totals" data-field="visualizacoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_ig" data-field="vis_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_ig" data-field="vis_prev" data-row="0" data-fmt="int">—</b></span></span></div>
+      <div class="card kpi"><span class="l">Interações</span><b class="v" data-source="ig_h_totals" data-field="interacoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_ig" data-field="int_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_ig" data-field="int_prev" data-row="0" data-fmt="int">—</b></span></span><span class="l">Taxa de engajamento (interações ÷ alcance): <b data-source="ig_h_totals" data-field="taxa_engajamento" data-row="0" data-fmt="pct2">—</b></span><span class="cmp-l"><b data-source="cmp_ig" data-field="taxa_pp" data-row="0" data-fmt="pp">—</b> <span class="l">vs. anterior: <b data-source="cmp_ig" data-field="taxa_prev" data-row="0" data-fmt="pct2">—</b></span></span></div>
+      <div class="card kpi"><span class="l">Cliques (link do perfil e site)</span><b class="v" data-source="ig_h_totals" data-field="cliques" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_ig" data-field="cli_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_ig" data-field="cli_prev" data-row="0" data-fmt="int">—</b></span></span><span class="l">Visitas ao perfil: <b data-source="ig_h_totals" data-field="visitas_perfil" data-row="0" data-fmt="int">—</b></span><span class="cmp-l"><b data-source="cmp_ig" data-field="vp_delta" data-row="0" data-fmt="delta">—</b> <span class="l">visitas, anterior: <b data-source="cmp_ig" data-field="vp_prev" data-row="0" data-fmt="int">—</b></span></span></div>
+    </div>
+    <div class="grid2" style="margin-top: var(--cds-gap-md)">
+      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">O Instagram não separa seguidores orgânicos e pagos.</p></div></div><div class="chart" id="ch-ig-fol" data-source="ig_h_followers_daily ig_h_followers"></div></div>
+      <div class="card"><div class="ch-h"><div><h3>Alcance por dia</h3><p class="note">Contas únicas alcançadas em cada dia.</p></div></div><div class="chart" id="ch-ig-reach" data-source="ig_h_daily"></div></div>
+    </div>
+    <h2 id="ig-demo">Quem segue a conta (insights demográficos)</h2>
+    <div class="grid2">
+      <div class="card"><h3>Faixa etária</h3><div id="hb-ig-idade" data-source="ig_h_demo_idade"></div></div>
+      <div class="card"><h3>Gênero</h3><div id="hb-ig-genero" data-source="ig_h_demo_genero"></div></div>
+      <div class="card"><h3>Cidades</h3><div id="hb-ig-cidade" data-source="ig_h_demo_cidade"></div></div>
+      <div class="card"><h3>Países</h3><div id="hb-ig-pais" data-source="ig_h_demo_pais"></div></div>
+    </div>
+    <h2 id="ig-posts">Principais posts</h2>
+    <div class="card"><p class="note">Posts do período com mais alcance, de 10 em 10. O tema é um título resumido da legenda; a miniatura vem do Instagram e pode não aparecer quando o link da imagem expira.</p><div id="posts-ig" data-source="ig_h_posts"></div></div>
+    <h2 id="ig-ins">Insights</h2>
+    <p class="note">Gerados automaticamente a partir dos posts do período filtrado.</p>
+    <div id="ins-ig" data-source="ig_h_posts ig_h_totals"></div>
+  
+  </div>
 <script>
 dash.loader('filter_hotels', {
   description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
@@ -494,6 +555,136 @@ dash.loader('inv_prev', {
     return { columns: cols, rows, cut: !!a.data_truncated };
   },
 });
+dash.loader('ig_h_totals', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_totals_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_daily', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "serie"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_followers_daily', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "serie"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_followers', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_posts', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["chave", "hotel", "legenda", "formato", "data_post", "thumb", "permalink"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_demo_idade', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["rotulo"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_demo_genero', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["rotulo"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_demo_cidade', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["rotulo"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_demo_pais', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["rotulo"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
 const $ = (s) => document.querySelector(s);
 const PAL = {
   light: ['#DB9B0E', '#1F1F1F', '#A5ACAD', '#8A5A00', '#F0CE7A', '#5B6466', '#D9D2C0', '#7A6A4F'],
@@ -654,6 +845,232 @@ function lineChart(el, rows, o) {
     })
     .on('mouseleave', () => { dot.attr('display', 'none'); hideTip(el); });
 }
+
+const PLATCOL = { 'Google Ads': '#DB9B0E', 'LinkedIn Ads': '#2F7FD0', 'Meta Ads': '#8E5CD9' };
+const AICOL = { ChatGPT: '#10A37F', Perplexity: '#20808D', Gemini: '#4285F4', Copilot: '#8E5CD9', Claude: '#D97757', Outros: '#A5ACAD' };
+function multiLine(el, rows, o) {
+  const w = el.clientWidth;
+  if (!w) return;
+  const prev = o.prev || null;
+  if (!rows.length && !(prev && prev.length)) { msgBox(el, 'Sem dados no filtro atual.'); return; }
+  el.replaceChildren();
+  const F = o.money ? FMT.brl : FMT.int;
+  const n = prev ? windowN() : 0;
+  const names = [...new Set(rows.map((r) => r[o.s]))];
+  const series = names.map((nm, i) => ({ name: nm, color: (o.colors && o.colors[nm]) || COL[i % 8], pts: rows.filter((r) => r[o.s] === nm).map((r) => ({ d: parseDay(r[o.x]), k: r[o.x], v: r[o.y] || 0 })).sort((a, b) => a.d - b.d) }));
+  const tot = new Map(); rows.forEach((r) => tot.set(r[o.x], (tot.get(r[o.x]) || 0) + (r[o.y] || 0)));
+  const ptot = new Map(); if (prev) prev.forEach((r) => { const k = addDays(r[o.x], n); ptot.set(k, (ptot.get(k) || 0) + (r[o.y] || 0)); });
+  const pp = [...ptot].map(([k, v]) => ({ d: parseDay(k), k, v })).sort((a, b) => a.d - b.d);
+  const lg = document.createElement('div'); lg.className = 'legend';
+  series.forEach((s) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = s.color; sp.append(sw, document.createTextNode(s.name)); lg.append(sp); });
+  if (prev) { const b = document.createElement('span'); const s2 = document.createElement('span'); s2.className = 'sw'; s2.style.background = 'transparent'; s2.style.border = '2px dashed var(--color-fg)'; s2.style.height = '0'; s2.style.borderRadius = '0'; b.append(s2, document.createTextNode('Total do período anterior')); lg.append(b); }
+  el.append(lg);
+  const all = [...series.flatMap((s) => s.pts), ...pp];
+  const H = 240, m = { t: 8, r: 10, b: 22, l: o.money ? 56 : 40 }, iw = w - m.l - m.r, ih = H - m.t - m.b;
+  const x = d3.scaleUtc(d3.extent(all, (p) => p.d), [0, iw]);
+  const y = d3.scaleLinear([0, d3.max(all, (p) => p.v) || 1], [ih, 0]).nice();
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${H}`).attr('width', '100%');
+  const g = svg.append('g').attr('transform', `translate(${m.l},${m.t})`);
+  y.ticks(4).forEach((tk) => {
+    g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', y(tk)).attr('y2', y(tk)).attr('stroke', 'var(--cds-chart-grid)');
+    g.append('text').attr('x', -6).attr('y', y(tk)).attr('dy', '0.32em').attr('text-anchor', 'end').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(F(tk));
+  });
+  x.ticks(6).forEach((tk) => g.append('text').attr('x', x(tk)).attr('y', ih + 15).attr('text-anchor', 'middle').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(fdate(tk)));
+  const ln = d3.line().x((p) => x(p.d)).y((p) => y(p.v));
+  if (pp.length) g.append('path').attr('d', ln(pp)).attr('fill', 'none').attr('stroke', 'var(--color-fg)').attr('stroke-width', 2).attr('stroke-dasharray', '5 4').attr('stroke-linejoin', 'round');
+  series.forEach((s) => { g.append('path').attr('d', ln(s.pts)).attr('fill', 'none').attr('stroke', s.color).attr('stroke-width', 2.5).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round'); if (s.pts.length === 1) g.append('circle').attr('cx', x(s.pts[0].d)).attr('cy', y(s.pts[0].v)).attr('r', 3.5).attr('fill', s.color); });
+  const days = [...new Set(series.flatMap((s) => s.pts.map((p) => p.k)))].sort();
+  const dd = days.map((k) => parseDay(k));
+  const bis = d3.bisector((d) => d).center;
+  const vl = g.append('line').attr('y1', 0).attr('y2', ih).attr('stroke', 'var(--color-fg-muted)').attr('stroke-dasharray', '3 3').attr('display', 'none');
+  g.append('rect').attr('width', iw).attr('height', ih).attr('fill', 'transparent')
+    .on('mousemove', (ev) => {
+      const [mx] = d3.pointer(ev);
+      const idx = bis(dd, x.invert(mx)); const k = days[idx]; if (!k) return;
+      vl.attr('display', null).attr('x1', x(dd[idx])).attr('x2', x(dd[idx]));
+      const lines = [{ text: fdate(dd[idx]) }];
+      series.forEach((s) => { const p = s.pts.find((q) => q.k === k); lines.push({ color: s.color, text: s.name + ': ' + (p ? F(p.v) : F(0)) }); });
+      if (series.length > 1) lines.push({ text: 'Total: ' + F(tot.get(k) || 0) });
+      if (prev) lines.push({ text: 'Total do período anterior: ' + (ptot.has(k) ? F(ptot.get(k)) : '—') });
+      showTip(el, ev, lines);
+    })
+    .on('mouseleave', () => { vl.attr('display', 'none'); hideTip(el); });
+}
+
+
+function stackBars(el, rows, o) {
+  const w = el.clientWidth;
+  if (!w) return;
+  const prev = o.prev || null;
+  if (!rows.length && !(prev && prev.length)) { msgBox(el, 'Sem dados no filtro atual.'); return; }
+  el.replaceChildren();
+  const F = o.money ? FMT.brl : FMT.int;
+  const n = prev ? windowN() : 0;
+  const order = o.colors ? Object.keys(o.colors) : [];
+  const keys = [...new Set(rows.map((r) => r[o.s]))].sort((a, b) => (order.indexOf(a) < 0 ? 99 : order.indexOf(a)) - (order.indexOf(b) < 0 ? 99 : order.indexOf(b)));
+  const colorOf = (k, i) => (o.colors && o.colors[k]) || COL[i % 8];
+  const ptot = new Map(); if (prev) prev.forEach((r) => { const k = addDays(r[o.x], n); ptot.set(k, (ptot.get(k) || 0) + (r[o.y] || 0)); });
+  const days = [...new Set([...rows.map((r) => r[o.x]), ...ptot.keys()])].sort();
+  const by = new Map(days.map((d) => [d, {}]));
+  rows.forEach((r) => { const m0 = by.get(r[o.x]); m0[r[o.s]] = (m0[r[o.s]] || 0) + (r[o.y] || 0); });
+  const stack = d3.stack().keys(keys).value((dd, k) => dd.v[k] || 0)(days.map((d) => ({ d, v: by.get(d) })));
+  const lg = document.createElement('div'); lg.className = 'legend';
+  keys.forEach((k, i) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = colorOf(k, i); sp.append(sw, document.createTextNode(k)); lg.append(sp); });
+  if (prev) { const b = document.createElement('span'); const s2 = document.createElement('span'); s2.className = 'sw'; s2.style.background = 'transparent'; s2.style.border = '2px dashed var(--color-fg)'; s2.style.height = '0'; s2.style.borderRadius = '0'; b.append(s2, document.createTextNode('Total do período anterior')); lg.append(b); }
+  el.append(lg);
+  if (o.badge) { const bd = mk('div', 'chart-badge'); bd.append(document.createTextNode(o.badgeLabel || 'Total de seguidores hoje'), mk('b', null, o.badge)); el.append(bd); }
+  const H = 240, m = { t: 8, r: 10, b: 22, l: o.money ? 56 : 40 }, iw = w - m.l - m.r, ih = H - m.t - m.b;
+  const x = d3.scaleBand(days, [0, iw]).padding(0.18);
+  const maxCur = stack.length ? d3.max(stack[stack.length - 1], (d) => d[1]) : 0;
+  const y = d3.scaleLinear([0, Math.max(maxCur || 0, d3.max([...ptot.values()]) || 0, 1)], [ih, 0]).nice();
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${H}`).attr('width', '100%');
+  const g = svg.append('g').attr('transform', `translate(${m.l},${m.t})`);
+  y.ticks(4).forEach((tk) => {
+    g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', y(tk)).attr('y2', y(tk)).attr('stroke', 'var(--cds-chart-grid)');
+    g.append('text').attr('x', -6).attr('y', y(tk)).attr('dy', '0.32em').attr('text-anchor', 'end').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(F(tk));
+  });
+  const step = Math.max(1, Math.ceil(days.length / 7));
+  days.forEach((d, i) => { if (i % step === 0) g.append('text').attr('x', x(d) + x.bandwidth() / 2).attr('y', ih + 15).attr('text-anchor', 'middle').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(fdate(parseDay(d))); });
+  stack.forEach((layer, i) => {
+    g.selectAll(null).data(layer).join('rect').attr('x', (d) => x(d.data.d)).attr('y', (d) => y(d[1])).attr('width', x.bandwidth()).attr('height', (d) => Math.max(0, y(d[0]) - y(d[1]))).attr('fill', colorOf(keys[i], i));
+  });
+  if (prev) {
+    const pts = days.filter((d) => ptot.has(d)).map((d) => [x(d) + x.bandwidth() / 2, y(ptot.get(d))]);
+    if (pts.length) g.append('path').attr('d', d3.line()(pts)).attr('fill', 'none').attr('stroke', 'var(--color-fg)').attr('stroke-width', 2).attr('stroke-dasharray', '5 4').attr('stroke-linejoin', 'round');
+  }
+  g.append('rect').attr('width', iw).attr('height', ih).attr('fill', 'transparent')
+    .on('mousemove', (ev) => {
+      const [mx] = d3.pointer(ev);
+      const idx = Math.max(0, Math.min(days.length - 1, Math.floor(mx / x.step())));
+      const d = days[idx]; const v = by.get(d);
+      const lines = [{ text: fdate(parseDay(d)) }];
+      keys.forEach((k, i) => lines.push({ color: colorOf(k, i), text: k + ': ' + F(v[k] || 0) }));
+      lines.push({ text: 'Total: ' + F(keys.reduce((s, k) => s + (v[k] || 0), 0)) });
+      if (prev) lines.push({ text: 'Total do período anterior: ' + (ptot.has(d) ? F(ptot.get(d)) : '—') });
+      showTip(el, ev, lines);
+    })
+    .on('mouseleave', () => hideTip(el));
+}
+
+const PAUTAS = {};
+const mk = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+function autoTitle(txt) {
+  let s = String(txt || '').replace(/https?:\/\/\S+/g, '').replace(/@\[[^\]]*\]\([^)]*\)/g, '').replace(/[#@]\S+/g, '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1D400}-\u{1D7FF}]/gu, '').replace(/\s+/g, ' ').trim();
+  if (!s) return 'Sem legenda';
+  const first = s.split(/(?<=[.!?])\s/)[0];
+  const t = first.length > 64 ? first.slice(0, 61).replace(/\s+\S*$/, '') + '…' : first;
+  return t.replace(/[.:]$/, '');
+}
+const pautaOf = (r) => PAUTAS[String(r.chave).slice(-8)] || autoTitle(r.legenda);
+const clampCap = (s, n) => { const t = String(s || '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t; };
+function thumbOf(r, li) {
+  const box = mk('div', 'thumb');
+  const ph = () => { box.classList.add('ph'); box.textContent = li ? 'in' : (r.formato || 'Post'); };
+  if (!li && r.thumb) {
+    const im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.referrerPolicy = 'no-referrer'; im.src = r.thumb;
+    im.onerror = () => { im.remove(); ph(); };
+    box.append(im);
+  } else ph();
+  return box;
+}
+const postsPage = {};
+function renderPosts(sel, rows, kind, srcId) {
+  const el = $(sel); if (!el) return;
+  if (!rows) { if (failed(srcId)) failBox(el); return; }
+  if (!rows.length) { msgBox(el, 'Sem posts no período filtrado.'); return; }
+  const li = kind === 'li', per = 10, pages = Math.ceil(rows.length / per);
+  const pg = Math.min(postsPage[sel] || 1, pages); postsPage[sel] = pg;
+  const cols = li
+    ? [['Formato', 't'], ['Data', 't'], ['Impressões'], ['Alcance'], ['Cliques'], ['Curtidas'], ['Coment.'], ['Compart.'], ['Engaj.']]
+    : [['Formato', 't'], ['Data', 't'], ['Alcance'], ['Curtidas'], ['Coment.'], ['Salvos'], ['Compart.'], ['Engaj.']];
+  const tbl = mk('table', 'posts');
+  const hr = mk('tr'); hr.append(mk('th', 't', ''), mk('th', 't', 'Tema e legenda')); cols.forEach(([c, k]) => hr.append(mk('th', k || '', c)));
+  const thd = mk('thead'); thd.append(hr); tbl.append(thd);
+  const tb = mk('tbody');
+  rows.slice((pg - 1) * per, pg * per).forEach((r) => {
+    const tr = mk('tr');
+    const c0 = mk('td', 'tc'); c0.append(thumbOf(r, li));
+    const c1 = mk('td', 't tema');
+    const ttl = r.permalink ? Object.assign(mk('a', 'p-title', pautaOf(r)), { href: r.permalink, target: '_blank', rel: 'noopener' }) : mk('div', 'p-title', pautaOf(r));
+    const cap = mk('div', 'p-cap', clampCap(r.legenda, 190)); cap.title = String(r.legenda || '');
+    c1.append(ttl);
+    if (r.hotel) c1.append(mk('div', 'p-hotel', r.hotel));
+    c1.append(cap);
+    tr.append(c0, c1, mk('td', 't', r.formato || '—'), mk('td', 't', FMT.date(r.data_post)));
+    const nums = li ? [r.impressoes, r.alcance, r.cliques, r.curtidas, r.comentarios, r.compartilhamentos] : [r.alcance, r.curtidas, r.comentarios, r.salvos, r.compartilhamentos];
+    nums.forEach((v) => tr.append(mk('td', '', FMT.int(v))));
+    tr.append(mk('td', '', FMT.pct2(r.engajamento)));
+    tb.append(tr);
+  });
+  tbl.append(tb);
+  const wrap = mk('div', 'scroll'); wrap.append(tbl);
+  const pager = mk('div', 'pager');
+  const mkb = (txt, d, dis) => { const b = mk('button', 'ctl', txt); b.type = 'button'; b.disabled = dis; b.addEventListener('click', () => { postsPage[sel] = pg + d; draw(); }); return b; };
+  pager.append(mkb('‹ Anterior', -1, pg <= 1), mk('span', 'note', 'Página ' + pg + ' de ' + pages + ' · ' + ((pg - 1) * per + 1) + '–' + Math.min(pg * per, rows.length) + ' de ' + rows.length), mkb('Próxima ›', 1, pg >= pages));
+  pager.hidden = rows.length <= per;
+  el.replaceChildren(wrap, pager);
+}
+const CATS = [
+  ['Campanhas e ofertas', /travel week|black|promo[çc][ãa]o|oferta|desconto|di[áa]ria|reserve|pacote/i],
+  ['Gastronomia', /caf[ée]|restaurante|gastronom|brunch|jantar|almo[çc]o|drink|menu|chef|\bbar\b|coquetel/i],
+  ['Experiência e estrutura', /spa\b|piscina|academia|rooftop|su[ií]te|quarto|vista|experi[êe]ncia|h[óo]spede|wellness|golfe|lazer/i],
+  ['Eventos e celebrações', /casamento|evento|corporativo|reuni[ãa]o|celebra|anivers|natal|ano novo|p[áa]scoa|dia d[oa]s/i],
+  ['Destino e turismo', /destino|passeio|turismo|cidade|praia|serra|roteiro|o que fazer|copacabana|florian|rancho queimado/i],
+  ['Institucional e novidades', /inaugur|novidade|abre |chega|pr[êe]mio|ranking|parceria|nossa equipe|nosso time/i],
+];
+const catOf = (r) => { const tx = pautaOf(r) + ' ' + String(r.legenda || '').slice(0, 220); const c = CATS.find(([, re]) => re.test(tx)); return c ? c[0] : 'Outros temas'; };
+const DIAS = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+function buildInsights(posts, ctx) {
+  const out = [];
+  const add = (grupo, texto) => out.push({ grupo, texto });
+  const sample = posts.filter((r) => (Number(ctx.base(r)) || 0) > 0);
+  if (sample.length < 3) { add('mel', 'Poucos posts no período filtrado para gerar insights. Amplie o período.'); return out; }
+  const eng = (r) => Number(r.engajamento) || 0, bs = (r) => Number(ctx.base(r)) || 0;
+  const avg = (a, f) => (a.length ? a.reduce((s, r) => s + f(r), 0) / a.length : 0);
+  const pc = (v) => FMT.pct2(v);
+  const groupBy = (a, kf) => { const m = new Map(); a.forEach((r) => { const k = kf(r); if (!m.has(k)) m.set(k, []); m.get(k).push(r); }); return [...m].map(([k, rs]) => ({ k, n: rs.length, eng: avg(rs, eng), base: avg(rs, bs) })); };
+  const top = [...sample].sort((a, b) => eng(b) - eng(a)).slice(0, 3);
+  top.forEach((r) => add('ok', '"' + pautaOf(r) + '" (' + (r.formato || 'post') + ', ' + FMT.date(r.data_post) + '): engajamento de ' + pc(eng(r)) + ' e ' + FMT.int(bs(r)) + ' ' + ctx.baseLabel + '. Vale repetir esse ângulo e formato.'));
+  const fm = groupBy(sample, (r) => r.formato || 'Post').filter((g) => g.n >= 2).sort((a, b) => b.eng - a.eng);
+  if (fm.length >= 2) {
+    const b = fm[0], w = fm[fm.length - 1];
+    add('ok', 'Formato com melhor engajamento médio: ' + b.k + ' (' + pc(b.eng) + ', ' + b.n + ' posts). Priorize esse formato nas pautas principais.');
+    add('opp', 'O formato ' + w.k + ' tem engajamento médio de ' + pc(w.eng) + ', menor que o de ' + b.k + '. Teste ' + b.k + ' para os mesmos temas, ou revise o gancho e a primeira linha.');
+  }
+  const ct = groupBy(sample, catOf).filter((g) => g.n >= 2).sort((a, b) => b.eng - a.eng);
+  if (ct.length >= 2) {
+    add('ok', 'Tema que mais engaja: ' + ct[0].k + ' (' + pc(ct[0].eng) + ' de engajamento médio em ' + ct[0].n + ' posts). Repita com novas pautas.');
+    const low = ct[ct.length - 1];
+    add('opp', 'O tema ' + low.k + ' tem o menor engajamento médio (' + pc(low.eng) + ', ' + low.n + ' posts). Mude a abordagem ou reduza a frequência.');
+    const few = ct.filter((g) => g.n <= 2 && g.eng > avg(sample, eng)).sort((a, b) => b.eng - a.eng)[0];
+    if (few) add('opp', 'O tema ' + few.k + ' rendeu engajamento acima da média (' + pc(few.eng) + ') com poucos posts (' + few.n + '). Há espaço para publicar mais.');
+  }
+  const wd = groupBy(sample, (r) => new Date(r.data_post + 'T00:00:00Z').getUTCDay()).filter((g) => g.n >= 2).sort((a, b) => b.eng - a.eng);
+  if (wd.length >= 2) add('ok', 'Melhor dia para publicar: ' + DIAS[wd[0].k] + ' (engajamento médio de ' + pc(wd[0].eng) + ' em ' + wd[0].n + ' posts).');
+  const medBase = [...sample].map(bs).sort((a, b) => a - b)[Math.floor(sample.length / 2)], medEng = [...sample].map(eng).sort((a, b) => a - b)[Math.floor(sample.length / 2)];
+  const gap = sample.filter((r) => bs(r) >= medBase && eng(r) < medEng).sort((a, b) => bs(b) - bs(a)).slice(0, 2);
+  gap.forEach((r) => add('opp', '"' + pautaOf(r) + '" teve ' + FMT.int(bs(r)) + ' ' + ctx.baseLabel + ', acima da mediana, mas engajamento baixo (' + pc(eng(r)) + '). Adicione pergunta ou chamada para ação para converter o alcance em conversa.'));
+  const days = Math.max(1, (Math.max(...sample.map((r) => +new Date(r.data_post + 'T00:00:00Z'))) - Math.min(...sample.map((r) => +new Date(r.data_post + 'T00:00:00Z')))) / 86400000 + 1);
+  const perWeek = sample.length / (days / 7);
+  if (perWeek < 2) add('mel', 'Frequência de ' + perWeek.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' post(s) por semana no período. Uma cadência de 2 a 3 por semana ajuda a manter o alcance.');
+  else add('ok', 'Frequência de ' + perWeek.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' posts por semana no período, boa para manter o alcance.');
+  [...sample].sort((a, b) => eng(a) - eng(b)).slice(0, 2).forEach((r) => add('mel', 'Rever "' + pautaOf(r) + '" (' + (r.formato || 'post') + ', ' + FMT.date(r.data_post) + '): engajamento de ' + pc(eng(r)) + '. Teste outro gancho, imagem de capa ou horário.'));
+  if (ctx.extra) ctx.extra(add);
+  return out;
+}
+function renderInsights(sel, rows, srcId) {
+  const el = $(sel); if (!el) return;
+  if (!rows) { if (failed(srcId)) failBox(el); return; }
+  const groups = [['ok', 'O que deu certo e podemos replicar'], ['opp', 'Oportunidades'], ['mel', 'Melhorias']];
+  el.className = 'ins-grid';
+  el.replaceChildren(...groups.map(([k, title]) => {
+    const card = mk('div', 'card ins ins-' + k); card.append(mk('h3', null, title));
+    const ul = mk('ul'); rows.filter((r) => r.grupo === k).forEach((r) => ul.append(mk('li', null, r.texto)));
+    if (!ul.children.length) ul.append(mk('li', null, 'Sem destaques com os dados do período.'));
+    card.append(ul); return card;
+  }));
+}
+
 
 function hbars(el, rows, o) {
   if (!rows.length) { msgBox(el, 'Nenhum resultado para os filtros escolhidos. Campanhas novas só aparecem depois da próxima sincronização (domingo à noite).'); return; }
@@ -889,6 +1306,39 @@ function fillFilters() {
 }
 
 
+dash.calc('cmp_ig', {
+  inputs: ['ig_h_totals', 'ig_h_totals_prev'],
+  title: 'Comparação: Instagram',
+  description: 'Valores do período anterior e variação das métricas gerais do Instagram.',
+  fn: (t, tp) => {
+    const sumk = (a, k) => a.reduce((t, r) => t + (Number(r[k]) || 0), 0); const dlt = (c, p) => (p > 0 ? (c - p) / p : null); 
+    const c = t[0] || {}, p = tp[0] || {};
+    const pp = (a, b) => (a != null && b != null ? a - b : null);
+    return [{
+      saldo_prev: p.saldo_seguidores || 0, saldo_delta: dlt(c.saldo_seguidores || 0, p.saldo_seguidores || 0),
+      alc_prev: p.alcance_soma_diaria || 0, alc_delta: dlt(c.alcance_soma_diaria || 0, p.alcance_soma_diaria || 0),
+      vis_prev: p.visualizacoes || 0, vis_delta: dlt(c.visualizacoes || 0, p.visualizacoes || 0),
+      int_prev: p.interacoes || 0, int_delta: dlt(c.interacoes || 0, p.interacoes || 0),
+      taxa_prev: p.taxa_engajamento ?? null, taxa_pp: pp(c.taxa_engajamento, p.taxa_engajamento),
+      cli_prev: p.cliques || 0, cli_delta: dlt(c.cliques || 0, p.cliques || 0),
+      vp_prev: p.visitas_perfil || 0, vp_delta: dlt(c.visitas_perfil || 0, p.visitas_perfil || 0),
+    }];
+  },
+});
+
+dash.calc('ig_h_insights', {
+  inputs: ['ig_h_posts', 'ig_h_totals'],
+  title: 'Insights do Instagram dos hotéis',
+  description: 'Oportunidades, melhorias e o que replicar, a partir dos posts do período e dos filtros.',
+  fn: (posts, tot) => buildInsights(posts, { base: (r) => r.alcance, baseLabel: 'de alcance', extra: (add) => {
+    const t0 = tot[0] || {};
+    if (t0.saldo_seguidores != null) add(t0.saldo_seguidores >= 0 ? 'ok' : 'mel', 'Saldo de seguidores no período: ' + FMT.int(t0.saldo_seguidores) + ' (novos menos quem deixou de seguir).');
+    const byHotel = new Map(); posts.forEach((r) => { if (!byHotel.has(r.hotel)) byHotel.set(r.hotel, []); byHotel.get(r.hotel).push(r); });
+    const rank = [...byHotel].filter(([, rs]) => rs.length >= 2).map(([h, rs]) => ({ h, n: rs.length, e: rs.reduce((s, r) => s + (Number(r.engajamento) || 0), 0) / rs.length })).sort((a, b) => b.e - a.e);
+    if (rank.length >= 2) { add('ok', 'Conta com melhor engajamento médio nos posts: ' + rank[0].h + ' (' + FMT.pct2(rank[0].e) + ' em ' + rank[0].n + ' posts). Vale compartilhar o que ela faz com as demais.'); const w = rank[rank.length - 1]; add('opp', w.h + ' tem o menor engajamento médio (' + FMT.pct2(w.e) + ' em ' + w.n + ' posts). Aplique os formatos e temas que funcionam nas melhores contas.'); }
+  } }),
+});
+
 const sumk = (a, k) => a.reduce((t, r) => t + (Number(r[k]) || 0), 0);
 dash.calc('cmp_perf', {
   inputs: ['kpi_total', 'kpi_prev', 'res_total', 'res_prev', 'inv_total', 'inv_prev'],
@@ -1031,7 +1481,31 @@ function timeChart(sel, id, idPrev, key, o) {
     stacked(el, bucketRows(rows, o, 0), { ...o, prev: prevRaw ? bucketRows(prevRaw, o, windowN()) : null, noShift: true, fx });
   });
 }
+
+const bars = (sel, id, lab) => chartOr($(sel), id, (rows) => hbars($(sel), rows, { l: lab || 'rotulo', v: 'seguidores' }));
+function showTab(name) {
+  tab = name;
+  $('#perf').hidden = name !== 'perf';
+  $('#org').hidden = name !== 'org';
+  $('#tab-perf').setAttribute('aria-selected', String(name === 'perf'));
+  $('#tab-org').setAttribute('aria-selected', String(name === 'org'));
+  $('#w-platform').hidden = name === 'org';
+  $('#w-campaign').hidden = name === 'org';
+  draw();
+}
+$('#tab-perf').addEventListener('click', () => showTab('perf'));
+$('#tab-org').addEventListener('click', () => showTab('org'));
+function drawOrg() {
+  if (tab !== 'org') return;
+  chartOr($('#ch-ig-fol'), 'ig_h_followers_daily', (rows) => { const tt = rowsOf('ig_h_followers'); stackBars($('#ch-ig-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Novos seguidores': '#DB9B0E' }, badge: tt && tt[0] ? FMT.int(tt[0].seguidores) : null }); });
+  chartOr($('#ch-ig-reach'), 'ig_h_daily', (rows) => stackBars($('#ch-ig-reach'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Alcance': '#DB9B0E' } }));
+  bars('#hb-ig-idade', 'ig_h_demo_idade'); bars('#hb-ig-genero', 'ig_h_demo_genero'); bars('#hb-ig-cidade', 'ig_h_demo_cidade'); bars('#hb-ig-pais', 'ig_h_demo_pais');
+  renderPosts('#posts-ig', rowsOf('ig_h_posts'), 'ig', 'ig_h_posts');
+  renderInsights('#ins-ig', rowsOf('ig_h_insights'), 'ig_h_insights');
+}
+
 function draw() {
+  drawOrg();
   applyTheme();
   fillFilters();
   renderChips();

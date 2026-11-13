@@ -77,8 +77,8 @@
 .ai [hidden] { display: none !important; }
 @media (prefers-reduced-motion: no-preference) { .ai .hb .fi { transition: width var(--cds-dur-slow) var(--cds-ease-out); } }
 
-.ai .kpi { padding: var(--cds-pad-lg); }
-.ai .kpi .v { font-size: clamp(2.25rem, 4.4vw, 3.4rem); line-height: 1.02; font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 6px; }
+.ai .kpi { padding: var(--cds-pad-md) var(--cds-pad-lg); }
+.ai .kpi .v { font-size: clamp(1.75rem, 2.5vw, 2.25rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.01em; margin: 6px 0 4px; }
 .ai .kpi > .l:first-child { font-size: var(--cds-font-size-body); font-weight: 600; color: var(--color-fg); }
 .ai .kpi .cmp-l { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 2px 0 10px; }
 .ai .kpi .cmp-l > b { padding: 2px 10px; border-radius: 999px; background: rgba(219, 155, 14, .16); }
@@ -93,6 +93,33 @@
 .ai .sec-nav .chip:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
 .ai .gap-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-body); line-height: 1.5; margin: 6px 0 0; }
 .ai tr.total td { font-weight: 700; border-top: 2px solid var(--color-border-line); }
+.ai .subtabs { display: flex; gap: 8px; margin: 4px 0 6px; flex-wrap: wrap; }
+.ai .subtab { font: inherit; display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--color-border-line); background: transparent; color: var(--color-fg); cursor: pointer; font-weight: 600; }
+.ai .subtab:hover { border-color: var(--b-gold); }
+.ai .subtab[aria-selected=true] { background: var(--b-gold); border-color: var(--b-gold); color: #000; }
+.ai .subtab:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
+.ai .chart { position: relative; }
+.ai .chart-badge { position: absolute; top: 0; right: 0; z-index: 2; text-align: right; background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: 8px; padding: 4px 10px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.25; }
+.ai .chart-badge b { display: block; font-size: 1.15rem; color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.ai table.posts { width: 100%; border-collapse: collapse; }
+.ai table.posts td, .ai table.posts th { vertical-align: top; padding: 10px 8px; }
+.ai table.posts td.tema { min-width: 16rem; max-width: 26rem; white-space: normal; }
+.ai .p-title { display: block; font-weight: 700; color: var(--color-fg); text-decoration: none; margin-bottom: 2px; }
+.ai a.p-title:hover { text-decoration: underline; color: var(--b-gold); }
+.ai .p-cap { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); line-height: 1.4; }
+.ai .thumb { width: 64px; height: 64px; border-radius: 8px; overflow: hidden; background: rgba(219, 155, 14, .14); border: 1px solid var(--color-border-line); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--color-fg-muted); text-align: center; }
+.ai .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ai .thumb.ph { padding: 4px; }
+.ai td.tc { width: 72px; }
+.ai .pager { display: flex; gap: 12px; align-items: center; justify-content: flex-end; margin-top: 10px; flex-wrap: wrap; }
+.ai .pager[hidden] { display: none; }
+.ai .ins-grid { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.ai .ins h3 { font-size: var(--cds-font-size-body); margin: 0 0 8px; }
+.ai .ins ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+.ai .ins li { line-height: 1.45; }
+.ai .ins-ok { border-top: 3px solid #2EA05A; }
+.ai .ins-opp { border-top: 3px solid var(--b-gold); }
+.ai .ins-mel { border-top: 3px solid #D64545; }
 </style>
 <style>
 .ai .ch-h { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
@@ -112,7 +139,6 @@
   <div class="bar" id="filtros">
     <label class="fld" id="w-platform">Plataforma de anúncio<select id="f-platform" aria-label="Plataforma de anúncio"></select></label>
     <label class="fld" id="w-campaign">Nome da campanha<select id="f-campaign" aria-label="Nome da campanha" data-source="filter_campaigns"></select></label>
-    <label class="fld" id="w-orgplat" hidden>Plataforma<select id="f-orgplat" aria-label="Plataforma orgânica"><option value="linkedin">LinkedIn</option><option value="instagram">Instagram</option></select></label>
     <div class="fld" id="w-date"><span id="dr-label">Período</span>
       <button class="ctl" id="dr-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="dr-label dr-btn">—</button>
       <div class="drp" id="dr-pop" role="dialog" aria-label="Selecionar período" hidden>
@@ -129,7 +155,7 @@
   </div>
 
   <section id="perf">
-    <p class="note" id="nota-escopo">O filtro de plataforma e campanha vale para investimento, campanhas e anúncios. O filtro de data vale também para o site. A comparação usa o período imediatamente anterior, com o mesmo número de dias. Leads, conversão e CAC usam os totais informados pela equipe e não mudam com o filtro.</p>
+    <p class="note" id="nota-escopo">O filtro de plataforma e campanha vale para investimento, campanhas e anúncios. O filtro de data vale também para o site. A comparação usa o período imediatamente anterior, com o mesmo número de dias. Leads, conversão e custo por conversão usam os totais informados pela equipe e não mudam com o filtro.</p>
     <nav class="sec-nav" aria-label="Seções do dashboard"><button type="button" class="chip" data-go="geral">Métricas</button><button type="button" class="chip" data-go="leads">Leads</button><button type="button" class="chip" data-go="investimento">Investimento e Tráfego</button><button type="button" class="chip" data-go="ai">AI Assistant</button><button type="button" class="chip" data-go="campanhas">Campanhas</button><button type="button" class="chip" data-go="anuncios">Principais anúncios</button></nav>
     <h2 id="geral">Métricas gerais</h2>
     <div class="grid">
@@ -160,7 +186,7 @@
         <span class="l">Leads divididos pelas sessões desde 21/10, quando o evento passou a ser medido corretamente.</span><span class="l">Sem comparação: totais informados pela equipe, medidos só desde 21/10.</span>
       </div>
       <div class="card kpi" id="kpi-cac">
-        <span class="l">CAC geral</span>
+        <span class="l">Custo por conversão</span>
         <b class="v" data-source="kpi_main" data-field="cac_geral" data-row="0" data-fmt="brl">—</b>
         <span class="l">Gasto desde 21/10 dividido por todos os leads.</span>
         <p class="note">Por lead de Novos Negócios: <b data-source="kpi_main" data-field="cac_nn" data-row="0" data-fmt="brl">—</b></p>
@@ -180,7 +206,7 @@
 
     <h2 id="investimento">Investimento e Tráfego</h2>
     <div class="grid2">
-      <div class="card"><div class="ch-h"><div><h3>Investimento por dia, por plataforma</h3><p class="note">Em reais. Cada plataforma tem a sua cor.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="spend"> Comparar com o período anterior</label></div><div class="chart" id="ch-spend" data-source="spend_daily spend_daily_prev"></div></div>
+      <div class="card"><div class="ch-h"><div><h3>Investimento por dia</h3><p class="note">Total investido por dia, em reais. Cada cor é uma plataforma.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="spend"> Comparar com o período anterior</label></div><div class="chart" id="ch-spend" data-source="spend_daily spend_daily_prev"></div></div>
       <div class="card"><div class="ch-h"><div><h3>Tráfego: sessões por dia</h3><p class="note">GA4, todos os canais.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="sessions"> Comparar com o período anterior</label></div><div class="chart" id="ch-sessions" data-source="ga_daily ga_daily_prev"></div></div>
     </div>
     <div class="grid2" style="margin-top:var(--cds-gap-md)">
@@ -201,10 +227,6 @@
           <thead><tr><th class="t" data-field="fonte">Assistente</th><th data-field="sessoes" data-fmt="int">Sessões</th><th data-field="participacao" data-fmt="pct">Participação</th></tr></thead><tbody></tbody>
         </table></div>
       </div>
-    </div>
-    <div class="grid2" style="margin-top:var(--cds-gap-md)">
-      <div class="card"><h3>Páginas referenciadas</h3><p class="gap-note">Ainda não disponível. O GA4 da Nekt traz as origens e as páginas em relatórios separados. Para ver quais páginas cada assistente envia, falta um relatório que cruze a origem com a página de entrada.</p></div>
-      <div class="card"><h3>Principais termos</h3><p class="gap-note">Os assistentes de IA não informam o que a pessoa perguntou, então o GA4 não registra os termos. O que dá para acompanhar é qual assistente enviou a visita e para qual página.</p></div>
     </div>
 
     <h2 id="campanhas">Campanhas</h2>
@@ -232,7 +254,7 @@
     </ul>
   </section>
 
-  <section id="org" hidden><div id="org-li" hidden></div><div id="org-ig" hidden></div></section>
+  <section id="org" hidden><div class="subtabs" role="tablist" aria-label="Rede social"><button type="button" role="tab" class="subtab" data-sub="li" aria-selected="true">LinkedIn</button><button type="button" role="tab" class="subtab" data-sub="ig" aria-selected="false">Instagram</button></div><div id="org-li" hidden></div><div id="org-ig" hidden></div></section>
 
   <template id="org-li-tpl">
     <p class="note">LinkedIn da Atrio. O filtro de data vale para a aba, exceto seguidores totais e demografia, que são o retrato mais recente.</p>
@@ -247,8 +269,8 @@
       <div class="card kpi"><span class="l">Taxa de engajamento</span><b class="v" data-source="li_totals" data-field="taxa_engajamento" data-row="0" data-fmt="pct2">—</b><span class="cmp-l"><b data-source="cmp_li" data-field="taxa_pp" data-row="0" data-fmt="pp">—</b> <span class="l">vs. anterior: <b data-source="cmp_li" data-field="taxa_prev" data-row="0" data-fmt="pct2">—</b></span></span><span class="l">Cliques, curtidas, comentários e compartilhamentos divididos pelas impressões.</span></div>
     </div>
     <div class="grid2" style="margin-top: var(--cds-gap-md)">
+      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">Orgânicos e pagos, em cores diferentes. O total de seguidores hoje aparece no gráfico.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="lifol"> Comparar com o período anterior</label></div><div class="chart" id="ch-li-fol" data-source="li_followers_daily li_followers_daily_prev li_followers_total"></div></div>
       <div class="card"><div class="ch-h"><div><h3>Alcance por dia</h3><p class="note">Pessoas únicas alcançadas em cada dia.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="lireach"> Comparar com o período anterior</label></div><div class="chart" id="ch-li-imp" data-source="li_daily li_daily_prev"></div></div>
-      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">Orgânicos e pagos.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="lifol"> Comparar com o período anterior</label></div><div class="chart" id="ch-li-fol" data-source="li_followers_daily li_followers_daily_prev"></div></div>
     </div>
     <h2 id="org-demo">Quem segue a página (demografia)</h2>
     <p class="note">Rótulos traduzidos dos códigos do LinkedIn; setores sem rótulo mapeado aparecem como Outros setores.</p>
@@ -259,12 +281,10 @@
       <div class="card"><h3>Porte da empresa (funcionários)</h3><div id="hb-por" data-source="li_demo_porte"></div></div>
     </div>
     <h2 id="org-posts">Principais posts</h2>
-    <div class="card">
-      <p class="note">Posts com mais impressões no período. A conexão do LinkedIn traz só as métricas: não entrega o texto nem a imagem do post, por isso não há miniatura nem legenda aqui. A data é a da última modificação.</p>
-      <div class="scroll"><table data-source="li_top_posts" data-row-key="chave" id="t-posts">
-        <thead><tr><th class="t" data-field="data_post" data-fmt="date">Data</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="alcance" data-fmt="int">Alcance</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="curtidas" data-fmt="int">Curtidas</th><th data-field="comentarios" data-fmt="int">Comentários</th><th data-field="compartilhamentos" data-fmt="int">Compart.</th><th data-field="engajamento" data-fmt="pct2">Engajamento</th></tr></thead><tbody></tbody>
-      </table></div>
-    </div>
+    <div class="card"><p class="note">Posts com mais impressões no período, de 10 em 10. O tema é um título resumido da legenda. O LinkedIn não entrega a imagem do post pela conexão da Nekt, por isso a miniatura é um ícone. A data é a da última modificação.</p><div id="posts-li" data-source="li_top_posts"></div></div>
+    <h2 id="org-ins-li">Insights</h2>
+    <p class="note">Gerados automaticamente a partir dos posts do período filtrado.</p>
+    <div id="ins-li" data-source="li_top_posts li_followers_gain li_totals"></div>
   </template>
 
   <template id="org-ig-tpl">
@@ -279,8 +299,8 @@
       <div class="card kpi"><span class="l">Cliques (link do perfil e site)</span><b class="v" data-source="ig_totals" data-field="cliques" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_ig" data-field="cli_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_ig" data-field="cli_prev" data-row="0" data-fmt="int">—</b></span></span><span class="l">Visitas ao perfil: <b data-source="ig_totals" data-field="visitas_perfil" data-row="0" data-fmt="int">—</b></span><span class="cmp-l"><b data-source="cmp_ig" data-field="vp_delta" data-row="0" data-fmt="delta">—</b> <span class="l">visitas, anterior: <b data-source="cmp_ig" data-field="vp_prev" data-row="0" data-fmt="int">—</b></span></span></div>
     </div>
     <div class="grid2" style="margin-top: var(--cds-gap-md)">
+      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">O Instagram não separa seguidores orgânicos e pagos.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igfol"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-fol" data-source="ig_followers_daily ig_followers_daily_prev ig_followers"></div></div>
       <div class="card"><div class="ch-h"><div><h3>Alcance por dia</h3><p class="note">Contas únicas alcançadas em cada dia.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igreach"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-reach" data-source="ig_daily ig_daily_prev"></div></div>
-      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">O Instagram não separa seguidores orgânicos e pagos.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igfol"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-fol" data-source="ig_followers_daily ig_followers_daily_prev"></div></div>
     </div>
     <h2 id="ig-demo">Quem segue a conta (insights demográficos)</h2>
     <div class="grid2">
@@ -290,12 +310,10 @@
       <div class="card"><h3>Países</h3><div id="hb-ig-pais" data-source="ig_demo_pais"></div></div>
     </div>
     <h2 id="ig-posts">Principais posts</h2>
-    <div class="card">
-      <p class="note">Posts do período com mais alcance, com a legenda resumida.</p>
-      <div class="scroll"><table data-source="ig_top_posts" data-row-key="chave" id="t-igposts">
-        <thead><tr><th class="t" data-field="legenda" data-fmt="cap">Legenda</th><th class="t" data-field="formato">Formato</th><th class="t" data-field="data_post" data-fmt="date">Data</th><th data-field="alcance" data-fmt="int">Alcance</th><th data-field="curtidas" data-fmt="int">Curtidas</th><th data-field="comentarios" data-fmt="int">Coment.</th><th data-field="salvos" data-fmt="int">Salvos</th><th data-field="compartilhamentos" data-fmt="int">Compart.</th><th data-field="engajamento" data-fmt="pct2">Engajamento</th></tr></thead><tbody></tbody>
-      </table></div>
-    </div>
+    <div class="card"><p class="note">Posts do período com mais alcance, de 10 em 10. O tema é um título resumido da legenda; a miniatura vem do Instagram e pode não aparecer quando o link da imagem expira.</p><div id="posts-ig" data-source="ig_top_posts"></div></div>
+    <h2 id="ig-ins">Insights</h2>
+    <p class="note">Gerados automaticamente a partir dos posts do período filtrado.</p>
+    <div id="ins-ig" data-source="ig_top_posts ig_totals"></div>
   </template>
 <script>
 dash.loader('filter_campaigns', {
@@ -591,7 +609,7 @@ dash.loader('li_top_posts', {
     if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
     if (typeof a === 'string') a = JSON.parse(a);
     if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
-    const txt = ["chave", "data_post"];
+    const txt = ["chave", "data_post", "legenda", "formato"];
     const cols = a.columns || [];
     const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
     return { columns: cols, rows, cut: !!a.data_truncated };
@@ -708,7 +726,7 @@ dash.loader('ig_top_posts', {
     if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
     if (typeof a === 'string') a = JSON.parse(a);
     if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
-    const txt = ["chave", "legenda", "formato", "data_post"];
+    const txt = ["chave", "legenda", "formato", "data_post", "thumb", "permalink"];
     const cols = a.columns || [];
     const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
     return { columns: cols, rows, cut: !!a.data_truncated };
@@ -880,6 +898,26 @@ dash.calc('leads_table', {
   },
 });
 
+
+
+dash.calc('li_insights', {
+  inputs: ['li_top_posts', 'li_followers_gain', 'li_totals'],
+  title: 'Insights do LinkedIn',
+  description: 'Oportunidades, melhorias e o que replicar, a partir dos posts do período.',
+  fn: (posts, gain, tot) => buildInsights(posts, { base: (r) => r.impressoes, baseLabel: 'impressões', extra: (add) => {
+    const g = gain[0] || {}; const o = Number(g.organicos) || 0, p = Number(g.pagos) || 0;
+    if (o + p > 0) { const sh = p / (o + p); add(sh >= 0.5 ? 'opp' : 'ok', 'Dos ' + FMT.int(o + p) + ' novos seguidores no período, ' + FMT.pct(sh) + ' vieram de mídia paga e ' + FMT.pct(1 - sh) + ' foram orgânicos.' + (sh >= 0.5 ? ' Os posts orgânicos podem trazer mais seguidores com chamadas para seguir a página.' : '')); }
+  } }),
+});
+dash.calc('ig_insights', {
+  inputs: ['ig_top_posts', 'ig_totals'],
+  title: 'Insights do Instagram',
+  description: 'Oportunidades, melhorias e o que replicar, a partir dos posts do período.',
+  fn: (posts, tot) => buildInsights(posts, { base: (r) => r.alcance, baseLabel: 'de alcance', extra: (add) => {
+    const t0 = tot[0] || {};
+    if (t0.saldo_seguidores != null) add(t0.saldo_seguidores >= 0 ? 'ok' : 'mel', 'Saldo de seguidores no período: ' + FMT.int(t0.saldo_seguidores) + ' (novos menos quem deixou de seguir).');
+  } }),
+});
 
 const sumk = (a, k) => a.reduce((t, r) => t + (Number(r[k]) || 0), 0);
 const dlt = (c, p) => (p > 0 ? (c - p) / p : null);
@@ -1141,6 +1179,179 @@ function multiLine(el, rows, o) {
     .on('mouseleave', () => { vl.attr('display', 'none'); hideTip(el); });
 }
 
+
+function stackBars(el, rows, o) {
+  const w = el.clientWidth;
+  if (!w) return;
+  const prev = o.prev || null;
+  if (!rows.length && !(prev && prev.length)) { msgBox(el, 'Sem dados no filtro atual.'); return; }
+  el.replaceChildren();
+  const F = o.money ? FMT.brl : FMT.int;
+  const n = prev ? windowN() : 0;
+  const order = o.colors ? Object.keys(o.colors) : [];
+  const keys = [...new Set(rows.map((r) => r[o.s]))].sort((a, b) => (order.indexOf(a) < 0 ? 99 : order.indexOf(a)) - (order.indexOf(b) < 0 ? 99 : order.indexOf(b)));
+  const colorOf = (k, i) => (o.colors && o.colors[k]) || COL[i % 8];
+  const ptot = new Map(); if (prev) prev.forEach((r) => { const k = addDays(r[o.x], n); ptot.set(k, (ptot.get(k) || 0) + (r[o.y] || 0)); });
+  const days = [...new Set([...rows.map((r) => r[o.x]), ...ptot.keys()])].sort();
+  const by = new Map(days.map((d) => [d, {}]));
+  rows.forEach((r) => { const m0 = by.get(r[o.x]); m0[r[o.s]] = (m0[r[o.s]] || 0) + (r[o.y] || 0); });
+  const stack = d3.stack().keys(keys).value((dd, k) => dd.v[k] || 0)(days.map((d) => ({ d, v: by.get(d) })));
+  const lg = document.createElement('div'); lg.className = 'legend';
+  keys.forEach((k, i) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = colorOf(k, i); sp.append(sw, document.createTextNode(k)); lg.append(sp); });
+  if (prev) { const b = document.createElement('span'); const s2 = document.createElement('span'); s2.className = 'sw'; s2.style.background = 'transparent'; s2.style.border = '2px dashed var(--color-fg)'; s2.style.height = '0'; s2.style.borderRadius = '0'; b.append(s2, document.createTextNode('Total do período anterior')); lg.append(b); }
+  el.append(lg);
+  if (o.badge) { const bd = mk('div', 'chart-badge'); bd.append(document.createTextNode(o.badgeLabel || 'Total de seguidores hoje'), mk('b', null, o.badge)); el.append(bd); }
+  const H = 240, m = { t: 8, r: 10, b: 22, l: o.money ? 56 : 40 }, iw = w - m.l - m.r, ih = H - m.t - m.b;
+  const x = d3.scaleBand(days, [0, iw]).padding(0.18);
+  const maxCur = stack.length ? d3.max(stack[stack.length - 1], (d) => d[1]) : 0;
+  const y = d3.scaleLinear([0, Math.max(maxCur || 0, d3.max([...ptot.values()]) || 0, 1)], [ih, 0]).nice();
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${H}`).attr('width', '100%');
+  const g = svg.append('g').attr('transform', `translate(${m.l},${m.t})`);
+  y.ticks(4).forEach((tk) => {
+    g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', y(tk)).attr('y2', y(tk)).attr('stroke', 'var(--cds-chart-grid)');
+    g.append('text').attr('x', -6).attr('y', y(tk)).attr('dy', '0.32em').attr('text-anchor', 'end').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(F(tk));
+  });
+  const step = Math.max(1, Math.ceil(days.length / 7));
+  days.forEach((d, i) => { if (i % step === 0) g.append('text').attr('x', x(d) + x.bandwidth() / 2).attr('y', ih + 15).attr('text-anchor', 'middle').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(fdate(parseDay(d))); });
+  stack.forEach((layer, i) => {
+    g.selectAll(null).data(layer).join('rect').attr('x', (d) => x(d.data.d)).attr('y', (d) => y(d[1])).attr('width', x.bandwidth()).attr('height', (d) => Math.max(0, y(d[0]) - y(d[1]))).attr('fill', colorOf(keys[i], i));
+  });
+  if (prev) {
+    const pts = days.filter((d) => ptot.has(d)).map((d) => [x(d) + x.bandwidth() / 2, y(ptot.get(d))]);
+    if (pts.length) g.append('path').attr('d', d3.line()(pts)).attr('fill', 'none').attr('stroke', 'var(--color-fg)').attr('stroke-width', 2).attr('stroke-dasharray', '5 4').attr('stroke-linejoin', 'round');
+  }
+  g.append('rect').attr('width', iw).attr('height', ih).attr('fill', 'transparent')
+    .on('mousemove', (ev) => {
+      const [mx] = d3.pointer(ev);
+      const idx = Math.max(0, Math.min(days.length - 1, Math.floor(mx / x.step())));
+      const d = days[idx]; const v = by.get(d);
+      const lines = [{ text: fdate(parseDay(d)) }];
+      keys.forEach((k, i) => lines.push({ color: colorOf(k, i), text: k + ': ' + F(v[k] || 0) }));
+      lines.push({ text: 'Total: ' + F(keys.reduce((s, k) => s + (v[k] || 0), 0)) });
+      if (prev) lines.push({ text: 'Total do período anterior: ' + (ptot.has(d) ? F(ptot.get(d)) : '—') });
+      showTip(el, ev, lines);
+    })
+    .on('mouseleave', () => hideTip(el));
+}
+
+const PAUTAS = {"31081472": "Programa de Trainee Atrio 2026: inscrições abertas", "57155840": "Vagas abertas no segmento hoteleiro", "20830720": "Aprovados do Programa de Trainee 2026", "59197440": "Apresentação da Atrio: 37 anos de história", "50850816": "Atrio chega a São Paulo: marco estratégico", "84957184": "Atrio chega a São Paulo: operadora 100% nacional", "59068672": "Primeiras 24 horas do Grand Mercure Pinheiros", "75293186": "Lembrete: inscrições do Trainee até 27/02", "56007168": "Missão Hoteleiros do Futuro em Berlim", "50646528": "Nova diretoria de Marketing da Atrio", "98497536": "Novo capítulo: transformação da marca Atrio", "80105216": "Banco de Talentos: gerente geral e subgerente", "65300480": "Chegada da AERA ao Rio de Janeiro", "65619200": "Mensagem do presidente: 38 anos de confiança", "22019073": "SST Summit 2026: liderança e futuro do setor", "93744384": "Últimos dias do Trainee Atrio 2026", "95780609": "Atrio ultrapassa R$ 1,2 bi em receita em 2025", "03573504": "Expansão para Mato Grosso do Sul", "77947137": "Investir em cultura e desenvolvimento social", "65860352": "38 anos de história na hospitalidade", "30768129": "AERA Copacabana abre as portas", "72001280": "Starbucks chega ao Novotel Curitiba Batel", "39373824": "Motivos para se hospedar no Novotel Uberlândia", "54317824": "1 ano do ibis Styles Maragogi", "31904512": "Atrio na ABAV Expo", "39256832": "Nova forma de olhar para a hotelaria", "37923840": "Atrio no Hotel Trends Conference 2026", "87638785": "38 anos: a história feita por pessoas", "59501571": "Balanço do Hotel Trends", "70464512": "Montissi Resort Spa & Golf entra no portfólio", "23567105": "Atrio na WTM: venha ao nosso stand", "82094080": "Crescimento sustentável e comunidades", "94881280": "Celebração dos 38 anos da Atrio", "14502912": "Atrio na FIT América Latina 2026", "41855233": "Atrio entre as 100 maiores de Santa Catarina", "69311488": "Atrio confirma presença na WTM Latin America", "26528768": "Rancho Queimado ganha novo marco turístico", "96338688": "Bastidores do bom funcionamento de um hotel", "42638848": "Crescimento sustentável e legado", "70736640": "WTM Latin America: começa amanhã", "35689217": "Quase quatro décadas de crescimento da Atrio", "58846465": "ibis Copacabana Posto 5 passa à Atrio", "47243776": "Novo posicionamento: Hospitalidade que performa", "27587585": "Inauguração social do Montissi Resort", "44808961": "Cenário Hotelaria Brasil 2027", "34817793": "IA como tema de toda a empresa, não só de TI", "81509633": "A&B como protagonista nos hotéis", "21879040": "Desafios de operar hotelaria no Brasil", "66013185": "Hospitalidade que performa: a gestão da Atrio", "93037569": "Parcerias focadas no desempenho do ativo", "26719232": "O que é hospitalidade que performa?", "98337792": "LK Design Hotel entre os 50 melhores do Brasil", "21686273": "Transformar informação em decisão na hotelaria", "94601217": "Resultado do hotel começa antes de existir", "88500480": "Rentabilidade: o grande desafio da hotelaria", "29382656": "Escolher a marca certa é decisão de negócio", "30608642": "Dia do Hoteleiro", "13370880": "Entender o ativo para chegar à performance", "64948737": "A&B como estratégia de negócio dos hotéis", "57162754": "Marca, experiência e resultado", "82704384": "Travel Week 2026: campanha única do portfólio", "29395456": "Nova forma de olhar para a hotelaria", "95747438": "O que é hospitalidade que performa?", "14465286": "Dia do Hoteleiro", "79917467": "A&B como estratégia de negócio dos hotéis", "75305188": "Travel Week 2026: campanha única do portfólio", "57256465": "Resultado do hotel começa antes de existir", "46053654": "Escolher a marca certa é decisão de negócio", "05108403": "Bastidores do bom funcionamento de um hotel", "55455045": "Desafios de operar hotelaria no Brasil", "04005749": "IA como tema de toda a empresa, não só de TI", "97011127": "A&B como protagonista nos hotéis", "76720760": "Marca, experiência e resultado", "77320577": "Rentabilidade: o grande desafio da hotelaria", "95144155": "Nova forma de olhar para a hotelaria", "98873163": "Transformar informação em decisão na hotelaria", "48118822": "Parcerias focadas no desempenho do ativo", "95364380": "Hospitalidade que performa: a gestão da Atrio", "55226909": "Entender o ativo para chegar à performance", "02520819": "Novo posicionamento: Hospitalidade que performa", "45603244": "Atrio no Hotel Trends Conference 2026", "65917612": "Celebração dos 38 anos da Atrio", "74045664": "Primeiras 24 horas do Grand Mercure Pinheiros", "60222023": "Expansão para Mato Grosso do Sul", "35638124": "Atrio inicia operação em São Paulo", "74405083": "Atrio chega a São Paulo", "07520824": "Aprovados do Programa de Trainee 2026", "08737469": "SST Summit 2026: liderança e futuro do setor", "25070631": "Atrio ultrapassa R$ 1,2 bi em receita em 2025", "66286444": "Atrio e Livá na WTM Latin America", "24212009": "Setor hoteleiro em expansão (SAHIC)", "53461885": "Missão Hoteleiros do Futuro em Berlim", "55473193": "Story (sem legenda)"};
+const mk = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+function autoTitle(txt) {
+  let s = String(txt || '').replace(/https?:\/\/\S+/g, '').replace(/@\[[^\]]*\]\([^)]*\)/g, '').replace(/[#@]\S+/g, '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1D400}-\u{1D7FF}]/gu, '').replace(/\s+/g, ' ').trim();
+  if (!s) return 'Sem legenda';
+  const first = s.split(/(?<=[.!?])\s/)[0];
+  const t = first.length > 64 ? first.slice(0, 61).replace(/\s+\S*$/, '') + '…' : first;
+  return t.replace(/[.:]$/, '');
+}
+const pautaOf = (r) => PAUTAS[String(r.chave).slice(-8)] || autoTitle(r.legenda);
+const clampCap = (s, n) => { const t = String(s || '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t; };
+function thumbOf(r, li) {
+  const box = mk('div', 'thumb');
+  const ph = () => { box.classList.add('ph'); box.textContent = li ? 'in' : (r.formato || 'Post'); };
+  if (!li && r.thumb) {
+    const im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.referrerPolicy = 'no-referrer'; im.src = r.thumb;
+    im.onerror = () => { im.remove(); ph(); };
+    box.append(im);
+  } else ph();
+  return box;
+}
+const postsPage = {};
+function renderPosts(sel, rows, kind, srcId) {
+  const el = $(sel); if (!el) return;
+  if (!rows) { if (failed(srcId)) failBox(el); return; }
+  if (!rows.length) { msgBox(el, 'Sem posts no período filtrado.'); return; }
+  const li = kind === 'li', per = 10, pages = Math.ceil(rows.length / per);
+  const pg = Math.min(postsPage[sel] || 1, pages); postsPage[sel] = pg;
+  const cols = li
+    ? [['Formato', 't'], ['Data', 't'], ['Impressões'], ['Alcance'], ['Cliques'], ['Curtidas'], ['Coment.'], ['Compart.'], ['Engaj.']]
+    : [['Formato', 't'], ['Data', 't'], ['Alcance'], ['Curtidas'], ['Coment.'], ['Salvos'], ['Compart.'], ['Engaj.']];
+  const tbl = mk('table', 'posts');
+  const hr = mk('tr'); hr.append(mk('th', 't', ''), mk('th', 't', 'Tema e legenda')); cols.forEach(([c, k]) => hr.append(mk('th', k || '', c)));
+  const thd = mk('thead'); thd.append(hr); tbl.append(thd);
+  const tb = mk('tbody');
+  rows.slice((pg - 1) * per, pg * per).forEach((r) => {
+    const tr = mk('tr');
+    const c0 = mk('td', 'tc'); c0.append(thumbOf(r, li));
+    const c1 = mk('td', 't tema');
+    const ttl = r.permalink ? Object.assign(mk('a', 'p-title', pautaOf(r)), { href: r.permalink, target: '_blank', rel: 'noopener' }) : mk('div', 'p-title', pautaOf(r));
+    const cap = mk('div', 'p-cap', clampCap(r.legenda, 190)); cap.title = String(r.legenda || '');
+    c1.append(ttl, cap);
+    tr.append(c0, c1, mk('td', 't', r.formato || '—'), mk('td', 't', FMT.date(r.data_post)));
+    const nums = li ? [r.impressoes, r.alcance, r.cliques, r.curtidas, r.comentarios, r.compartilhamentos] : [r.alcance, r.curtidas, r.comentarios, r.salvos, r.compartilhamentos];
+    nums.forEach((v) => tr.append(mk('td', '', FMT.int(v))));
+    tr.append(mk('td', '', FMT.pct2(r.engajamento)));
+    tb.append(tr);
+  });
+  tbl.append(tb);
+  const wrap = mk('div', 'scroll'); wrap.append(tbl);
+  const pager = mk('div', 'pager');
+  const mkb = (txt, d, dis) => { const b = mk('button', 'ctl', txt); b.type = 'button'; b.disabled = dis; b.addEventListener('click', () => { postsPage[sel] = pg + d; draw(); }); return b; };
+  pager.append(mkb('‹ Anterior', -1, pg <= 1), mk('span', 'note', 'Página ' + pg + ' de ' + pages + ' · ' + ((pg - 1) * per + 1) + '–' + Math.min(pg * per, rows.length) + ' de ' + rows.length), mkb('Próxima ›', 1, pg >= pages));
+  pager.hidden = rows.length <= per;
+  el.replaceChildren(wrap, pager);
+}
+const CATS = [
+  ['Campanhas de venda', /travel week|black friday|promo[çc][ãa]o|oferta|desconto/i],
+  ['Carreira e pessoas', /trainee|vaga|talento|carreira|banco de talentos|diretoria|dia do hoteleiro|colaborador|equipe/i],
+  ['Eventos e presença no mercado', /wtm|abav|fit am|hotel trends|summit|sst|cen[áa]rio|congress|evento|expo\b|sahic|miss[ãa]o|feira/i],
+  ['Expansão e novos hotéis', /chega|inaugur|abre |portas|novo hotel|portf[óo]lio|expans[ãa]o|mato grosso|maragogi|copacabana|rancho queimado|primeiras 24|passa [àa] atrio/i],
+  ['Gastronomia e experiências', /caf[ée]|restaurante|gastronom|caf[ée] da manh|starbucks|drink|menu|chef|spa\b|piscina|experi[êe]ncia/i],
+  ['Autoridade e gestão hoteleira', /ativo|rentabilidade|marca|investidor|performa|gest[ãa]o|a&b|alimentos|intelig[êe]ncia artificial|decis[ãa]o|dados|resultado/i],
+  ['Institucional e história', /38 anos|37 anos|hist[óo]ria|bilh[ãa]o|receita|ranking|100 maiores|melhores hot[ée]is|cultura/i],
+];
+const catOf = (r) => { const tx = pautaOf(r) + ' ' + String(r.legenda || '').slice(0, 220); const c = CATS.find(([, re]) => re.test(tx)); return c ? c[0] : 'Outros temas'; };
+const DIAS = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+function buildInsights(posts, ctx) {
+  const out = [];
+  const add = (grupo, texto) => out.push({ grupo, texto });
+  const sample = posts.filter((r) => (Number(ctx.base(r)) || 0) > 0);
+  if (sample.length < 3) { add('mel', 'Poucos posts no período filtrado para gerar insights. Amplie o período.'); return out; }
+  const eng = (r) => Number(r.engajamento) || 0, bs = (r) => Number(ctx.base(r)) || 0;
+  const avg = (a, f) => (a.length ? a.reduce((s, r) => s + f(r), 0) / a.length : 0);
+  const pc = (v) => FMT.pct2(v);
+  const groupBy = (a, kf) => { const m = new Map(); a.forEach((r) => { const k = kf(r); if (!m.has(k)) m.set(k, []); m.get(k).push(r); }); return [...m].map(([k, rs]) => ({ k, n: rs.length, eng: avg(rs, eng), base: avg(rs, bs) })); };
+  const top = [...sample].sort((a, b) => eng(b) - eng(a)).slice(0, 3);
+  top.forEach((r) => add('ok', '"' + pautaOf(r) + '" (' + (r.formato || 'post') + ', ' + FMT.date(r.data_post) + '): engajamento de ' + pc(eng(r)) + ' e ' + FMT.int(bs(r)) + ' ' + ctx.baseLabel + '. Vale repetir esse ângulo e formato.'));
+  const fm = groupBy(sample, (r) => r.formato || 'Post').filter((g) => g.n >= 2).sort((a, b) => b.eng - a.eng);
+  if (fm.length >= 2) {
+    const b = fm[0], w = fm[fm.length - 1];
+    add('ok', 'Formato com melhor engajamento médio: ' + b.k + ' (' + pc(b.eng) + ', ' + b.n + ' posts). Priorize esse formato nas pautas principais.');
+    add('opp', 'O formato ' + w.k + ' tem engajamento médio de ' + pc(w.eng) + ', menor que o de ' + b.k + '. Teste ' + b.k + ' para os mesmos temas, ou revise o gancho e a primeira linha.');
+  }
+  const ct = groupBy(sample, catOf).filter((g) => g.n >= 2).sort((a, b) => b.eng - a.eng);
+  if (ct.length >= 2) {
+    add('ok', 'Tema que mais engaja: ' + ct[0].k + ' (' + pc(ct[0].eng) + ' de engajamento médio em ' + ct[0].n + ' posts). Repita com novas pautas.');
+    const low = ct[ct.length - 1];
+    add('opp', 'O tema ' + low.k + ' tem o menor engajamento médio (' + pc(low.eng) + ', ' + low.n + ' posts). Mude a abordagem ou reduza a frequência.');
+    const few = ct.filter((g) => g.n <= 2 && g.eng > avg(sample, eng)).sort((a, b) => b.eng - a.eng)[0];
+    if (few) add('opp', 'O tema ' + few.k + ' rendeu engajamento acima da média (' + pc(few.eng) + ') com poucos posts (' + few.n + '). Há espaço para publicar mais.');
+  }
+  const wd = groupBy(sample, (r) => new Date(r.data_post + 'T00:00:00Z').getUTCDay()).filter((g) => g.n >= 2).sort((a, b) => b.eng - a.eng);
+  if (wd.length >= 2) add('ok', 'Melhor dia para publicar: ' + DIAS[wd[0].k] + ' (engajamento médio de ' + pc(wd[0].eng) + ' em ' + wd[0].n + ' posts).');
+  const medBase = [...sample].map(bs).sort((a, b) => a - b)[Math.floor(sample.length / 2)], medEng = [...sample].map(eng).sort((a, b) => a - b)[Math.floor(sample.length / 2)];
+  const gap = sample.filter((r) => bs(r) >= medBase && eng(r) < medEng).sort((a, b) => bs(b) - bs(a)).slice(0, 2);
+  gap.forEach((r) => add('opp', '"' + pautaOf(r) + '" teve ' + FMT.int(bs(r)) + ' ' + ctx.baseLabel + ', acima da mediana, mas engajamento baixo (' + pc(eng(r)) + '). Adicione pergunta ou chamada para ação para converter o alcance em conversa.'));
+  const days = Math.max(1, (Math.max(...sample.map((r) => +new Date(r.data_post + 'T00:00:00Z'))) - Math.min(...sample.map((r) => +new Date(r.data_post + 'T00:00:00Z')))) / 86400000 + 1);
+  const perWeek = sample.length / (days / 7);
+  if (perWeek < 2) add('mel', 'Frequência de ' + perWeek.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' post(s) por semana no período. Uma cadência de 2 a 3 por semana ajuda a manter o alcance.');
+  else add('ok', 'Frequência de ' + perWeek.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' posts por semana no período, boa para manter o alcance.');
+  [...sample].sort((a, b) => eng(a) - eng(b)).slice(0, 2).forEach((r) => add('mel', 'Rever "' + pautaOf(r) + '" (' + (r.formato || 'post') + ', ' + FMT.date(r.data_post) + '): engajamento de ' + pc(eng(r)) + '. Teste outro gancho, imagem de capa ou horário.'));
+  if (ctx.extra) ctx.extra(add);
+  return out;
+}
+function renderInsights(sel, rows, srcId) {
+  const el = $(sel); if (!el) return;
+  if (!rows) { if (failed(srcId)) failBox(el); return; }
+  const groups = [['ok', 'O que deu certo e podemos replicar'], ['opp', 'Oportunidades'], ['mel', 'Melhorias']];
+  el.className = 'ins-grid';
+  el.replaceChildren(...groups.map(([k, title]) => {
+    const card = mk('div', 'card ins ins-' + k); card.append(mk('h3', null, title));
+    const ul = mk('ul'); rows.filter((r) => r.grupo === k).forEach((r) => ul.append(mk('li', null, r.texto)));
+    if (!ul.children.length) ul.append(mk('li', null, 'Sem destaques com os dados do período.'));
+    card.append(ul); return card;
+  }));
+}
+
 function hbars(el, rows, o) {
   if (!rows.length) { msgBox(el, 'Sem dados no filtro atual.'); return; }
   const max = d3.max(rows, (r) => r[o.v]) || 1;
@@ -1316,7 +1527,6 @@ function showTab(name) {
   $('#tab-org').setAttribute('aria-selected', String(name === 'org'));
   $('#w-platform').hidden = name !== 'perf';
   $('#w-campaign').hidden = name !== 'perf';
-  $('#w-orgplat').hidden = name !== 'org';
   if (name === 'org') {
     const k = orgPlat === 'instagram' ? 'ig' : 'li';
     if (!ready[k]) { $('#org-' + k).append($('#org-' + k + '-tpl').content.cloneNode(true)); ready[k] = true; }
@@ -1328,7 +1538,7 @@ function showTab(name) {
 }
 $('#tab-perf').addEventListener('click', () => showTab('perf'));
 $('#tab-org').addEventListener('click', () => showTab('org'));
-$('#f-orgplat').addEventListener('change', (e) => { orgPlat = e.target.value; showTab('org'); });
+document.querySelectorAll('.subtab').forEach((b) => b.addEventListener('click', () => { orgPlat = b.dataset.sub === 'ig' ? 'instagram' : 'linkedin'; document.querySelectorAll('.subtab').forEach((x) => x.setAttribute('aria-selected', String(x === b))); showTab('org'); }));
 $('#f-platform').addEventListener('change', (e) => dash.setParams({ platform: e.target.value || null, campaign: null }));
 $('#f-campaign').addEventListener('change', (e) => dash.setParams({ campaign: e.target.value || null }));
 $('#f-reset').addEventListener('click', () => { dash.resetParams(); closeCal(); });
@@ -1344,18 +1554,22 @@ function draw() {
   document.querySelectorAll('#t-leads tbody tr').forEach((tr) => { tr.classList.toggle('total', tr.dataset.key === 'Total'); });
   const pv = (key, id) => (cmpOn[key] ? rowsOf(id) || [] : null);
   if (tab === 'perf') {
-    chartOr($('#ch-spend'), 'spend_daily', (rows) => multiLine($('#ch-spend'), rows, { x: 'dia', s: 'plataforma', y: 'gasto', money: true, colors: PLATCOL, prev: pv('spend', 'spend_daily_prev') }));
+    chartOr($('#ch-spend'), 'spend_daily', (rows) => stackBars($('#ch-spend'), rows, { x: 'dia', s: 'plataforma', y: 'gasto', money: true, colors: PLATCOL, prev: pv('spend', 'spend_daily_prev') }));
     chartOr($('#ch-ai'), 'ai_daily', (rows) => multiLine($('#ch-ai'), rows, { x: 'dia', s: 'fonte', y: 'sessoes', colors: AICOL }));
     chartOr($('#ch-sessions'), 'ga_daily', (rows) => lineChart($('#ch-sessions'), rows, { x: 'dia', y: 'sessoes', label: 'Sessões', prev: pv('sessions', 'ga_daily_prev') }));
     chartOr($('#hb-channels'), 'ga_channels', (rows) => hbars($('#hb-channels'), rows, { l: 'canal', v: 'sessoes', colors: true }));
     chartOr($('#ch-origem'), 'ga_channels', (rows) => pie($('#ch-origem'), rows, pv('origem', 'ga_channels_prev')));
   } else if (orgPlat === 'linkedin' && ready.li) {
     chartOr($('#ch-li-imp'), 'li_daily', (rows) => stacked($('#ch-li-imp'), rows, { x: 'dia', s: 'serie', y: 'valor', prev: pv('lireach', 'li_daily_prev') }));
-    chartOr($('#ch-li-fol'), 'li_followers_daily', (rows) => stacked($('#ch-li-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', prev: pv('lifol', 'li_followers_daily_prev') }));
+    chartOr($('#ch-li-fol'), 'li_followers_daily', (rows) => { const tt = rowsOf('li_followers_total'); stackBars($('#ch-li-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Orgânico': '#DB9B0E', 'Pago': '#2F7FD0' }, prev: pv('lifol', 'li_followers_daily_prev'), badge: tt && tt[0] ? FMT.int(tt[0].seguidores) : null }); });
+    renderPosts('#posts-li', rowsOf('li_top_posts'), 'li', 'li_top_posts');
+    renderInsights('#ins-li', rowsOf('li_insights'), 'li_insights');
     bars('#hb-sen', 'li_demo_senioridade'); bars('#hb-fun', 'li_demo_funcao'); bars('#hb-set', 'li_demo_setor'); bars('#hb-por', 'li_demo_porte');
   } else if (orgPlat === 'instagram' && ready.ig) {
     chartOr($('#ch-ig-reach'), 'ig_daily', (rows) => stacked($('#ch-ig-reach'), rows, { x: 'dia', s: 'serie', y: 'valor', prev: pv('igreach', 'ig_daily_prev') }));
-    chartOr($('#ch-ig-fol'), 'ig_followers_daily', (rows) => stacked($('#ch-ig-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', prev: pv('igfol', 'ig_followers_daily_prev') }));
+    chartOr($('#ch-ig-fol'), 'ig_followers_daily', (rows) => { const tt = rowsOf('ig_followers'); stackBars($('#ch-ig-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Novos seguidores': '#DB9B0E' }, prev: pv('igfol', 'ig_followers_daily_prev'), badge: tt && tt[0] ? FMT.int(tt[0].seguidores) : null }); });
+    renderPosts('#posts-ig', rowsOf('ig_top_posts'), 'ig', 'ig_top_posts');
+    renderInsights('#ins-ig', rowsOf('ig_insights'), 'ig_insights');
     bars('#hb-ig-idade', 'ig_demo_idade'); bars('#hb-ig-genero', 'ig_demo_genero'); bars('#hb-ig-cidade', 'ig_demo_cidade'); bars('#hb-ig-pais', 'ig_demo_pais');
   }
 }
