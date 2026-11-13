@@ -76,6 +76,23 @@
 .ai [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
 .ai [hidden] { display: none !important; }
 @media (prefers-reduced-motion: no-preference) { .ai .hb .fi { transition: width var(--cds-dur-slow) var(--cds-ease-out); } }
+
+.ai .kpi { padding: var(--cds-pad-lg); }
+.ai .kpi .v { font-size: clamp(2.25rem, 4.4vw, 3.4rem); line-height: 1.02; font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 6px; }
+.ai .kpi > .l:first-child { font-size: var(--cds-font-size-body); font-weight: 600; color: var(--color-fg); }
+.ai .kpi .cmp-l { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 2px 0 10px; }
+.ai .kpi .cmp-l > b { padding: 2px 10px; border-radius: 999px; background: rgba(219, 155, 14, .16); }
+.ai .kpi .cmp-l .l b { padding: 0; background: none; border-radius: 0; }
+.ai .grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); }
+.ai .card h3 { font-size: var(--cds-font-size-body); font-weight: 600; margin: 0 0 2px; }
+.ai tbody tr:hover td { background: rgba(219, 155, 14, .08); }
+.ai tbody tr:last-child td { border-bottom: 0; }
+.ai .sec-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 4px; }
+.ai .sec-nav .chip { font: inherit; font-size: var(--cds-font-size-caption); padding: 6px 14px; border-radius: 999px; border: 1px solid var(--color-border-line); background: transparent; color: var(--color-fg); cursor: pointer; }
+.ai .sec-nav .chip:hover { border-color: var(--b-gold); background: rgba(219, 155, 14, .12); }
+.ai .sec-nav .chip:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
+.ai .gap-note { color: var(--color-fg-muted); font-size: var(--cds-font-size-body); line-height: 1.5; margin: 6px 0 0; }
+.ai tr.total td { font-weight: 700; border-top: 2px solid var(--color-border-line); }
 </style>
 <style>
 .ai .ch-h { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
@@ -113,6 +130,7 @@
 
   <section id="perf">
     <p class="note" id="nota-escopo">O filtro de plataforma e campanha vale para investimento, campanhas e anúncios. O filtro de data vale também para o site. A comparação usa o período imediatamente anterior, com o mesmo número de dias. Leads, conversão e CAC usam os totais informados pela equipe e não mudam com o filtro.</p>
+    <nav class="sec-nav" aria-label="Seções do dashboard"><button type="button" class="chip" data-go="geral">Métricas</button><button type="button" class="chip" data-go="leads">Leads</button><button type="button" class="chip" data-go="investimento">Investimento e Tráfego</button><button type="button" class="chip" data-go="ai">AI Assistant</button><button type="button" class="chip" data-go="campanhas">Campanhas</button><button type="button" class="chip" data-go="anuncios">Principais anúncios</button></nav>
     <h2 id="geral">Métricas gerais</h2>
     <div class="grid">
       <div class="card kpi" id="kpi-invest">
@@ -133,7 +151,7 @@
         <span class="l">Leads gerados (generate_lead)</span>
         <b class="v" data-source="kpi_main" data-field="leads_total" data-row="0" data-fmt="int">—</b>
         <table data-source="leads" data-row-key="tipo" id="t-leads-mini">
-          <thead><tr><th class="t" data-field="tipo">Formato</th><th data-field="leads" data-fmt="int">Leads</th></tr></thead><tbody></tbody>
+          <thead><tr><th class="t" data-field="tipo">Formato</th><th data-field="leads" data-fmt="int">Leads</th><th data-field="leads_pagos" data-fmt="int">Mídia paga</th></tr></thead><tbody></tbody>
         </table>
       </div>
       <div class="card kpi" id="kpi-conv">
@@ -147,25 +165,26 @@
         <span class="l">Gasto desde 21/10 dividido por todos os leads.</span>
         <p class="note">Por lead de Novos Negócios: <b data-source="kpi_main" data-field="cac_nn" data-row="0" data-fmt="brl">—</b></p>
         <p class="note">Com o gasto de todo o período: <b data-source="kpi_main" data-field="cac_periodo" data-row="0" data-fmt="brl">—</b></p>
+        <p class="note">Por lead de mídia paga (Novos Negócios): <b data-source="kpi_main" data-field="cac_pago_nn" data-row="0" data-fmt="brl">—</b></p>
       </div>
     </div>
 
-    <h2 id="investimento">Investimento por plataforma e campanha</h2>
-    <div class="grid2">
-      <div class="card"><div class="ch-h"><div><h3>Investimento por dia</h3><p class="note">Em reais, por plataforma.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="spend"> Comparar com o período anterior</label></div><div class="chart" id="ch-spend" data-source="spend_daily spend_daily_prev"></div></div>
-      <div class="card"><h3>Campanhas</h3><p class="note">Gasto, impressões, cliques, CTR e conversões da plataforma no filtro atual.</p>
-        <div class="scroll"><table data-source="campaigns_table" data-row-key="chave" id="t-campaigns">
-          <thead><tr><th class="t" data-field="plataforma">Plataforma</th><th class="t" data-field="campanha">Campanha</th><th data-field="gasto" data-fmt="brl">Gasto</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th></tr></thead><tbody></tbody>
-        </table></div>
-      </div>
+    <h2 id="leads">Leads: evento generate_lead, origem e onde dispara</h2>
+    <div class="card">
+      <p class="note">Totais informados pela equipe (atualizados em 13/11). O evento generate_lead só foi configurado corretamente a partir de 21/10. A origem "mídia paga" só está separada para Novos Negócios; nos demais tipos a origem não foi informada. As landing pages de GMP e de reforma tributária ficam fora da contagem. Todo o restante é Novos Negócios.</p>
+      <div class="scroll"><table data-source="leads_table" data-row-key="tipo" id="t-leads">
+        <thead><tr><th class="t" data-field="tipo">Tipo de lead</th><th data-field="leads" data-fmt="int">Leads</th><th data-field="leads_pagos" data-fmt="int">Mídia paga</th><th data-field="outras" data-fmt="int">Outras origens</th><th data-field="qualificados" data-fmt="int">Qualificados</th><th data-field="qualificados_pagos" data-fmt="int">Qualificados (mídia paga)</th><th data-field="conv" data-fmt="pct2">Conversão</th><th class="t" data-field="regra">Regra</th><th class="t" data-field="disparo">Onde dispara</th></tr></thead><tbody></tbody>
+      </table></div>
+      <p class="note">A contagem de leads por página ainda não está disponível: a fonte GA4 da Nekt não traz o nome do evento, só a contagem total de eventos por página.</p>
     </div>
 
-    <h2 id="site">Tráfego do site</h2>
+    <h2 id="investimento">Investimento e Tráfego</h2>
     <div class="grid2">
-      <div style="display:grid;gap:var(--cds-gap-md);align-content:start;min-width:0">
-        <div class="card"><div class="ch-h"><div><h3>Sessões por dia</h3><p class="note">GA4, todos os canais.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="sessions"> Comparar com o período anterior</label></div><div class="chart" id="ch-sessions" data-source="ga_daily ga_daily_prev"></div></div>
-        <div class="card"><div class="ch-h"><div><h3>Principais origens do tráfego</h3><p class="note">Participação de cada canal nas sessões do período.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="origem"> Comparar com o período anterior</label></div><div class="chart" id="ch-origem" data-source="ga_channels ga_channels_prev"></div></div>
-      </div>
+      <div class="card"><div class="ch-h"><div><h3>Investimento por dia, por plataforma</h3><p class="note">Em reais. Cada plataforma tem a sua cor.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="spend"> Comparar com o período anterior</label></div><div class="chart" id="ch-spend" data-source="spend_daily spend_daily_prev"></div></div>
+      <div class="card"><div class="ch-h"><div><h3>Tráfego: sessões por dia</h3><p class="note">GA4, todos os canais.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="sessions"> Comparar com o período anterior</label></div><div class="chart" id="ch-sessions" data-source="ga_daily ga_daily_prev"></div></div>
+    </div>
+    <div class="grid2" style="margin-top:var(--cds-gap-md)">
+      <div class="card"><div class="ch-h"><div><h3>Origem do tráfego</h3><p class="note">Participação de cada canal nas sessões do período.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="origem"> Comparar com o período anterior</label></div><div class="chart" id="ch-origem" data-source="ga_channels ga_channels_prev"></div></div>
       <div class="card"><h3>Páginas mais visitadas</h3><p class="note">atriohoteis.com.br, no período filtrado.</p>
         <div class="scroll"><table data-source="ga_pages" data-row-key="pagina" id="t-pages">
           <thead><tr><th class="t" data-field="pagina">Página</th><th data-field="pageviews" data-fmt="int">Pageviews</th><th data-field="usuarios" data-fmt="int">Usuários</th><th data-field="sessoes_engajadas" data-fmt="int">Sessões engajadas</th></tr></thead><tbody></tbody>
@@ -173,13 +192,26 @@
       </div>
     </div>
 
-    <h2 id="leads">Leads: evento generate_lead e onde dispara</h2>
-    <div class="card">
-      <p class="note">Classificação definida pela equipe. As landing pages de GMP e de reforma tributária ficam fora da contagem. Todo o restante é Novos Negócios.</p>
-      <div class="scroll"><table data-source="leads_table" data-row-key="tipo" id="t-leads">
-        <thead><tr><th class="t" data-field="tipo">Tipo de lead</th><th data-field="leads" data-fmt="int">Leads</th><th data-field="qualificados" data-fmt="int">Qualificados</th><th data-field="conv" data-fmt="pct2">Conversão</th><th class="t" data-field="regra">Regra</th><th class="t" data-field="disparo">Onde dispara</th></tr></thead><tbody></tbody>
+    <h2 id="ai">AI Assistant</h2>
+    <p class="note">Visitas que chegam ao site vindas de assistentes de IA (ChatGPT, Perplexity, Gemini, Copilot, Claude e outros), identificadas no GA4 pela origem da sessão.</p>
+    <div class="grid2">
+      <div class="card"><h3>Evolução do tráfego de IA</h3><p class="note">Sessões por dia, por assistente.</p><div class="chart" id="ch-ai" data-source="ai_daily"></div></div>
+      <div class="card"><h3>Principais assistentes</h3><p class="note">Sessões no período filtrado.</p>
+        <div class="scroll"><table data-source="ai_sources" data-row-key="fonte" id="t-ai-src">
+          <thead><tr><th class="t" data-field="fonte">Assistente</th><th data-field="sessoes" data-fmt="int">Sessões</th><th data-field="participacao" data-fmt="pct">Participação</th></tr></thead><tbody></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:var(--cds-gap-md)">
+      <div class="card"><h3>Páginas referenciadas</h3><p class="gap-note">Ainda não disponível. O GA4 da Nekt traz as origens e as páginas em relatórios separados. Para ver quais páginas cada assistente envia, falta um relatório que cruze a origem com a página de entrada.</p></div>
+      <div class="card"><h3>Principais termos</h3><p class="gap-note">Os assistentes de IA não informam o que a pessoa perguntou, então o GA4 não registra os termos. O que dá para acompanhar é qual assistente enviou a visita e para qual página.</p></div>
+    </div>
+
+    <h2 id="campanhas">Campanhas</h2>
+    <div class="card"><p class="note">Desempenho por campanha no filtro atual. Alcance só existe para o Meta e é a soma dos dias. CPL é o valor gasto dividido pelas conversões da plataforma.</p>
+      <div class="scroll"><table data-source="campaigns_table" data-row-key="chave" id="t-campaigns">
+        <thead><tr><th class="t" data-field="plataforma">Plataforma</th><th class="t" data-field="campanha">Campanha</th><th data-field="alcance" data-fmt="int">Alcance</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpl" data-fmt="brl">CPL</th><th data-field="gasto" data-fmt="brl">Valor gasto</th></tr></thead><tbody></tbody>
       </table></div>
-      <p class="note">A contagem de leads por página ainda não está disponível: a fonte GA4 da Nekt não traz o nome do evento, só a contagem total de eventos por página.</p>
     </div>
 
     <h2 id="anuncios">Principais anúncios</h2>
@@ -193,7 +225,8 @@
     <h2 id="obs">Observações</h2>
     <ul class="obs">
       <li>Os eventos generate_lead foram configurados corretamente a partir de 21/10.</li>
-      <li>Totais levantados pela equipe: Novos Negócios 21 (2 qualificados); Leads Comercial B2B 25; Leads E-book 81.</li>
+      <li>Totais levantados pela equipe (atualizados em 13/11): Novos Negócios 36 (22 de mídia paga; 4 qualificados, 2 de mídia paga); Leads Comercial 32; Leads E-book 94; total 162.</li>
+      <li>AI Assistant: sessões cuja origem é um assistente de IA no GA4. O fator que identifica o assistente é o endereço de origem da visita.</li>
       <li>O Meta Ads vem da conta Atrio Hotel Management. O gasto e o CAC incluem o Meta desde 01/09; conversões do Meta são as ações de lead da plataforma.</li>
       <li>Antes de 21/10 o evento não era medido de forma confiável; por isso a conversão e o CAC usam apenas sessões e gasto desde essa data.</li>
     </ul>
@@ -377,6 +410,32 @@ dash.loader('ga_channels', {
     if (typeof a === 'string') a = JSON.parse(a);
     if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
     const txt = ["canal"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ai_daily', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "fonte"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ai_sources', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["fonte"];
     const cols = a.columns || [];
     const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
     return { columns: cols, rows, cut: !!a.data_truncated };
@@ -772,6 +831,17 @@ dash.loader('ig_totals_prev', {
     return { columns: cols, rows, cut: !!a.data_truncated };
   },
 });
+const LEADS = [
+  { tipo: 'Novos Negócios', leads: 36, leads_pagos: 22, qualificados: 4, qualificados_pagos: 2, regra: 'generate_lead em todas as páginas, exceto as listadas abaixo', disparo: 'Por página: pendente (o GA4 da Nekt não traz o nome do evento)' },
+  { tipo: 'Comercial B2B', leads: 32, leads_pagos: null, qualificados: null, qualificados_pagos: null, regra: 'generate_lead na página Parcerias Comerciais', disparo: '/parcerias-comerciais' },
+  { tipo: 'E-book', leads: 94, leads_pagos: null, qualificados: null, qualificados_pagos: null, regra: 'generate_lead de materiais ricos (campanha específica de e-book)', disparo: '/materiais-ricos/ebook-booking-elevate-2026' },
+];
+dash.calc('leads', {
+  inputs: ['ga_since_leads'],
+  title: 'Leads informados pela equipe',
+  description: 'Totais de generate_lead informados pela equipe, por tipo e origem (mídia paga), atualizados em 13/11/2026.',
+  fn: () => LEADS,
+});
 dash.calc('kpi_main', {
   inputs: ['kpi_platform', 'spend_windows', 'ga_since_leads', 'leads'],
   title: 'Indicadores gerais',
@@ -790,6 +860,8 @@ dash.calc('kpi_main', {
       conv_rate: div(total, sess),
       cac_geral: div(janela('desde_21_10'), total),
       cac_nn: div(janela('desde_21_10'), nn.leads),
+      cac_pago_nn: div(janela('desde_21_10'), nn.leads_pagos),
+      leads_pagos_total: sum(leads, 'leads_pagos'),
       cac_periodo: div(janela('total'), total),
     }];
   },
@@ -800,7 +872,11 @@ dash.calc('leads_table', {
   description: 'Leads informados por tipo e taxa de conversão sobre as sessões desde 21/10.',
   fn: (leads, ga_since_leads) => {
     const sess = (ga_since_leads[0] || {}).sessoes || 0;
-    return leads.map((r) => ({ tipo: r.tipo, leads: r.leads, qualificados: r.qualificados, conv: sess ? r.leads / sess : null, regra: r.regra, disparo: r.disparo }));
+    const totalL = leads.reduce((s, r) => s + (Number(r.leads) || 0), 0);
+    const rows = leads.map((r) => ({ tipo: r.tipo, leads: r.leads, leads_pagos: r.leads_pagos, outras: r.leads_pagos == null ? null : r.leads - r.leads_pagos, qualificados: r.qualificados, qualificados_pagos: r.qualificados_pagos, conv: sess ? r.leads / sess : null, regra: r.regra, disparo: r.disparo }));
+    const sumN = (k) => { const v = leads.map((r) => r[k]).filter((x) => x != null); return v.length ? v.reduce((a, b) => a + b, 0) : null; };
+    rows.push({ tipo: 'Total', leads: totalL, leads_pagos: sumN('leads_pagos'), outras: null, qualificados: sumN('qualificados'), qualificados_pagos: sumN('qualificados_pagos'), conv: sess ? totalL / sess : null, regra: 'Mídia paga informada só para Novos Negócios', disparo: '' });
+    return rows;
   },
 });
 
@@ -1013,6 +1089,58 @@ function lineChart(el, rows, o) {
     .on('mouseleave', () => { dot.attr('display', 'none'); hideTip(el); });
 }
 
+
+const PLATCOL = { 'Google Ads': '#DB9B0E', 'LinkedIn Ads': '#2F7FD0', 'Meta Ads': '#8E5CD9' };
+const AICOL = { ChatGPT: '#10A37F', Perplexity: '#20808D', Gemini: '#4285F4', Copilot: '#8E5CD9', Claude: '#D97757', Outros: '#A5ACAD' };
+function multiLine(el, rows, o) {
+  const w = el.clientWidth;
+  if (!w) return;
+  const prev = o.prev || null;
+  if (!rows.length && !(prev && prev.length)) { msgBox(el, 'Sem dados no filtro atual.'); return; }
+  el.replaceChildren();
+  const F = o.money ? FMT.brl : FMT.int;
+  const n = prev ? windowN() : 0;
+  const names = [...new Set(rows.map((r) => r[o.s]))];
+  const series = names.map((nm, i) => ({ name: nm, color: (o.colors && o.colors[nm]) || COL[i % 8], pts: rows.filter((r) => r[o.s] === nm).map((r) => ({ d: parseDay(r[o.x]), k: r[o.x], v: r[o.y] || 0 })).sort((a, b) => a.d - b.d) }));
+  const tot = new Map(); rows.forEach((r) => tot.set(r[o.x], (tot.get(r[o.x]) || 0) + (r[o.y] || 0)));
+  const ptot = new Map(); if (prev) prev.forEach((r) => { const k = addDays(r[o.x], n); ptot.set(k, (ptot.get(k) || 0) + (r[o.y] || 0)); });
+  const pp = [...ptot].map(([k, v]) => ({ d: parseDay(k), k, v })).sort((a, b) => a.d - b.d);
+  const lg = document.createElement('div'); lg.className = 'legend';
+  series.forEach((s) => { const sp = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = s.color; sp.append(sw, document.createTextNode(s.name)); lg.append(sp); });
+  if (prev) { const b = document.createElement('span'); const s2 = document.createElement('span'); s2.className = 'sw'; s2.style.background = 'transparent'; s2.style.border = '2px dashed var(--color-fg)'; s2.style.height = '0'; s2.style.borderRadius = '0'; b.append(s2, document.createTextNode('Total do período anterior')); lg.append(b); }
+  el.append(lg);
+  const all = [...series.flatMap((s) => s.pts), ...pp];
+  const H = 240, m = { t: 8, r: 10, b: 22, l: o.money ? 56 : 40 }, iw = w - m.l - m.r, ih = H - m.t - m.b;
+  const x = d3.scaleUtc(d3.extent(all, (p) => p.d), [0, iw]);
+  const y = d3.scaleLinear([0, d3.max(all, (p) => p.v) || 1], [ih, 0]).nice();
+  const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${H}`).attr('width', '100%');
+  const g = svg.append('g').attr('transform', `translate(${m.l},${m.t})`);
+  y.ticks(4).forEach((tk) => {
+    g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', y(tk)).attr('y2', y(tk)).attr('stroke', 'var(--cds-chart-grid)');
+    g.append('text').attr('x', -6).attr('y', y(tk)).attr('dy', '0.32em').attr('text-anchor', 'end').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(F(tk));
+  });
+  x.ticks(6).forEach((tk) => g.append('text').attr('x', x(tk)).attr('y', ih + 15).attr('text-anchor', 'middle').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(fdate(tk)));
+  const ln = d3.line().x((p) => x(p.d)).y((p) => y(p.v));
+  if (pp.length) g.append('path').attr('d', ln(pp)).attr('fill', 'none').attr('stroke', 'var(--color-fg)').attr('stroke-width', 2).attr('stroke-dasharray', '5 4').attr('stroke-linejoin', 'round');
+  series.forEach((s) => { g.append('path').attr('d', ln(s.pts)).attr('fill', 'none').attr('stroke', s.color).attr('stroke-width', 2.5).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round'); if (s.pts.length === 1) g.append('circle').attr('cx', x(s.pts[0].d)).attr('cy', y(s.pts[0].v)).attr('r', 3.5).attr('fill', s.color); });
+  const days = [...new Set(series.flatMap((s) => s.pts.map((p) => p.k)))].sort();
+  const dd = days.map((k) => parseDay(k));
+  const bis = d3.bisector((d) => d).center;
+  const vl = g.append('line').attr('y1', 0).attr('y2', ih).attr('stroke', 'var(--color-fg-muted)').attr('stroke-dasharray', '3 3').attr('display', 'none');
+  g.append('rect').attr('width', iw).attr('height', ih).attr('fill', 'transparent')
+    .on('mousemove', (ev) => {
+      const [mx] = d3.pointer(ev);
+      const idx = bis(dd, x.invert(mx)); const k = days[idx]; if (!k) return;
+      vl.attr('display', null).attr('x1', x(dd[idx])).attr('x2', x(dd[idx]));
+      const lines = [{ text: fdate(dd[idx]) }];
+      series.forEach((s) => { const p = s.pts.find((q) => q.k === k); lines.push({ color: s.color, text: s.name + ': ' + (p ? F(p.v) : F(0)) }); });
+      if (series.length > 1) lines.push({ text: 'Total: ' + F(tot.get(k) || 0) });
+      if (prev) lines.push({ text: 'Total do período anterior: ' + (ptot.has(k) ? F(ptot.get(k)) : '—') });
+      showTip(el, ev, lines);
+    })
+    .on('mouseleave', () => { vl.attr('display', 'none'); hideTip(el); });
+}
+
 function hbars(el, rows, o) {
   if (!rows.length) { msgBox(el, 'Sem dados no filtro atual.'); return; }
   const max = d3.max(rows, (r) => r[o.v]) || 1;
@@ -1213,9 +1341,11 @@ function draw() {
   fillFilters();
   fillMarks();
   document.querySelectorAll('#ai-root table[data-row-key]').forEach((t) => { if (t.closest('[hidden]') === null) fillTable(t); });
+  document.querySelectorAll('#t-leads tbody tr').forEach((tr) => { tr.classList.toggle('total', tr.dataset.key === 'Total'); });
   const pv = (key, id) => (cmpOn[key] ? rowsOf(id) || [] : null);
   if (tab === 'perf') {
-    chartOr($('#ch-spend'), 'spend_daily', (rows) => stacked($('#ch-spend'), rows, { x: 'dia', s: 'plataforma', y: 'gasto', money: true, prev: pv('spend', 'spend_daily_prev') }));
+    chartOr($('#ch-spend'), 'spend_daily', (rows) => multiLine($('#ch-spend'), rows, { x: 'dia', s: 'plataforma', y: 'gasto', money: true, colors: PLATCOL, prev: pv('spend', 'spend_daily_prev') }));
+    chartOr($('#ch-ai'), 'ai_daily', (rows) => multiLine($('#ch-ai'), rows, { x: 'dia', s: 'fonte', y: 'sessoes', colors: AICOL }));
     chartOr($('#ch-sessions'), 'ga_daily', (rows) => lineChart($('#ch-sessions'), rows, { x: 'dia', y: 'sessoes', label: 'Sessões', prev: pv('sessions', 'ga_daily_prev') }));
     chartOr($('#hb-channels'), 'ga_channels', (rows) => hbars($('#hb-channels'), rows, { l: 'canal', v: 'sessoes', colors: true }));
     chartOr($('#ch-origem'), 'ga_channels', (rows) => pie($('#ch-origem'), rows, pv('origem', 'ga_channels_prev')));
@@ -1233,6 +1363,7 @@ document.addEventListener('change', (ev) => {
   const t = ev.target.closest && ev.target.closest('[data-cmp]');
   if (t) { cmpOn[t.dataset.cmp] = t.checked; draw(); }
 });
+document.querySelectorAll('.sec-nav [data-go]').forEach((b) => b.addEventListener('click', () => { const el = document.getElementById(b.dataset.go); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
 dash.onData(draw);
 if (location.hash === '#org') showTab('org');
 </script>
