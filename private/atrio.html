@@ -160,7 +160,7 @@
     <h2 id="geral">Métricas gerais</h2>
     <div class="grid">
       <div class="card kpi" id="kpi-invest">
-        <span class="l">Total investido (LinkedIn, Google e Meta Ads)</span>
+        <span class="l">Total investido</span>
         <b class="v" data-source="kpi_main" data-field="gasto_total" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="gasto_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="gasto_prev" data-row="0" data-fmt="brl">—</b></span></span>
         <table data-source="kpi_platform" data-row-key="plataforma" id="t-platform">
           <thead><tr><th class="t" data-field="plataforma">Plataforma</th><th data-field="gasto" data-fmt="brl">Investido</th><th data-field="cliques" data-fmt="int">Cliques</th></tr></thead><tbody></tbody>
@@ -254,7 +254,7 @@
     </ul>
   </section>
 
-  <section id="org" hidden><div class="subtabs" role="tablist" aria-label="Rede social"><button type="button" role="tab" class="subtab" data-sub="li" aria-selected="true">LinkedIn</button><button type="button" role="tab" class="subtab" data-sub="ig" aria-selected="false">Instagram</button></div><div id="org-li" hidden></div><div id="org-ig" hidden></div></section>
+  <section id="org" hidden><div class="subtabs" role="tablist" aria-label="Rede social"><button type="button" role="tab" class="subtab" data-sub="ig" aria-selected="true">Instagram</button><button type="button" role="tab" class="subtab" data-sub="li" aria-selected="false">LinkedIn</button></div><div id="org-li" hidden></div><div id="org-ig" hidden></div></section>
 
   <template id="org-li-tpl">
     <p class="note">LinkedIn da Atrio. O filtro de data vale para a aba, exceto seguidores totais e demografia, que são o retrato mais recente.</p>
@@ -299,7 +299,7 @@
       <div class="card kpi"><span class="l">Cliques (link do perfil e site)</span><b class="v" data-source="ig_totals" data-field="cliques" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_ig" data-field="cli_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_ig" data-field="cli_prev" data-row="0" data-fmt="int">—</b></span></span><span class="l">Visitas ao perfil: <b data-source="ig_totals" data-field="visitas_perfil" data-row="0" data-fmt="int">—</b></span><span class="cmp-l"><b data-source="cmp_ig" data-field="vp_delta" data-row="0" data-fmt="delta">—</b> <span class="l">visitas, anterior: <b data-source="cmp_ig" data-field="vp_prev" data-row="0" data-fmt="int">—</b></span></span></div>
     </div>
     <div class="grid2" style="margin-top: var(--cds-gap-md)">
-      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">O Instagram não separa seguidores orgânicos e pagos.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igfol"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-fol" data-source="ig_followers_daily ig_followers_daily_prev ig_followers"></div></div>
+      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">Orgânicos e pagos, em cores diferentes. O Instagram não informa a origem de cada seguidor: o pago é uma estimativa pela participação de anúncios nas visualizações do dia. O total de seguidores hoje aparece no canto do gráfico.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igfol"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-fol" data-source="ig_followers_daily ig_followers_daily_prev ig_followers"></div></div>
       <div class="card"><div class="ch-h"><div><h3>Alcance por dia</h3><p class="note">Contas únicas alcançadas em cada dia.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igreach"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-reach" data-source="ig_daily ig_daily_prev"></div></div>
     </div>
     <h2 id="ig-demo">Quem segue a conta (insights demográficos)</h2>
@@ -1518,7 +1518,7 @@ function fillFilters() {
 
 let tab = 'perf';
 const ready = { li: false, ig: false };
-let orgPlat = 'linkedin';
+let orgPlat = 'instagram';
 function showTab(name) {
   tab = name;
   $('#perf').hidden = name !== 'perf';
@@ -1567,7 +1567,7 @@ function draw() {
     bars('#hb-sen', 'li_demo_senioridade'); bars('#hb-fun', 'li_demo_funcao'); bars('#hb-set', 'li_demo_setor'); bars('#hb-por', 'li_demo_porte');
   } else if (orgPlat === 'instagram' && ready.ig) {
     chartOr($('#ch-ig-reach'), 'ig_daily', (rows) => stacked($('#ch-ig-reach'), rows, { x: 'dia', s: 'serie', y: 'valor', prev: pv('igreach', 'ig_daily_prev') }));
-    chartOr($('#ch-ig-fol'), 'ig_followers_daily', (rows) => { const tt = rowsOf('ig_followers'); stackBars($('#ch-ig-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Novos seguidores': '#DB9B0E' }, prev: pv('igfol', 'ig_followers_daily_prev'), badge: tt && tt[0] ? FMT.int(tt[0].seguidores) : null }); });
+    chartOr($('#ch-ig-fol'), 'ig_followers_daily', (rows) => { const tt = rowsOf('ig_followers'); stackBars($('#ch-ig-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Orgânico': '#DB9B0E', 'Pago (estimado)': '#2F7FD0' }, prev: pv('igfol', 'ig_followers_daily_prev'), badge: tt && tt[0] ? FMT.int(tt[0].seguidores) : null }); });
     renderPosts('#posts-ig', rowsOf('ig_top_posts'), 'ig', 'ig_top_posts');
     renderInsights('#ins-ig', rowsOf('ig_insights'), 'ig_insights');
     bars('#hb-ig-idade', 'ig_demo_idade'); bars('#hb-ig-genero', 'ig_demo_genero'); bars('#hb-ig-cidade', 'ig_demo_cidade'); bars('#hb-ig-pais', 'ig_demo_pais');

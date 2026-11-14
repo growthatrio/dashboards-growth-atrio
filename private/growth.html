@@ -228,7 +228,7 @@
   <div class="chips" id="chips" aria-live="polite" hidden></div>
   <div class="subtabs" id="main-tabs" role="tablist" aria-label="Seções do dashboard"><button type="button" role="tab" class="subtab" id="tab-perf" aria-selected="true">Performance</button><button type="button" role="tab" class="subtab" id="tab-org" aria-selected="false">Social Orgânico</button></div>
   <div id="perf">
-  <nav class="sec-nav" aria-label="Seções do dashboard"><button type="button" data-go="geral">Métricas gerais</button><button type="button" data-go="funil">Funil</button><button type="button" data-go="invest">Evolução</button><button type="button" data-go="hoteis">Hotéis e marcas</button><button type="button" data-go="campanhas">Campanhas</button><button type="button" data-go="anuncios">Anúncios</button><button type="button" data-go="alertas">Alertas</button><button type="button" data-go="insights">Insights</button><button type="button" data-go="obs">Observações</button></nav>
+  <nav class="sec-nav" aria-label="Seções do dashboard"><button type="button" data-go="geral">Métricas gerais</button><button type="button" data-go="funil">Funil</button><button type="button" data-go="invest">Evolução</button><button type="button" data-go="ai">AI Assistant</button><button type="button" data-go="hoteis">Hotéis e marcas</button><button type="button" data-go="campanhas">Campanhas</button><button type="button" data-go="anuncios">Anúncios</button><button type="button" data-go="alertas">Alertas</button><button type="button" data-go="insights">Insights</button><button type="button" data-go="obs">Observações</button></nav>
   <p class="note">Nos campos de hotel e de campanha, digite parte do nome e pressione Enter (busca por "contém") ou escolha na lista. O período padrão são os últimos 30 dias, e a comparação usa o período imediatamente anterior, com o mesmo número de dias. Dados do Meta e do Google até <b data-source="meta_info" data-field="ate" data-row="0" data-fmt="txt">—</b>.</p>
 
   <h2 id="geral">Métricas gerais</h2>
@@ -236,7 +236,7 @@
 
   <h2 id="funil">Funil de conversão</h2>
   <div class="grid2">
-    <div class="card"><h3>Do alcance à conversão</h3><p class="note">Alcance e impressões, cliques com CTR e conversões no filtro atual.</p><div id="hb-funnel" data-source="funnel"></div></div>
+    <div class="card"><div class="ch-h"><h3>Do alcance à conversão</h3><label class="cmp"><input type="checkbox" role="switch" data-cmp="funnel"> Comparar com o período anterior</label></div><p class="note">Alcance e impressões, cliques com CTR e conversões no filtro atual.</p><div id="hb-funnel" data-source="funnel funnel_prev"></div></div>
     <div class="card"><h3>Conversões por tipo</h3><p class="note">generate_lead, clique_reservar e form lead do Meta, e conversões configuradas no Google Ads.</p><table data-source="funnel_conv" data-row-key="tipo" id="t-fconv"><thead><tr><th class="t" data-field="tipo">Conversões por tipo</th><th data-field="valor" data-fmt="int">Total</th></tr></thead><tbody></tbody></table></div>
   </div>
 
@@ -244,6 +244,14 @@
   <div class="ch-h" style="margin-bottom:8px"><p class="note" style="margin:0">Agrupe os gráficos por dia, semana ou mês.</p><div class="seg" role="group" aria-label="Agrupar o gráfico por"><button type="button" data-g="dia" aria-pressed="true">Dia</button><button type="button" data-g="semana" aria-pressed="false">Semana</button><button type="button" data-g="mes" aria-pressed="false">Mês</button></div></div>
   <div class="grid2"><div class="card"><div class="ch-h"><div><h3>Investimento</h3><p class="note">Em reais, por plataforma.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="spend"> Comparar com o período anterior</label></div><div class="chart" id="ch-spend" data-source="spend_daily spend_daily_prev"></div></div><div class="card"><div class="ch-h"><div><h3>Conversões</h3><p class="note">Meta: generate_lead, clique_reservar e form lead. Google: conversões configuradas.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="conv"> Comparar com o período anterior</label></div><div class="chart" id="ch-conv" data-source="conv_daily conv_daily_prev"></div></div></div>
 
+  <h2 id="ai">AI Assistant</h2>
+  <p class="note">Visitas aos sites dos hotéis vindas de assistentes de IA (ChatGPT, Perplexity, Gemini, Copilot, Claude e outros), identificadas no GA4 pela origem da sessão, nos filtros de grupo, marca, hotel e agência. Os filtros de plataforma e campanha não se aplicam.</p>
+  <div class="grid2">
+    <div class="card"><div class="ch-h"><div><h3>Evolução do tráfego de IA</h3><p class="note">Sessões por dia, por assistente.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="ai"> Comparar com o período anterior</label></div><div class="chart" id="ch-ai" data-source="ai_h_daily ai_h_daily_prev"></div></div>
+    <div class="card"><h3>Principais assistentes</h3><p class="note">Sessões no período filtrado.</p>
+      <div class="scroll"><table data-source="ai_h_sources" data-row-key="fonte" id="t-ai-src"><thead><tr><th class="t" data-field="fonte">Assistente</th><th data-field="sessoes" data-fmt="int">Sessões</th><th data-field="participacao" data-fmt="pct">Participação</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
   <h2 id="hoteis">Hotéis e marcas</h2>
   <div class="card"><p class="note">Todos os hotéis e marcas, por investimento. ROAS = receita Web Direto ÷ investimento total do hotel. Clique no título para ordenar.</p><div class="scroll"><table data-source="hotels_table" data-row-key="hotel" data-pagesize="20" id="t-hotels"><thead><tr><th class="t" data-field="hotel">Hotel</th><th class="t" data-field="marca">Marca</th><th data-field="gasto" data-fmt="brl">Gasto</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpa" data-fmt="brl">Custo por conversão</th><th data-field="reservas" data-fmt="int">Reservas Web Direto</th><th data-field="receita" data-fmt="brl">Receita Web Direto</th><th data-field="roas" data-fmt="x">ROAS</th></tr></thead><tbody></tbody></table></div><div class="pager" data-for="t-hotels"></div></div>
 
@@ -278,7 +286,7 @@
   </ul>
 </div>
   <div id="org" hidden>
-  
+  <div id="org-ig">
     <p class="note">Instagram dos hotéis e marcas com conta conectada (LK Design, Grand Mercure SP Pinheiros, Xtay, Aéra Copacabana e Montissi), nos filtros de grupo, marca, hotel e agência. O filtro de data vale para a aba, exceto seguidores totais e demografia, que são o retrato mais recente. Os filtros de plataforma e campanha não se aplicam aqui.</p>
     <h2 id="ig-geral">Alcance, seguidores e engajamento (Instagram)</h2>
     <div class="grid">
@@ -290,8 +298,14 @@
       <div class="card kpi"><span class="l">Cliques (link do perfil e site)</span><b class="v" data-source="ig_h_totals" data-field="cliques" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_ig" data-field="cli_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_ig" data-field="cli_prev" data-row="0" data-fmt="int">—</b></span></span><span class="l">Visitas ao perfil: <b data-source="ig_h_totals" data-field="visitas_perfil" data-row="0" data-fmt="int">—</b></span><span class="cmp-l"><b data-source="cmp_ig" data-field="vp_delta" data-row="0" data-fmt="delta">—</b> <span class="l">visitas, anterior: <b data-source="cmp_ig" data-field="vp_prev" data-row="0" data-fmt="int">—</b></span></span></div>
     </div>
     <div class="grid2" style="margin-top: var(--cds-gap-md)">
-      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">O Instagram não separa seguidores orgânicos e pagos.</p></div></div><div class="chart" id="ch-ig-fol" data-source="ig_h_followers_daily ig_h_followers"></div></div>
-      <div class="card"><div class="ch-h"><div><h3>Alcance por dia</h3><p class="note">Contas únicas alcançadas em cada dia.</p></div></div><div class="chart" id="ch-ig-reach" data-source="ig_h_daily"></div></div>
+      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">Orgânicos e pagos, em cores diferentes. O Instagram não informa a origem de cada seguidor: o pago é uma estimativa pela participação de anúncios nas visualizações do dia. O total de seguidores hoje aparece no canto do gráfico.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igfol"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-fol" data-source="ig_h_followers_daily ig_h_followers_daily_prev ig_h_followers"></div></div>
+      <div class="card"><div class="ch-h"><div><h3>Alcance por dia</h3><p class="note">Contas únicas alcançadas em cada dia.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igreach"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-reach" data-source="ig_h_daily ig_h_daily_prev"></div></div>
+    </div>
+    <h2 id="ig-hoteis">Instagram por hotel</h2>
+    <div class="card"><p class="note">Métricas de cada conta no período e nos filtros. Seguidores é o total de hoje; novos seguidores são os ganhos do período. Engajamento são as interações (curtidas, comentários, salvamentos e compartilhamentos), e a taxa é interações ÷ alcance. Cliques somam site e link do perfil. Clique no título de uma coluna para ordenar.</p>
+      <div class="scroll"><table data-source="ig_h_hotels" data-row-key="hotel" id="t-ig-hotels">
+        <thead><tr><th class="t" data-field="hotel">Hotel</th><th data-field="seguidores" data-fmt="int">Seguidores</th><th data-field="novos_seguidores" data-fmt="int">Novos seguidores</th><th data-field="alcance" data-fmt="int">Alcance</th><th data-field="interacoes" data-fmt="int">Engajamento</th><th data-field="taxa_engajamento" data-fmt="pct2">Taxa de engajamento</th><th data-field="cliques" data-fmt="int">Cliques totais</th><th data-field="posts" data-fmt="int">Posts</th></tr></thead><tbody></tbody>
+      </table></div>
     </div>
     <h2 id="ig-demo">Quem segue a conta (insights demográficos)</h2>
     <div class="grid2">
@@ -305,7 +319,7 @@
     <h2 id="ig-ins">Insights</h2>
     <p class="note">Gerados automaticamente a partir dos posts do período filtrado.</p>
     <div id="ins-ig" data-source="ig_h_posts ig_h_totals"></div>
-  
+  </div>
   </div>
 <script>
 dash.loader('filter_hotels', {
@@ -680,6 +694,84 @@ dash.loader('ig_h_demo_pais', {
     if (typeof a === 'string') a = JSON.parse(a);
     if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
     const txt = ["rotulo"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_followers_daily_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "serie"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_daily_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "serie"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ai_h_daily', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "fonte"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ai_h_daily_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "fonte"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ai_h_sources', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["fonte"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ig_h_hotels', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["hotel"];
     const cols = a.columns || [];
     const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
     return { columns: cols, rows, cut: !!a.data_truncated };
@@ -1338,6 +1430,15 @@ dash.calc('ig_h_insights', {
     if (rank.length >= 2) { add('ok', 'Conta com melhor engajamento médio nos posts: ' + rank[0].h + ' (' + FMT.pct2(rank[0].e) + ' em ' + rank[0].n + ' posts). Vale compartilhar o que ela faz com as demais.'); const w = rank[rank.length - 1]; add('opp', w.h + ' tem o menor engajamento médio (' + FMT.pct2(w.e) + ' em ' + w.n + ' posts). Aplique os formatos e temas que funcionam nas melhores contas.'); }
   } }),
 });
+dash.calc('funnel_prev', {
+  inputs: ['kpi_prev'],
+  title: 'Funil, período anterior',
+  description: 'Alcance, impressões, cliques e conversões no período imediatamente anterior.',
+  fn: (kt) => {
+    const k = kt[0] || {};
+    return [['Alcance', k.alcance], ['Impressões', k.impressoes], ['Cliques', k.cliques], ['Conversões', k.conversoes]].map(([etapa, valor]) => ({ etapa, valor: valor || 0 }));
+  },
+});
 
 const sumk = (a, k) => a.reduce((t, r) => t + (Number(r[k]) || 0), 0);
 dash.calc('cmp_perf', {
@@ -1482,6 +1583,7 @@ function timeChart(sel, id, idPrev, key, o) {
   });
 }
 
+const pv = (key, id) => (cmpOn[key] ? rowsOf(id) || [] : null);
 const bars = (sel, id, lab) => chartOr($(sel), id, (rows) => hbars($(sel), rows, { l: lab || 'rotulo', v: 'seguidores' }));
 function showTab(name) {
   tab = name;
@@ -1495,10 +1597,19 @@ function showTab(name) {
 }
 $('#tab-perf').addEventListener('click', () => showTab('perf'));
 $('#tab-org').addEventListener('click', () => showTab('org'));
+function drawPerfExtra() {
+  if (tab !== 'perf') return;
+  chartOr($('#ch-ai'), 'ai_h_daily', (rows) => multiLine($('#ch-ai'), rows, { x: 'dia', s: 'fonte', y: 'sessoes', colors: AICOL, prev: pv('ai', 'ai_h_daily_prev') }));
+  chartOr($('#hb-funnel'), 'funnel', (rows) => {
+    const pr = cmpOn.funnel ? rowsOf('funnel_prev') || [] : null;
+    const rr = pr ? rows.map((r, i) => { const p = pr[i] ? pr[i].valor : 0; const d = p ? ' (' + ((r.valor - p) / p * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%)' : ''; return { ...r, etapa: r.etapa + ' · antes: ' + FMT.int(p) + d }; }) : rows;
+    hbars($('#hb-funnel'), rr, { l: 'etapa', v: 'valor', colors: true });
+  });
+}
 function drawOrg() {
   if (tab !== 'org') return;
-  chartOr($('#ch-ig-fol'), 'ig_h_followers_daily', (rows) => { const tt = rowsOf('ig_h_followers'); stackBars($('#ch-ig-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Novos seguidores': '#DB9B0E' }, badge: tt && tt[0] ? FMT.int(tt[0].seguidores) : null }); });
-  chartOr($('#ch-ig-reach'), 'ig_h_daily', (rows) => stackBars($('#ch-ig-reach'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Alcance': '#DB9B0E' } }));
+  chartOr($('#ch-ig-fol'), 'ig_h_followers_daily', (rows) => { const tt = rowsOf('ig_h_followers'); stackBars($('#ch-ig-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Orgânico': '#DB9B0E', 'Pago (estimado)': '#2F7FD0' }, prev: pv('igfol', 'ig_h_followers_daily_prev'), badge: tt && tt[0] ? FMT.int(tt[0].seguidores) : null }); });
+  chartOr($('#ch-ig-reach'), 'ig_h_daily', (rows) => stackBars($('#ch-ig-reach'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Alcance': '#DB9B0E' }, prev: pv('igreach', 'ig_h_daily_prev') }));
   bars('#hb-ig-idade', 'ig_h_demo_idade'); bars('#hb-ig-genero', 'ig_h_demo_genero'); bars('#hb-ig-cidade', 'ig_h_demo_cidade'); bars('#hb-ig-pais', 'ig_h_demo_pais');
   renderPosts('#posts-ig', rowsOf('ig_h_posts'), 'ig', 'ig_h_posts');
   renderInsights('#ins-ig', rowsOf('ig_h_insights'), 'ig_h_insights');
@@ -1506,6 +1617,7 @@ function drawOrg() {
 
 function draw() {
   drawOrg();
+  drawPerfExtra();
   applyTheme();
   fillFilters();
   renderChips();
@@ -1513,7 +1625,6 @@ function draw() {
   document.querySelectorAll('#ai-root table[data-row-key]').forEach((t) => fillTable(t));
   timeChart('#ch-spend', 'spend_daily', 'spend_daily_prev', 'spend', { x: 'dia', s: 'plataforma', y: 'gasto', money: true });
   timeChart('#ch-conv', 'conv_daily', 'conv_daily_prev', 'conv', { x: 'dia', s: 'serie', y: 'valor' });
-  chartOr($('#hb-funnel'), 'funnel', (rows) => hbars($('#hb-funnel'), rows, { l: 'etapa', v: 'valor', colors: true }));
 }
 document.addEventListener('change', (ev) => {
   const t = ev.target.closest && ev.target.closest('[data-cmp]');
