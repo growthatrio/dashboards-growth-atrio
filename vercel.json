@@ -19,7 +19,7 @@
       "destination": "/api/page?d=travel"
     },
     {
-      "source": "/growth",
+      "source": "/hoteis",
       "destination": "/api/page?d=growth"
     }
   ],
@@ -40,6 +40,13 @@
           "value": "same-origin"
         }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/growth",
+      "destination": "/hoteis",
+      "permanent": false
     }
   ]
 }

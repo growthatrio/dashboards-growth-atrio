@@ -8,7 +8,7 @@ MENU = '''<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta na
 <link rel="stylesheet" href="/assets/theme.css"><style>.m{max-width:560px;margin:48px auto}.m h1{font-size:22px}.m a.c{display:block;margin:12px 0;padding:16px 18px;border:1px solid var(--color-border-line);border-radius:10px;color:var(--color-fg);text-decoration:none;background:var(--color-panel)}.m a.c:hover{border-color:#DB9B0E}.m small{color:var(--color-fg-muted)}</style></head>
 <body><div class="m"><h1>Dashboards Atrio</h1>
 <a class="c" href="/atrio"><b>Growth Atrio</b><br><small>Atrio Institucional: mídia paga, site, leads e redes sociais</small></a>
-<a class="c" href="/growth"><b>Growth Hotéis</b><br><small>Meta Ads, Google Ads e reservas Web Direto por hotel e marca</small></a>
+<a class="c" href="/hoteis"><b>Growth Hotéis</b><br><small>Meta Ads, Google Ads e reservas Web Direto por hotel e marca</small></a>
 <a class="c" href="/travel"><b>Growth Travel Week</b><br><small>Campanha de 03/11 a 06/12: etapas, metas e campanhas</small></a>
 <p><small>Logado como __EMAIL__ · <a href="/api/logout">Sair</a></small></p></div></body></html>'''
 
