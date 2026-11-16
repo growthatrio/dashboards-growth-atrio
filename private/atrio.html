@@ -1736,5 +1736,108 @@ if (location.hash === '#org') showTab('org');
 })();
 </script>
 
+<style>
+.refbtn { order: 1; margin-left: auto; font: inherit; font-size: 13px; font-weight: 600; color: var(--color-fg, #111); background: transparent; border: 1px solid var(--color-border-line, #ccc); border-radius: 8px; padding: 7px 14px; cursor: pointer; white-space: nowrap; }
+.refbtn:hover { border-color: #DB9B0E; background: rgba(219, 155, 14, .14); }
+.refbtn[disabled] { opacity: .65; cursor: progress; }
+.refbtn:focus-visible { outline: 2px solid #DB9B0E; outline-offset: 2px; }
+.refbtn.fixed { position: fixed; top: 10px; right: 250px; z-index: 40; margin: 0; }
+.mast .pdfbtn { order: 2; margin-left: 8px; }
+</style>
+<script>
+(function () {
+  var IDS = ["ads_table", "ai_daily", "ai_sources", "campaigns_table", "filter_campaigns", "ga_channels", "ga_channels_prev", "ga_daily", "ga_daily_prev", "ga_pages", "ga_since_leads", "ga_totals", "ig_daily", "ig_daily_prev", "ig_demo_cidade", "ig_demo_genero", "ig_demo_idade", "ig_demo_pais", "ig_followers", "ig_followers_daily", "ig_followers_daily_prev", "ig_top_posts", "ig_totals", "ig_totals_prev", "kpi_platform", "li_daily", "li_daily_prev", "li_demo_funcao", "li_demo_porte", "li_demo_senioridade", "li_demo_setor", "li_followers_daily", "li_followers_daily_prev", "li_followers_gain", "li_followers_total", "li_top_posts", "li_totals", "li_totals_prev", "spend_daily", "spend_daily_prev", "spend_windows"];
+  function msg(text, err) {
+    var el = document.getElementById('refmsg');
+    if (!el) { el = document.createElement('div'); el.id = 'refmsg'; el.className = 'pdfmsg'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+    el.className = 'pdfmsg' + (err ? ' err' : ''); el.textContent = text; el.style.display = 'block';
+    clearTimeout(msg.t); msg.t = setTimeout(function () { el.style.display = 'none'; }, err ? 9000 : 4500);
+  }
+  function busy() {
+    var d = window.dash; if (!d || !d.data) return false;
+    return IDS.some(function (id) { try { var x = d.data(id); return x && (x.status === 'loading' || x.refreshing === true); } catch (e) { return false; } });
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function run(btn) {
+    var d = window.dash, label = btn.textContent;
+    if (!d || (typeof d.refreshAll !== 'function' && typeof d.refresh !== 'function')) { msg('Não foi possível atualizar daqui. Use o botão de atualizar do topo da página.', true); return; }
+    btn.disabled = true; btn.textContent = 'Atualizando...';
+    if (typeof d.refreshAll === 'function') d.refreshAll(); else IDS.forEach(function (id) { try { d.refresh(id); } catch (e) {} });
+    var t0 = Date.now(), quiet = 0;
+    var iv = setInterval(function () {
+      quiet = busy() ? 0 : quiet + 1;
+      if (quiet >= 3 || Date.now() - t0 > 120000) {
+        clearInterval(iv); btn.disabled = false; btn.textContent = label;
+        var n = new Date(); msg('Dados atualizados às ' + pad(n.getHours()) + ':' + pad(n.getMinutes()) + '. Os números novos dependem da última sincronização da Nekt.');
+      }
+    }, 700);
+  }
+  function add() {
+    if (document.querySelector('.refbtn')) return;
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'refbtn'; btn.textContent = 'Atualizar dados';
+    btn.setAttribute('aria-label', 'Atualizar os dados do dashboard');
+    btn.addEventListener('click', function () { run(btn); });
+    var mast = document.querySelector('.mast');
+    if (mast) mast.appendChild(btn); else { btn.className += ' fixed'; document.body.appendChild(btn); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
+})();
+</script>
+
+<style>
+.ai { --pos: #1B7F46; --neg: #C62828; }
+.ai[data-mode="dark"] { --pos: #5BD08F; --neg: #FF8A80; }
+.ai .dpos { color: var(--pos) !important; font-weight: 700; }
+.ai .dneg { color: var(--neg) !important; font-weight: 700; }
+.ai .dflat { color: var(--color-fg-muted); }
+</style>
+<script>
+(function () {
+  var root = document.getElementById('ai-root') || document.body;
+  var RX = /([▲▼])\s?([\d.,]+)%/;
+  var busy = false, queued = false, obs = null;
+  function setMode() {
+    try {
+      var probe = document.createElement('div');
+      probe.style.cssText = 'position:absolute;visibility:hidden;background:var(--color-panel)';
+      root.appendChild(probe);
+      var m = (getComputedStyle(probe).backgroundColor.match(/\d+(\.\d+)?/g) || [255, 255, 255]).map(Number);
+      probe.remove();
+      root.setAttribute('data-mode', (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) < 128 ? 'dark' : 'light');
+    } catch (e) {}
+  }
+  function kindOf(txt) {
+    var m = RX.exec(txt); if (!m) return null;
+    var n = parseFloat(m[2].replace(/\./g, '').replace(',', '.'));
+    if (!isFinite(n) || n === 0) return 'dflat';
+    return m[1] === '▲' ? 'dpos' : 'dneg';
+  }
+  function setKind(el, k) {
+    var has = el.classList.contains('dpos') ? 'dpos' : el.classList.contains('dneg') ? 'dneg' : el.classList.contains('dflat') ? 'dflat' : null;
+    if (has === k) return;
+    el.classList.remove('dpos', 'dneg', 'dflat'); if (k) el.classList.add(k);
+  }
+  function pass() {
+    busy = true; if (obs) obs.disconnect();
+    try {
+      setMode();
+      root.querySelectorAll('[data-fmt="delta"]').forEach(function (el) { setKind(el, kindOf(el.textContent)); });
+      root.querySelectorAll('.chart *, [id^="hb-"] *').forEach(function (el) {
+        if (el.children.length || el.namespaceURI !== 'http://www.w3.org/1999/xhtml' || el.closest('[data-fmt="delta"]')) return;
+        var t = el.textContent, m = RX.exec(t); if (!m) return;
+        var sp = document.createElement('span'); sp.textContent = m[0]; sp.className = kindOf(t);
+        el.textContent = ''; el.append(document.createTextNode(t.slice(0, m.index)), sp, document.createTextNode(t.slice(m.index + m[0].length)));
+      });
+    } finally {
+      busy = false; queued = false;
+      if (obs) obs.observe(root, { childList: true, subtree: true, characterData: true });
+    }
+  }
+  function schedule() { if (busy || queued) return; queued = true; (window.requestAnimationFrame || setTimeout)(pass); }
+  obs = new MutationObserver(schedule);
+  pass();
+})();
+</script>
+
 </body>
 </html>

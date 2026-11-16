@@ -144,7 +144,7 @@ def run_nekt(sql):
     return {'status': 'succeeded', 'columns': columns or [], 'data': data, 'data_truncated': False}
 
 
-def dataset(name, ds, params):
+def dataset(name, ds, params, fresh=False):
     statics = load_statics(name)
     if ds in statics:
         return {'status': 'succeeded', 'rows': statics[ds]}
@@ -154,7 +154,7 @@ def dataset(name, ds, params):
     used = {k: params.get(k) for k in defs[ds]['params']}
     ck = (name, ds, json.dumps(used, sort_keys=True))
     hit = _CACHE.get(ck)
-    if hit and hit[0] > time.time():
+    if hit and hit[0] > time.time() and not fresh:
         return hit[1]
     out = run_nekt(render_sql(defs[ds]['sql'], used))
     _CACHE[ck] = (time.time() + CACHE_SECONDS, out)

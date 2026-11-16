@@ -3,7 +3,7 @@
 (function () {
   var DASH = document.documentElement.getAttribute('data-dash');
   var loaders = {}, calcs = {}, state = {}, subs = [], params = {}, manifest = {}, started = false, scheduled = false;
-  var queue = [], running = 0, MAX = 4;
+  var queue = [], running = 0, MAX = 4, freshSet = {};
 
   function notify() {
     if (scheduled) return; scheduled = true;
@@ -29,7 +29,8 @@
     if (st.key === key && (st.status === 'ok' || st.status === 'loading')) return;
     st.key = key; st.status = 'loading'; st.data = undefined; st.error = undefined; notify();
     queue.push(function () {
-      return fetch('/api/data?d=' + encodeURIComponent(DASH) + '&ds=' + encodeURIComponent(id) + '&p=' + encodeURIComponent(key), { credentials: 'same-origin' })
+      var fr = freshSet[id] ? '&fresh=1' : ''; delete freshSet[id];
+      return fetch('/api/data?d=' + encodeURIComponent(DASH) + '&ds=' + encodeURIComponent(id) + '&p=' + encodeURIComponent(key) + fr, { credentials: 'same-origin' })
         .then(function (r) {
           if (r.status === 401) { location.href = '/'; throw new Error('Sessão expirada'); }
           return r.json();
@@ -74,6 +75,8 @@
       Object.keys(p).forEach(function (k) { var v = p[k] === '' ? null : p[k]; if ((params[k] == null ? null : params[k]) !== (v == null ? null : v)) { changed.push(k); if (v == null) delete params[k]; else params[k] = v; } });
       if (changed.length) { refetch(changed); notify(); }
     },
+    refresh: function (id) { if (loaders[id]) { freshSet[id] = 1; if (state[id]) state[id].key = null; enqueue(id); } },
+    refreshAll: function () { Object.keys(loaders).forEach(function (id) { window.dash.refresh(id); }); },
     setLink: function (name) { try { history.replaceState(null, '', '#' + (name || '')); } catch (e) {} },
     resetParams: function () { var changed = Object.keys(params); params = {}; if (changed.length) { refetch(changed); notify(); } }
   };

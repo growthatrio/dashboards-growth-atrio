@@ -104,6 +104,9 @@
 .ai .ins-opp { border-top: 3px solid var(--b-gold); }
 .ai .ins-mel { border-top: 3px solid #D64545; }
 .ai .p-hotel { font-size: var(--cds-font-size-caption); font-weight: 600; color: var(--b-gold); margin-bottom: 2px; }
+.ai .kpi-inline { display: flex; align-items: baseline; gap: 10px; margin: 2px 0 10px; }
+.ai .kpi-inline .l { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.ai .kpi-inline .v { font-size: clamp(1.5rem, 2.2vw, 2rem); font-weight: 700; font-variant-numeric: tabular-nums; }
 </style>
 <style>
 .ai .ch-h { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
@@ -232,7 +235,7 @@
   <p class="note">Nos campos de hotel e de campanha, digite parte do nome e pressione Enter (busca por "contém") ou escolha na lista. O período padrão são os últimos 30 dias, e a comparação usa o período imediatamente anterior, com o mesmo número de dias. Dados do Meta e do Google até <b data-source="meta_info" data-field="ate" data-row="0" data-fmt="txt">—</b>.</p>
 
   <h2 id="geral">Métricas gerais</h2>
-  <div class="grid kp"><div class="card kpi wide"><span class="l">Investimento total</span><b class="v" data-source="kpi_total" data-field="gasto" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="gasto_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="gasto_prev" data-row="0" data-fmt="brl">—</b></span></span><table data-source="kpi_platform" data-row-key="plataforma" id="t-platform"><thead><tr><th class="t" data-field="plataforma">Plataforma</th><th data-field="gasto" data-fmt="brl">Investido</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="conversoes" data-fmt="int">Conversões</th></tr></thead><tbody></tbody></table></div><div class="card kpi "><span class="l">Alcance (soma dos dias)</span><b class="v" data-source="kpi_total" data-field="alcance" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="alc_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="alc_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">Só o Meta informa alcance.</span></div><div class="card kpi "><span class="l">Impressões</span><b class="v" data-source="kpi_total" data-field="impressoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="imp_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="imp_prev" data-row="0" data-fmt="int">—</b></span></span></div><div class="card kpi "><span class="l">Cliques</span><b class="v" data-source="kpi_total" data-field="cliques" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="clk_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="clk_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">CTR <b data-source="kpi_total" data-field="ctr" data-row="0" data-fmt="pct2">—</b> · CPC <b data-source="kpi_total" data-field="cpc" data-row="0" data-fmt="brl">—</b></span><span class="cmp-l"><b data-source="cmp_perf" data-field="ctr_pp" data-row="0" data-fmt="pp">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="ctr_prev" data-row="0" data-fmt="pct2">—</b></span></span></div><div class="card kpi "><span class="l">Conversões</span><b class="v" data-source="kpi_total" data-field="conversoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="conv_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="conv_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">generate_lead <b data-source="kpi_total" data-field="gleads" data-row="0" data-fmt="int">—</b> · clique_reservar <b data-source="kpi_total" data-field="cliqres" data-row="0" data-fmt="int">—</b></span><span class="sm">form lead <b data-source="kpi_total" data-field="leads" data-row="0" data-fmt="int">—</b> · Google Ads <b data-source="kpi_total" data-field="conv_google" data-row="0" data-fmt="int">—</b></span></div><div class="card kpi "><span class="l">Custo por conversão</span><b class="v" data-source="kpi_total" data-field="cpa" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="cpa_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="cpa_prev" data-row="0" data-fmt="brl">—</b></span></span><span class="sm">Investimento total ÷ conversões.</span></div><div class="card kpi "><span class="l">Reservas Web Direto</span><b class="v" data-source="res_total" data-field="reservas" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="resv_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="resv_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">Fonte: Reservas Atrio (Web Direto), dados até 27/10.</span></div><div class="card kpi "><span class="l">Receita Web Direto</span><b class="v" data-source="res_total" data-field="receita" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="rec_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="rec_prev" data-row="0" data-fmt="brl">—</b></span></span></div><div class="card kpi "><span class="l">ROAS</span><b class="v" data-source="cmp_perf" data-field="roas" data-row="0" data-fmt="x">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="roas_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="roas_prev" data-row="0" data-fmt="x">—</b></span></span><span class="sm">Receita Web Direto ÷ investimento total do período (todas as plataformas e campanhas), sem influência dos filtros de plataforma e campanha.</span></div></div>
+  <div class="grid kp"><div class="card kpi wide"><span class="l">Investimento total</span><b class="v" data-source="kpi_total" data-field="gasto" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="gasto_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="gasto_prev" data-row="0" data-fmt="brl">—</b></span></span><table data-source="kpi_platform" data-row-key="plataforma" id="t-platform"><thead><tr><th class="t" data-field="plataforma">Plataforma</th><th data-field="gasto" data-fmt="brl">Investido</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="conversoes" data-fmt="int">Conversões</th></tr></thead><tbody></tbody></table></div><div class="card kpi "><span class="l">Alcance (soma dos dias)</span><b class="v" data-source="kpi_total" data-field="alcance" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="alc_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="alc_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">Só o Meta informa alcance.</span></div><div class="card kpi "><span class="l">Impressões</span><b class="v" data-source="kpi_total" data-field="impressoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="imp_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="imp_prev" data-row="0" data-fmt="int">—</b></span></span></div><div class="card kpi "><span class="l">Cliques</span><b class="v" data-source="kpi_total" data-field="cliques" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="clk_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="clk_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">CTR <b data-source="kpi_total" data-field="ctr" data-row="0" data-fmt="pct2">—</b> · CPC <b data-source="kpi_total" data-field="cpc" data-row="0" data-fmt="brl">—</b></span><span class="cmp-l"><b data-source="cmp_perf" data-field="ctr_pp" data-row="0" data-fmt="pp">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="ctr_prev" data-row="0" data-fmt="pct2">—</b></span></span></div><div class="card kpi "><span class="l">Conversões</span><b class="v" data-source="kpi_total" data-field="conversoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="conv_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="conv_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">generate_lead <b data-source="kpi_total" data-field="gleads" data-row="0" data-fmt="int">—</b> · clique_reservar <b data-source="kpi_total" data-field="cliqres" data-row="0" data-fmt="int">—</b></span><span class="sm">form lead <b data-source="kpi_total" data-field="leads" data-row="0" data-fmt="int">—</b> · Google Ads <b data-source="kpi_total" data-field="conv_google" data-row="0" data-fmt="int">—</b></span></div><div class="card kpi "><span class="l">Custo por conversão</span><b class="v" data-source="kpi_total" data-field="cpa" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="cpa_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="cpa_prev" data-row="0" data-fmt="brl">—</b></span></span><span class="sm">Investimento total ÷ conversões.</span></div><div class="card kpi "><span class="l">Reservas Web Direto</span><b class="v" data-source="res_total" data-field="reservas" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="resv_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="resv_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">Fonte: Reservas Atrio (Web Direto), dados até 27/10.</span></div><div class="card kpi "><span class="l">Reserva atribuída</span><b class="v" data-source="ga_purch" data-field="transacoes" data-row="0" data-fmt="int">—</b><span class="sm">Evento purchase do GA4, só hotéis de marcas próprias e independentes.</span></div><div class="card kpi "><span class="l">Receita de reservas atribuídas</span><b class="v" data-source="ga_purch" data-field="receita" data-row="0" data-fmt="brl">—</b><span class="sm">Receita das compras (purchaseRevenue) do GA4, mesmos hotéis e período.</span></div><div class="card kpi "><span class="l">Receita Web Direto</span><b class="v" data-source="res_total" data-field="receita" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="rec_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="rec_prev" data-row="0" data-fmt="brl">—</b></span></span></div><div class="card kpi "><span class="l">ROAS Web Direto</span><b class="v" data-source="cmp_perf" data-field="roas" data-row="0" data-fmt="x">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="roas_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="roas_prev" data-row="0" data-fmt="x">—</b></span></span><span class="sm">Receita Web Direto ÷ investimento total do período (todas as plataformas e campanhas), sem influência dos filtros de plataforma e campanha.</span></div></div>
 
   <h2 id="funil">Funil de conversão</h2>
   <div class="grid2">
@@ -252,8 +255,9 @@
       <div class="scroll"><table data-source="ai_h_sources" data-row-key="fonte" id="t-ai-src"><thead><tr><th class="t" data-field="fonte">Assistente</th><th data-field="sessoes" data-fmt="int">Sessões</th><th data-field="participacao" data-fmt="pct">Participação</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
+  <div class="card" style="margin-top:var(--cds-gap-md)"><h3>Hotéis com mais sessões de IA</h3><p class="note">Participação de cada hotel nas sessões vindas de assistentes de IA, no período e nos filtros (até 10 hotéis).</p><div class="chart" id="ch-ai-hotels" data-source="ai_h_hotels"></div></div>
   <h2 id="hoteis">Hotéis e marcas</h2>
-  <div class="card"><p class="note">Todos os hotéis e marcas, por investimento. ROAS = receita Web Direto ÷ investimento total do hotel. Clique no título para ordenar.</p><div class="scroll"><table data-source="hotels_table" data-row-key="hotel" data-pagesize="20" id="t-hotels"><thead><tr><th class="t" data-field="hotel">Hotel</th><th class="t" data-field="marca">Marca</th><th data-field="gasto" data-fmt="brl">Gasto</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpa" data-fmt="brl">Custo por conversão</th><th data-field="reservas" data-fmt="int">Reservas Web Direto</th><th data-field="receita" data-fmt="brl">Receita Web Direto</th><th data-field="roas" data-fmt="x">ROAS</th></tr></thead><tbody></tbody></table></div><div class="pager" data-for="t-hotels"></div></div>
+  <div class="card"><p class="note">Todos os hotéis e marcas, por investimento. ROAS Web Direto = receita Web Direto ÷ investimento total do hotel. Clique no título para ordenar.</p><div class="scroll"><table data-source="hotels_table" data-row-key="hotel" data-pagesize="20" id="t-hotels"><thead><tr><th class="t" data-field="hotel">Hotel</th><th class="t" data-field="marca">Marca</th><th data-field="gasto" data-fmt="brl">Gasto</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpa" data-fmt="brl">Custo por conversão</th><th data-field="reservas" data-fmt="int">Reservas Web Direto</th><th data-field="receita" data-fmt="brl">Receita Web Direto</th><th data-field="roas" data-fmt="x">ROAS Web Direto</th><th data-field="reservas_atrib" data-fmt="int">Reservas atribuídas (GA4)</th><th data-field="receita_atrib" data-fmt="brl">Receita de reservas atribuídas (GA4)</th></tr></thead><tbody></tbody></table></div><div class="pager" data-for="t-hotels"></div></div>
 
   <h2 id="campanhas">Campanhas</h2>
   <div class="card"><p class="note">Campanhas por investimento (até 200). Clique no título para ordenar.</p><div class="scroll"><table data-source="campaigns_table" data-row-key="chave" id="t-campaigns"><thead><tr><th class="t" data-field="hotel">Hotel</th><th class="t" data-field="plataforma">Plataforma</th><th class="t" data-field="campanha">Campanha</th><th data-field="gasto" data-fmt="brl">Gasto</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpa" data-fmt="brl">Custo por conversão</th></tr></thead><tbody></tbody></table></div></div>
@@ -277,7 +281,7 @@
     <li>Conversões: no Meta, generate_lead (clique de 1 dia; campanhas com "Travel" no nome), clique_reservar (demais campanhas) e form lead; no Google Ads, as conversões configuradas na conta. O custo por conversão é o investimento total ÷ essas conversões.</li>
     <li>Reservas e receita Web Direto vêm da fonte Reservas Atrio (grupo Direta Hotel, segmentação WebDireto, status Reservado), por data da fonte e com dados até 27/10. Só entram hotéis que têm conta de anúncio na Nekt.</li>
     <li>Atualização das reservas: a fonte é um arquivo CSV carregado na Nekt, hoje chamado segmentacao_pickup_ate_261026. Ao subir a versão nova, mantenha o mesmo nome de arquivo para o dashboard ler os dados novos; se o nome mudar, avise para ajustar a consulta.</li>
-    <li>ROAS = receita Web Direto ÷ investimento total no período, considerando todas as plataformas e campanhas dos hotéis, marcas e grupo filtrados. Os filtros de plataforma e de campanha não alteram o ROAS, as reservas nem a receita.</li>
+    <li>ROAS Web Direto = receita Web Direto ÷ investimento total no período, considerando todas as plataformas e campanhas dos hotéis, marcas e grupo filtrados. Os filtros de plataforma e de campanha não alteram o ROAS Web Direto, as reservas nem a receita.</li>
     <li>Critérios dos alertas, por objetivo (comparação com a média das campanhas do mesmo objetivo e da mesma plataforma): <b>Conversão</b>: alerta se gastou acima da média e não converteu, ou se o custo por conversão está 50% acima da média; destaque se tem ao menos 3 conversões e custo por conversão 20% abaixo da média (CPC e CPM bons, sozinhos, não bastam). <b>Alcance</b>: alerta se o CPM está 50% acima da média ou o alcance é baixo; destaque se o CPM está 33% abaixo e o alcance 50% acima. <b>Tráfego e engajamento</b>: alerta se o CPC está 50% acima; destaque se está 33% abaixo, com ao menos 100 cliques. Alertas são ordenados pelo maior gasto; destaques, por mais conversões.</li>
     <li>Insights: análise dos últimos 7 dias de dados, só de campanhas e anúncios ativos, independente do filtro de período; segue os demais filtros.</li>
     <li>Nomes dos hotéis: seguem o cadastro da camada de contexto da Nekt, que liga cada conta de anúncio e cada linha de reservas ao hotel. O Xtay aparece como marca, porque seus empreendimentos usam uma só conta de anúncio. Hotéis que têm reservas Web Direto mas não têm conta de anúncio na Nekt (Ibis POA Aeroporto, Villa do Vale, Mercure Campinas e Ibis Campinas) não entram na tabela.</li>
@@ -298,7 +302,7 @@
       <div class="card kpi"><span class="l">Cliques (link do perfil e site)</span><b class="v" data-source="ig_h_totals" data-field="cliques" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_ig" data-field="cli_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_ig" data-field="cli_prev" data-row="0" data-fmt="int">—</b></span></span><span class="l">Visitas ao perfil: <b data-source="ig_h_totals" data-field="visitas_perfil" data-row="0" data-fmt="int">—</b></span><span class="cmp-l"><b data-source="cmp_ig" data-field="vp_delta" data-row="0" data-fmt="delta">—</b> <span class="l">visitas, anterior: <b data-source="cmp_ig" data-field="vp_prev" data-row="0" data-fmt="int">—</b></span></span></div>
     </div>
     <div class="grid2" style="margin-top: var(--cds-gap-md)">
-      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">Orgânicos e pagos, em cores diferentes. O Instagram não informa a origem de cada seguidor: o pago é uma estimativa pela participação de anúncios nas visualizações do dia. O total de seguidores hoje aparece no canto do gráfico.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igfol"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-fol" data-source="ig_h_followers_daily ig_h_followers_daily_prev ig_h_followers"></div></div>
+      <div class="card"><div class="ch-h"><div><h3>Novos seguidores por dia</h3><p class="note">Orgânicos e pagos, em cores diferentes. O Instagram não informa a origem de cada seguidor: o pago é uma estimativa pela participação de anúncios nas visualizações do dia. O total de seguidores hoje aparece no canto do gráfico.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igfol"> Comparar com o período anterior</label></div><div class="kpi-inline"><span class="l">Novos seguidores no período</span><b class="v" id="kpi-fol-sum">—</b></div><div class="chart" id="ch-ig-fol" data-source="ig_h_followers_daily ig_h_followers_daily_prev ig_h_followers"></div></div>
       <div class="card"><div class="ch-h"><div><h3>Alcance por dia</h3><p class="note">Contas únicas alcançadas em cada dia.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igreach"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-reach" data-source="ig_h_daily ig_h_daily_prev"></div></div>
     </div>
     <h2 id="ig-hoteis">Instagram por hotel</h2>
@@ -765,6 +769,32 @@ dash.loader('ai_h_sources', {
   },
 });
 dash.loader('ig_h_hotels', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["hotel"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_purch', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ai_h_hotels', {
   description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
   fn: ({ answer }) => {
     let a = answer;
@@ -1597,18 +1627,50 @@ function showTab(name) {
 }
 $('#tab-perf').addEventListener('click', () => showTab('perf'));
 $('#tab-org').addEventListener('click', () => showTab('org'));
+function pieGen(el, rows) {
+  const w = el.clientWidth;
+  if (!w) return;
+  if (!rows.length) { msgBox(el, 'Sem sessões de IA no filtro atual.'); return; }
+  const data = rows.map((r) => ({ l: r.hotel, v: r.sessoes || 0 }));
+  const total = d3.sum(data, (d) => d.v) || 1;
+  const pc = (v) => (v / total * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%';
+  el.replaceChildren();
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center';
+  el.append(wrap);
+  const S = Math.min(240, w);
+  const svg = d3.select(wrap).append('svg').attr('viewBox', `0 0 ${S} ${S}`).style('width', S + 'px').style('height', S + 'px').style('flex', 'none');
+  const g = svg.append('g').attr('transform', `translate(${S / 2},${S / 2})`);
+  const arc = d3.arc().innerRadius(0).outerRadius(S / 2 - 2);
+  d3.pie().sort(null).value((d) => d.v)(data).forEach((a, i) => {
+    g.append('path').attr('d', arc(a)).attr('fill', COL[i % 8]).attr('stroke', 'var(--color-panel)').attr('stroke-width', 2)
+      .on('mousemove', (ev) => showTip(el, ev, [{ color: COL[i % 8], text: a.data.l + ': ' + FMT.int(a.data.v) + ' (' + pc(a.data.v) + ')' }]))
+      .on('mouseleave', () => hideTip(el));
+  });
+  const lg = document.createElement('div');
+  lg.style.cssText = 'display:grid;gap:4px;font-size:var(--cds-font-size-caption);min-width:14rem;flex:1 1 14rem';
+  data.forEach((d, i) => {
+    const row = document.createElement('div'); row.style.cssText = 'display:flex;gap:8px;align-items:center;justify-content:space-between;font-variant-numeric:tabular-nums';
+    const l = document.createElement('span'); const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = COL[i % 8]; l.append(sw, document.createTextNode(d.l));
+    const v = document.createElement('span'); v.textContent = FMT.int(d.v) + ' · ' + pc(d.v);
+    row.append(l, v); lg.append(row);
+  });
+  wrap.append(lg);
+}
 function drawPerfExtra() {
   if (tab !== 'perf') return;
+  chartOr($('#ch-ai-hotels'), 'ai_h_hotels', (rows) => pieGen($('#ch-ai-hotels'), rows));
+  chartOr($('#ch-spend'), 'spend_daily', (rows) => stackBars($('#ch-spend'), rows, { x: 'dia', s: 'plataforma', y: 'gasto', money: true, colors: PLATCOL, prev: pv('spend', 'spend_daily_prev') }));
   chartOr($('#ch-ai'), 'ai_h_daily', (rows) => multiLine($('#ch-ai'), rows, { x: 'dia', s: 'fonte', y: 'sessoes', colors: AICOL, prev: pv('ai', 'ai_h_daily_prev') }));
   chartOr($('#hb-funnel'), 'funnel', (rows) => {
     const pr = cmpOn.funnel ? rowsOf('funnel_prev') || [] : null;
-    const rr = pr ? rows.map((r, i) => { const p = pr[i] ? pr[i].valor : 0; const d = p ? ' (' + ((r.valor - p) / p * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%)' : ''; return { ...r, etapa: r.etapa + ' · antes: ' + FMT.int(p) + d }; }) : rows;
+    const rr = pr ? rows.map((r, i) => { const p = pr[i] ? pr[i].valor : 0; const d = p ? ' (' + (r.valor >= p ? '▲ ' : '▼ ') + (Math.abs((r.valor - p) / p) * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%)' : ''; return { ...r, etapa: r.etapa + ' · antes: ' + FMT.int(p) + d }; }) : rows;
     hbars($('#hb-funnel'), rr, { l: 'etapa', v: 'valor', colors: true });
   });
 }
 function drawOrg() {
   if (tab !== 'org') return;
-  chartOr($('#ch-ig-fol'), 'ig_h_followers_daily', (rows) => { const tt = rowsOf('ig_h_followers'); stackBars($('#ch-ig-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Orgânico': '#DB9B0E', 'Pago (estimado)': '#2F7FD0' }, prev: pv('igfol', 'ig_h_followers_daily_prev'), badge: tt && tt[0] ? FMT.int(tt[0].seguidores) : null }); });
+  chartOr($('#ch-ig-fol'), 'ig_h_followers_daily', (rows) => { const tt = rowsOf('ig_h_followers'); $('#kpi-fol-sum').textContent = FMT.int(Math.round(rows.reduce((a, r) => a + (Number(r.valor) || 0), 0))); stackBars($('#ch-ig-fol'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Orgânico': '#DB9B0E', 'Pago (estimado)': '#2F7FD0' }, prev: pv('igfol', 'ig_h_followers_daily_prev'), badge: tt && tt[0] ? FMT.int(tt[0].seguidores) : null }); });
   chartOr($('#ch-ig-reach'), 'ig_h_daily', (rows) => stackBars($('#ch-ig-reach'), rows, { x: 'dia', s: 'serie', y: 'valor', colors: { 'Alcance': '#DB9B0E' }, prev: pv('igreach', 'ig_h_daily_prev') }));
   bars('#hb-ig-idade', 'ig_h_demo_idade'); bars('#hb-ig-genero', 'ig_h_demo_genero'); bars('#hb-ig-cidade', 'ig_h_demo_cidade'); bars('#hb-ig-pais', 'ig_h_demo_pais');
   renderPosts('#posts-ig', rowsOf('ig_h_posts'), 'ig', 'ig_h_posts');
@@ -1623,7 +1685,7 @@ function draw() {
   renderChips();
   fillMarks();
   document.querySelectorAll('#ai-root table[data-row-key]').forEach((t) => fillTable(t));
-  timeChart('#ch-spend', 'spend_daily', 'spend_daily_prev', 'spend', { x: 'dia', s: 'plataforma', y: 'gasto', money: true });
+  
   timeChart('#ch-conv', 'conv_daily', 'conv_daily_prev', 'conv', { x: 'dia', s: 'serie', y: 'valor' });
 }
 document.addEventListener('change', (ev) => {
@@ -1783,6 +1845,107 @@ dash.onData(draw);
     if (mast) mast.appendChild(btn); else { btn.className += ' fixed'; document.body.appendChild(btn); }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addButton); else addButton();
+})();
+</script>
+<style>
+.refbtn { order: 1; margin-left: auto; font: inherit; font-size: 13px; font-weight: 600; color: var(--color-fg, #111); background: transparent; border: 1px solid var(--color-border-line, #ccc); border-radius: 8px; padding: 7px 14px; cursor: pointer; white-space: nowrap; }
+.refbtn:hover { border-color: #DB9B0E; background: rgba(219, 155, 14, .14); }
+.refbtn[disabled] { opacity: .65; cursor: progress; }
+.refbtn:focus-visible { outline: 2px solid #DB9B0E; outline-offset: 2px; }
+.refbtn.fixed { position: fixed; top: 10px; right: 250px; z-index: 40; margin: 0; }
+.mast .pdfbtn { order: 2; margin-left: 8px; }
+</style>
+<script>
+(function () {
+  var IDS = ["ads_table", "ai_h_daily", "ai_h_daily_prev", "ai_h_hotels", "ai_h_sources", "alerts", "campaigns_table", "conv_daily", "conv_daily_prev", "filter_campaigns", "filter_hotels", "ga_purch", "hotels_table", "ig_h_daily", "ig_h_daily_prev", "ig_h_demo_cidade", "ig_h_demo_genero", "ig_h_demo_idade", "ig_h_demo_pais", "ig_h_followers", "ig_h_followers_daily", "ig_h_followers_daily_prev", "ig_h_hotels", "ig_h_posts", "ig_h_totals", "ig_h_totals_prev", "ins_ads", "ins_camp", "inv_prev", "inv_total", "kpi_platform", "kpi_prev", "kpi_total", "res_prev", "res_total", "spend_daily", "spend_daily_prev"];
+  function msg(text, err) {
+    var el = document.getElementById('refmsg');
+    if (!el) { el = document.createElement('div'); el.id = 'refmsg'; el.className = 'pdfmsg'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+    el.className = 'pdfmsg' + (err ? ' err' : ''); el.textContent = text; el.style.display = 'block';
+    clearTimeout(msg.t); msg.t = setTimeout(function () { el.style.display = 'none'; }, err ? 9000 : 4500);
+  }
+  function busy() {
+    var d = window.dash; if (!d || !d.data) return false;
+    return IDS.some(function (id) { try { var x = d.data(id); return x && (x.status === 'loading' || x.refreshing === true); } catch (e) { return false; } });
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function run(btn) {
+    var d = window.dash, label = btn.textContent;
+    if (!d || (typeof d.refreshAll !== 'function' && typeof d.refresh !== 'function')) { msg('Não foi possível atualizar daqui. Use o botão de atualizar do topo da página.', true); return; }
+    btn.disabled = true; btn.textContent = 'Atualizando...';
+    if (typeof d.refreshAll === 'function') d.refreshAll(); else IDS.forEach(function (id) { try { d.refresh(id); } catch (e) {} });
+    var t0 = Date.now(), quiet = 0;
+    var iv = setInterval(function () {
+      quiet = busy() ? 0 : quiet + 1;
+      if (quiet >= 3 || Date.now() - t0 > 120000) {
+        clearInterval(iv); btn.disabled = false; btn.textContent = label;
+        var n = new Date(); msg('Dados atualizados às ' + pad(n.getHours()) + ':' + pad(n.getMinutes()) + '. Os números novos dependem da última sincronização da Nekt.');
+      }
+    }, 700);
+  }
+  function add() {
+    if (document.querySelector('.refbtn')) return;
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'refbtn'; btn.textContent = 'Atualizar dados';
+    btn.setAttribute('aria-label', 'Atualizar os dados do dashboard');
+    btn.addEventListener('click', function () { run(btn); });
+    var mast = document.querySelector('.mast');
+    if (mast) mast.appendChild(btn); else { btn.className += ' fixed'; document.body.appendChild(btn); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
+})();
+</script>
+<style>
+.ai { --pos: #1B7F46; --neg: #C62828; }
+.ai[data-mode="dark"] { --pos: #5BD08F; --neg: #FF8A80; }
+.ai .dpos { color: var(--pos) !important; font-weight: 700; }
+.ai .dneg { color: var(--neg) !important; font-weight: 700; }
+.ai .dflat { color: var(--color-fg-muted); }
+</style>
+<script>
+(function () {
+  var root = document.getElementById('ai-root') || document.body;
+  var RX = /([▲▼])\s?([\d.,]+)%/;
+  var busy = false, queued = false, obs = null;
+  function setMode() {
+    try {
+      var probe = document.createElement('div');
+      probe.style.cssText = 'position:absolute;visibility:hidden;background:var(--color-panel)';
+      root.appendChild(probe);
+      var m = (getComputedStyle(probe).backgroundColor.match(/\d+(\.\d+)?/g) || [255, 255, 255]).map(Number);
+      probe.remove();
+      root.setAttribute('data-mode', (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) < 128 ? 'dark' : 'light');
+    } catch (e) {}
+  }
+  function kindOf(txt) {
+    var m = RX.exec(txt); if (!m) return null;
+    var n = parseFloat(m[2].replace(/\./g, '').replace(',', '.'));
+    if (!isFinite(n) || n === 0) return 'dflat';
+    return m[1] === '▲' ? 'dpos' : 'dneg';
+  }
+  function setKind(el, k) {
+    var has = el.classList.contains('dpos') ? 'dpos' : el.classList.contains('dneg') ? 'dneg' : el.classList.contains('dflat') ? 'dflat' : null;
+    if (has === k) return;
+    el.classList.remove('dpos', 'dneg', 'dflat'); if (k) el.classList.add(k);
+  }
+  function pass() {
+    busy = true; if (obs) obs.disconnect();
+    try {
+      setMode();
+      root.querySelectorAll('[data-fmt="delta"]').forEach(function (el) { setKind(el, kindOf(el.textContent)); });
+      root.querySelectorAll('.chart *, [id^="hb-"] *').forEach(function (el) {
+        if (el.children.length || el.namespaceURI !== 'http://www.w3.org/1999/xhtml' || el.closest('[data-fmt="delta"]')) return;
+        var t = el.textContent, m = RX.exec(t); if (!m) return;
+        var sp = document.createElement('span'); sp.textContent = m[0]; sp.className = kindOf(t);
+        el.textContent = ''; el.append(document.createTextNode(t.slice(0, m.index)), sp, document.createTextNode(t.slice(m.index + m[0].length)));
+      });
+    } finally {
+      busy = false; queued = false;
+      if (obs) obs.observe(root, { childList: true, subtree: true, characterData: true });
+    }
+  }
+  function schedule() { if (busy || queued) return; queued = true; (window.requestAnimationFrame || setTimeout)(pass); }
+  obs = new MutationObserver(schedule);
+  pass();
 })();
 </script>
 

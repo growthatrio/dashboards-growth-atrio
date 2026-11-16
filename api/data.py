@@ -15,7 +15,7 @@ class handler(BaseHTTPRequestHandler):
             params = json.loads((q.get('p') or ['{}'])[0] or '{}')
             if not isinstance(params, dict):
                 raise ValueError('parâmetros inválidos')
-            return _lib.send(self, 200, _lib.dataset(name, ds, params))
+            return _lib.send(self, 200, _lib.dataset(name, ds, params, fresh=(q.get('fresh') or [''])[0] == '1'))
         except (KeyError, ValueError) as e:
             return _lib.send(self, 400, {'status': 'failed', 'error': str(e)})
         except Exception as e:
