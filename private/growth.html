@@ -306,10 +306,10 @@
       <div class="card"><div class="ch-h"><div><h3>Alcance por dia</h3><p class="note">Contas únicas alcançadas em cada dia.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="igreach"> Comparar com o período anterior</label></div><div class="chart" id="ch-ig-reach" data-source="ig_h_daily ig_h_daily_prev"></div></div>
     </div>
     <h2 id="ig-hoteis">Instagram por hotel</h2>
-    <div class="card"><p class="note">Métricas de cada conta no período e nos filtros. Seguidores é o total de hoje; novos seguidores são os ganhos do período. Engajamento são as interações (curtidas, comentários, salvamentos e compartilhamentos), e a taxa é interações ÷ alcance. Cliques somam site e link do perfil. Clique no título de uma coluna para ordenar.</p>
-      <div class="scroll"><table data-source="ig_h_hotels" data-row-key="hotel" id="t-ig-hotels">
+    <div class="card"><p class="note">Métricas de cada conta no período e nos filtros. Seguidores é o total de hoje; novos seguidores são os ganhos do período. Engajamento são as interações (curtidas, comentários, salvamentos e compartilhamentos), e a taxa é interações ÷ alcance. Cliques somam site e link do perfil. Mostra 20 hotéis por página. Clique no título de uma coluna para ordenar.</p>
+      <div class="scroll"><table data-source="ig_h_hotels" data-row-key="hotel" data-pagesize="20" id="t-ig-hotels">
         <thead><tr><th class="t" data-field="hotel">Hotel</th><th data-field="seguidores" data-fmt="int">Seguidores</th><th data-field="novos_seguidores" data-fmt="int">Novos seguidores</th><th data-field="alcance" data-fmt="int">Alcance</th><th data-field="interacoes" data-fmt="int">Engajamento</th><th data-field="taxa_engajamento" data-fmt="pct2">Taxa de engajamento</th><th data-field="cliques" data-fmt="int">Cliques totais</th><th data-field="posts" data-fmt="int">Posts</th></tr></thead><tbody></tbody>
-      </table></div>
+      </table></div><div class="pager" data-for="t-ig-hotels"></div>
     </div>
     <h2 id="ig-demo">Quem segue a conta (insights demográficos)</h2>
     <div class="grid2">

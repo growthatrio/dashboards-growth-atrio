@@ -131,6 +131,8 @@
 .ai input#f-campaign:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
 .ai #f-reset { background: transparent; border-color: transparent; color: var(--color-fg-muted); text-decoration: underline; text-underline-offset: 3px; padding: 0 8px; }
 .ai #f-reset:hover { color: var(--color-fg); }
+.ai .fhint { position: absolute; left: 2px; top: calc(100% + 2px); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); white-space: nowrap; pointer-events: none; }
+.ai #w-campaign { margin-bottom: 0; }
 </style>
 <style>
 .ai .ch-h { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
@@ -150,7 +152,7 @@
   <div class="bar" id="filtros">
       <div class="bar-l">
     <label class="fld" id="w-platform">Plataforma de anúncio<select id="f-platform" aria-label="Plataforma de anúncio"></select></label>
-    <label class="fld" id="w-campaign">Nome da campanha<input id="f-campaign" type="search" list="dl-campaign" placeholder="Digite parte do nome ou escolha" autocomplete="off" aria-label="Nome da campanha. Digite parte do nome ou escolha uma sugestão" data-source="filter_campaigns"><datalist id="dl-campaign"></datalist></label></div><div class="bar-r">
+    <label class="fld" id="w-campaign">Nome da Campanha<input id="f-campaign" type="search" list="dl-campaign" placeholder="Contém: digite parte do nome" autocomplete="off" aria-label="Nome da Campanha. Filtra campanhas que contêm o texto digitado, ou escolha uma sugestão" aria-describedby="camp-hint" data-source="filter_campaigns"><datalist id="dl-campaign"></datalist><span class="fhint" id="camp-hint" aria-live="polite"></span></label></div><div class="bar-r">
     <div class="fld" id="w-date"><span id="dr-label">Período</span>
       <button class="ctl" id="dr-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="dr-label dr-btn">—</button>
       <div class="drp" id="dr-pop" role="dialog" aria-label="Selecionar período" hidden>
@@ -167,7 +169,7 @@
   </div>
 
   <section id="perf">
-    <p class="note" id="nota-escopo">O filtro de plataforma e o de campanha (aceita parte do nome) valem para investimento, campanhas e anúncios. O filtro de data vale também para o site. A comparação usa o período imediatamente anterior, com o mesmo número de dias. Leads, conversão e custo por conversão usam os totais informados pela equipe e não mudam com o filtro.</p>
+    <p class="note" id="nota-escopo">O filtro de plataforma e o de Nome da Campanha (contém: aceita parte do nome) valem para investimento, campanhas e anúncios. O filtro de data vale também para o site. A comparação usa o período imediatamente anterior, com o mesmo número de dias. Leads, conversão e custo por conversão usam os totais informados pela equipe e não mudam com o filtro.</p>
     <nav class="sec-nav" aria-label="Seções do dashboard"><button type="button" class="chip" data-go="geral">Métricas</button><button type="button" class="chip" data-go="leads">Leads</button><button type="button" class="chip" data-go="investimento">Investimento e Tráfego</button><button type="button" class="chip" data-go="ai">AI Assistant</button><button type="button" class="chip" data-go="campanhas">Campanhas</button><button type="button" class="chip" data-go="anuncios">Principais anúncios</button></nav>
     <h2 id="geral">Métricas gerais</h2>
     <div class="grid">
@@ -1530,6 +1532,7 @@ function fillFilters() {
   const cs = camps.filter((r) => !p.platform || r.plataforma === p.platform);
   $('#dl-campaign').replaceChildren(...cs.map((r) => new Option(r.campanha, r.campanha)));
   if (document.activeElement !== selC) selC.value = p.campaign ?? '';
+  if (typeof campHint === 'function') campHint();
   updateRangeLabel();
   if (!$('#dr-pop').hidden) renderCal();
 }
@@ -1560,8 +1563,15 @@ document.querySelectorAll('.subtab').forEach((b) => b.addEventListener('click', 
 $('#f-platform').addEventListener('change', (e) => dash.setParams({ platform: e.target.value || null, campaign: null }));
 let campT = null;
 const setCamp = () => dash.setParams({ campaign: $('#f-campaign').value.trim() || null });
-$('#f-campaign').addEventListener('input', () => { clearTimeout(campT); campT = setTimeout(setCamp, 500); });
-$('#f-campaign').addEventListener('change', () => { clearTimeout(campT); setCamp(); });
+const campHint = () => {
+  const q = $('#f-campaign').value.trim().toLowerCase(), h = $('#camp-hint');
+  if (!q) { h.textContent = ''; return; }
+  const p = dash.params();
+  const n = (rowsOf('filter_campaigns') || []).filter((r) => (!p.platform || r.plataforma === p.platform) && String(r.campanha).toLowerCase().includes(q)).length;
+  h.textContent = n === 0 ? 'Nenhuma campanha contém “' + $('#f-campaign').value.trim() + '”' : n + (n === 1 ? ' campanha contém “' : ' campanhas contêm “') + $('#f-campaign').value.trim() + '”';
+};
+$('#f-campaign').addEventListener('input', () => { campHint(); clearTimeout(campT); campT = setTimeout(setCamp, 500); });
+$('#f-campaign').addEventListener('change', () => { clearTimeout(campT); setCamp(); campHint(); });
 $('#f-reset').addEventListener('click', () => { dash.resetParams(); closeCal(); });
 
 function chartOr(el, id, fn) { if (!el) return; const rows = rowsOf(id); if (rows) fn(rows); else if (failed(id)) failBox(el); }
