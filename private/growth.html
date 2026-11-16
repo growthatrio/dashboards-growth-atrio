@@ -1848,16 +1848,21 @@ dash.onData(draw);
 })();
 </script>
 <style>
-.refbtn { order: 1; margin-left: auto; font: inherit; font-size: 13px; font-weight: 600; color: var(--color-fg, #111); background: transparent; border: 1px solid var(--color-border-line, #ccc); border-radius: 8px; padding: 7px 14px; cursor: pointer; white-space: nowrap; }
+.refbtn { width: 38px; height: 38px; padding: 0; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--color-border-line, #ccc); background: transparent; color: var(--color-fg, #111); cursor: pointer; }
+.refbtn svg { width: 18px; height: 18px; display: block; }
 .refbtn:hover { border-color: #DB9B0E; background: rgba(219, 155, 14, .14); }
-.refbtn[disabled] { opacity: .65; cursor: progress; }
 .refbtn:focus-visible { outline: 2px solid #DB9B0E; outline-offset: 2px; }
-.refbtn.fixed { position: fixed; top: 10px; right: 250px; z-index: 40; margin: 0; }
-.mast .pdfbtn { order: 2; margin-left: 8px; }
+.refbtn[disabled] { cursor: progress; }
+.refbtn.spin svg { animation: refspin .9s linear infinite; }
+@keyframes refspin { to { transform: rotate(360deg); } }
+@keyframes refpulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .refbtn.spin svg { animation: refpulse 1.2s ease-in-out infinite; } }
+.refbtn.fixed { position: fixed; top: 10px; right: 250px; z-index: 40; }
 </style>
 <script>
 (function () {
   var IDS = ["ads_table", "ai_h_daily", "ai_h_daily_prev", "ai_h_hotels", "ai_h_sources", "alerts", "campaigns_table", "conv_daily", "conv_daily_prev", "filter_campaigns", "filter_hotels", "ga_purch", "hotels_table", "ig_h_daily", "ig_h_daily_prev", "ig_h_demo_cidade", "ig_h_demo_genero", "ig_h_demo_idade", "ig_h_demo_pais", "ig_h_followers", "ig_h_followers_daily", "ig_h_followers_daily_prev", "ig_h_hotels", "ig_h_posts", "ig_h_totals", "ig_h_totals_prev", "ins_ads", "ins_camp", "inv_prev", "inv_total", "kpi_platform", "kpi_prev", "kpi_total", "res_prev", "res_total", "spend_daily", "spend_daily_prev"];
+  var ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>';
   function msg(text, err) {
     var el = document.getElementById('refmsg');
     if (!el) { el = document.createElement('div'); el.id = 'refmsg'; el.className = 'pdfmsg'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
@@ -1870,26 +1875,29 @@ dash.onData(draw);
   }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function run(btn) {
-    var d = window.dash, label = btn.textContent;
+    var d = window.dash;
+    if (btn.disabled) return;
     if (!d || (typeof d.refreshAll !== 'function' && typeof d.refresh !== 'function')) { msg('Não foi possível atualizar daqui. Use o botão de atualizar do topo da página.', true); return; }
-    btn.disabled = true; btn.textContent = 'Atualizando...';
+    btn.disabled = true; btn.classList.add('spin'); btn.setAttribute('aria-busy', 'true'); btn.title = 'Atualizando...';
     if (typeof d.refreshAll === 'function') d.refreshAll(); else IDS.forEach(function (id) { try { d.refresh(id); } catch (e) {} });
     var t0 = Date.now(), quiet = 0;
     var iv = setInterval(function () {
       quiet = busy() ? 0 : quiet + 1;
       if (quiet >= 3 || Date.now() - t0 > 120000) {
-        clearInterval(iv); btn.disabled = false; btn.textContent = label;
-        var n = new Date(); msg('Dados atualizados às ' + pad(n.getHours()) + ':' + pad(n.getMinutes()) + '. Os números novos dependem da última sincronização da Nekt.');
+        clearInterval(iv); btn.disabled = false; btn.classList.remove('spin'); btn.removeAttribute('aria-busy');
+        var n = new Date(), hh = pad(n.getHours()) + ':' + pad(n.getMinutes());
+        btn.title = 'Atualizar dados. Última atualização às ' + hh;
+        msg('Dados atualizados às ' + hh + '. Os números novos dependem da última sincronização da Nekt.');
       }
     }, 700);
   }
   function add() {
     if (document.querySelector('.refbtn')) return;
-    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'refbtn'; btn.textContent = 'Atualizar dados';
-    btn.setAttribute('aria-label', 'Atualizar os dados do dashboard');
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'refbtn'; btn.innerHTML = ICON;
+    btn.setAttribute('aria-label', 'Atualizar dados'); btn.title = 'Atualizar dados';
     btn.addEventListener('click', function () { run(btn); });
-    var mast = document.querySelector('.mast');
-    if (mast) mast.appendChild(btn); else { btn.className += ' fixed'; document.body.appendChild(btn); }
+    var reset = document.getElementById('f-reset');
+    if (reset && reset.parentNode) reset.insertAdjacentElement('afterend', btn); else { btn.className += ' fixed'; document.body.appendChild(btn); }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
 })();

@@ -138,7 +138,7 @@
 
   <div class="bar" id="filtros">
     <label class="fld" id="w-platform">Plataforma de anúncio<select id="f-platform" aria-label="Plataforma de anúncio"></select></label>
-    <label class="fld" id="w-campaign">Nome da campanha<select id="f-campaign" aria-label="Nome da campanha" data-source="filter_campaigns"></select></label>
+    <label class="fld" id="w-campaign">Nome da campanha (contém)<input id="f-campaign" type="search" list="dl-campaign" placeholder="Digite ou escolha" autocomplete="off" aria-label="Nome da campanha, aceita parte do nome" data-source="filter_campaigns"><datalist id="dl-campaign"></datalist></label>
     <div class="fld" id="w-date"><span id="dr-label">Período</span>
       <button class="ctl" id="dr-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="dr-label dr-btn">—</button>
       <div class="drp" id="dr-pop" role="dialog" aria-label="Selecionar período" hidden>
@@ -155,7 +155,7 @@
   </div>
 
   <section id="perf">
-    <p class="note" id="nota-escopo">O filtro de plataforma e campanha vale para investimento, campanhas e anúncios. O filtro de data vale também para o site. A comparação usa o período imediatamente anterior, com o mesmo número de dias. Leads, conversão e custo por conversão usam os totais informados pela equipe e não mudam com o filtro.</p>
+    <p class="note" id="nota-escopo">O filtro de plataforma e o de campanha (aceita parte do nome) valem para investimento, campanhas e anúncios. O filtro de data vale também para o site. A comparação usa o período imediatamente anterior, com o mesmo número de dias. Leads, conversão e custo por conversão usam os totais informados pela equipe e não mudam com o filtro.</p>
     <nav class="sec-nav" aria-label="Seções do dashboard"><button type="button" class="chip" data-go="geral">Métricas</button><button type="button" class="chip" data-go="leads">Leads</button><button type="button" class="chip" data-go="investimento">Investimento e Tráfego</button><button type="button" class="chip" data-go="ai">AI Assistant</button><button type="button" class="chip" data-go="campanhas">Campanhas</button><button type="button" class="chip" data-go="anuncios">Principais anúncios</button></nav>
     <h2 id="geral">Métricas gerais</h2>
     <div class="grid">
@@ -177,31 +177,28 @@
         <span class="l">Leads gerados (generate_lead)</span>
         <b class="v" data-source="kpi_main" data-field="leads_total" data-row="0" data-fmt="int">—</b>
         <table data-source="leads" data-row-key="tipo" id="t-leads-mini">
-          <thead><tr><th class="t" data-field="tipo">Formato</th><th data-field="leads" data-fmt="int">Leads</th><th data-field="leads_pagos" data-fmt="int">Mídia paga</th></tr></thead><tbody></tbody>
+          <thead><tr><th class="t" data-field="tipo">Formato</th><th data-field="leads" data-fmt="int">Leads</th></tr></thead><tbody></tbody>
         </table>
       </div>
       <div class="card kpi" id="kpi-conv">
         <span class="l">Taxa de conversão do site</span>
         <b class="v" data-source="kpi_main" data-field="conv_rate" data-row="0" data-fmt="pct2">—</b>
-        <span class="l">Leads divididos pelas sessões desde 21/10, quando o evento passou a ser medido corretamente.</span><span class="l">Sem comparação: totais informados pela equipe, medidos só desde 21/10.</span>
+        <span class="l">Leads divididos pelas sessões do período. Números 100% corretos só a partir de 22/10.</span><span class="l">Sem comparação com o período anterior.</span>
       </div>
       <div class="card kpi" id="kpi-cac">
         <span class="l">Custo por conversão</span>
         <b class="v" data-source="kpi_main" data-field="cac_geral" data-row="0" data-fmt="brl">—</b>
-        <span class="l">Gasto desde 21/10 dividido por todos os leads.</span>
+        <span class="l">Investimento do período dividido por todos os leads.</span>
         <p class="note">Por lead de Novos Negócios: <b data-source="kpi_main" data-field="cac_nn" data-row="0" data-fmt="brl">—</b></p>
-        <p class="note">Com o gasto de todo o período: <b data-source="kpi_main" data-field="cac_periodo" data-row="0" data-fmt="brl">—</b></p>
-        <p class="note">Por lead de mídia paga (Novos Negócios): <b data-source="kpi_main" data-field="cac_pago_nn" data-row="0" data-fmt="brl">—</b></p>
       </div>
     </div>
 
     <h2 id="leads">Leads: evento generate_lead, origem e onde dispara</h2>
     <div class="card">
-      <p class="note">Totais informados pela equipe (atualizados em 13/11). O evento generate_lead só foi configurado corretamente a partir de 21/10. A origem "mídia paga" só está separada para Novos Negócios; nos demais tipos a origem não foi informada. As landing pages de GMP e de reforma tributária ficam fora da contagem. Todo o restante é Novos Negócios.</p>
+      <p class="note">Contagem automática pelo GA4: todo evento generate_lead disparado em uma página cujo endereço contém <b>/apresente-seu-ativo</b> é Novos Negócios; <b>/parcerias-comerciais</b>, Comercial B2B; e <b>/materiais-ricos/</b>, Download de Material Rico. Vale o filtro de período. <b>Os números só estão 100% corretos a partir de 22/10</b>, quando o evento passou a ser medido corretamente. Leads em outras páginas não entram na conta.</p>
       <div class="scroll"><table data-source="leads_table" data-row-key="tipo" id="t-leads">
-        <thead><tr><th class="t" data-field="tipo">Tipo de lead</th><th data-field="leads" data-fmt="int">Leads</th><th data-field="leads_pagos" data-fmt="int">Mídia paga</th><th data-field="outras" data-fmt="int">Outras origens</th><th data-field="qualificados" data-fmt="int">Qualificados</th><th data-field="qualificados_pagos" data-fmt="int">Qualificados (mídia paga)</th><th data-field="conv" data-fmt="pct2">Conversão</th><th class="t" data-field="regra">Regra</th><th class="t" data-field="disparo">Onde dispara</th></tr></thead><tbody></tbody>
+        <thead><tr><th class="t" data-field="tipo">Tipo de lead</th><th data-field="leads" data-fmt="int">Leads</th><th data-field="conv" data-fmt="pct2">Conversão</th><th class="t" data-field="regra">Regra</th><th class="t" data-field="disparo">Página</th></tr></thead><tbody></tbody>
       </table></div>
-      <p class="note">A contagem de leads por página ainda não está disponível: a fonte GA4 da Nekt não traz o nome do evento, só a contagem total de eventos por página.</p>
     </div>
 
     <h2 id="investimento">Investimento e Tráfego</h2>
@@ -247,7 +244,7 @@
     <h2 id="obs">Observações</h2>
     <ul class="obs">
       <li>Os eventos generate_lead foram configurados corretamente a partir de 21/10.</li>
-      <li>Totais levantados pela equipe (atualizados em 13/11): Novos Negócios 36 (22 de mídia paga; 4 qualificados, 2 de mídia paga); Leads Comercial 32; Leads E-book 94; total 162.</li>
+      <li>Leads: eventos generate_lead do GA4 contados por página (/apresente-seu-ativo = Novos Negócios; /parcerias-comerciais = Comercial B2B; /materiais-ricos/ = Download de Material Rico). Os números só estão 100% corretos a partir de 22/10.</li>
       <li>AI Assistant: sessões cuja origem é um assistente de IA no GA4. O fator que identifica o assistente é o endereço de origem da visita.</li>
       <li>O Meta Ads vem da conta Atrio Hotel Management. O gasto e o CAC incluem o Meta desde 01/09; conversões do Meta são as ações de lead da plataforma.</li>
       <li>Antes de 21/10 o evento não era medido de forma confiável; por isso a conversão e o CAC usam apenas sessões e gasto desde essa data.</li>
@@ -428,6 +425,19 @@ dash.loader('ga_channels', {
     if (typeof a === 'string') a = JSON.parse(a);
     if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
     const txt = ["canal"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_leads_pag', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["tipo"];
     const cols = a.columns || [];
     const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
     return { columns: cols, rows, cut: !!a.data_truncated };
@@ -849,51 +859,47 @@ dash.loader('ig_totals_prev', {
     return { columns: cols, rows, cut: !!a.data_truncated };
   },
 });
-const LEADS = [
-  { tipo: 'Novos Negócios', leads: 36, leads_pagos: 22, qualificados: 4, qualificados_pagos: 2, regra: 'generate_lead em todas as páginas, exceto as listadas abaixo', disparo: 'Por página: pendente (o GA4 da Nekt não traz o nome do evento)' },
-  { tipo: 'Comercial B2B', leads: 32, leads_pagos: null, qualificados: null, qualificados_pagos: null, regra: 'generate_lead na página Parcerias Comerciais', disparo: '/parcerias-comerciais' },
-  { tipo: 'E-book', leads: 94, leads_pagos: null, qualificados: null, qualificados_pagos: null, regra: 'generate_lead de materiais ricos (campanha específica de e-book)', disparo: '/materiais-ricos/ebook-booking-elevate-2026' },
+const LEAD_TIPOS = [
+  { tipo: 'Novos Negócios', regra: 'generate_lead em páginas que contêm /apresente-seu-ativo', disparo: '/apresente-seu-ativo' },
+  { tipo: 'Comercial B2B', regra: 'generate_lead em páginas que contêm /parcerias-comerciais', disparo: '/parcerias-comerciais' },
+  { tipo: 'Download de Material Rico', regra: 'generate_lead em páginas que contêm /materiais-ricos/', disparo: '/materiais-ricos/' },
 ];
 dash.calc('leads', {
-  inputs: ['ga_since_leads'],
-  title: 'Leads informados pela equipe',
-  description: 'Totais de generate_lead informados pela equipe, por tipo e origem (mídia paga), atualizados em 13/11/2026.',
-  fn: () => LEADS,
+  inputs: ['ga_leads_pag'],
+  title: 'Leads por tipo de página',
+  description: 'Eventos generate_lead do GA4 por tipo de página: /apresente-seu-ativo, /parcerias-comerciais e /materiais-ricos/.',
+  fn: (rows) => LEAD_TIPOS.map((x) => ({ ...x, leads: Number((rows.find((r) => r.tipo === x.tipo) || {}).leads) || 0 })),
 });
 dash.calc('kpi_main', {
-  inputs: ['kpi_platform', 'spend_windows', 'ga_since_leads', 'leads'],
+  inputs: ['kpi_platform', 'ga_daily', 'leads'],
   title: 'Indicadores gerais',
-  description: 'Investimento, cliques, leads, conversão e CAC.',
-  fn: (kpi_platform, spend_windows, ga_since_leads, leads) => {
+  description: 'Investimento, cliques, leads, conversão e custo por conversão no período.',
+  fn: (kpi_platform, ga_daily, leads) => {
     const sum = (a, k) => a.reduce((s, r) => s + (Number(r[k]) || 0), 0);
-    const janela = (j) => (spend_windows.find((r) => r.janela === j) || {}).gasto || 0;
+    const gasto = sum(kpi_platform, 'gasto');
     const total = sum(leads, 'leads');
     const nn = leads.find((r) => r.tipo === 'Novos Negócios') || {};
-    const sess = (ga_since_leads[0] || {}).sessoes || 0;
+    const sess = sum(ga_daily, 'sessoes');
     const div = (a, b) => (b ? a / b : null);
     return [{
-      gasto_total: sum(kpi_platform, 'gasto'),
+      gasto_total: gasto,
       cliques_ads: sum(kpi_platform, 'cliques'),
       leads_total: total,
       conv_rate: div(total, sess),
-      cac_geral: div(janela('desde_21_10'), total),
-      cac_nn: div(janela('desde_21_10'), nn.leads),
-      cac_pago_nn: div(janela('desde_21_10'), nn.leads_pagos),
-      leads_pagos_total: sum(leads, 'leads_pagos'),
-      cac_periodo: div(janela('total'), total),
+      cac_geral: div(gasto, total),
+      cac_nn: div(gasto, nn.leads),
     }];
   },
 });
 dash.calc('leads_table', {
-  inputs: ['leads', 'ga_since_leads'],
+  inputs: ['leads', 'ga_daily'],
   title: 'Leads por tipo e conversão',
-  description: 'Leads informados por tipo e taxa de conversão sobre as sessões desde 21/10.',
-  fn: (leads, ga_since_leads) => {
-    const sess = (ga_since_leads[0] || {}).sessoes || 0;
+  description: 'Leads (generate_lead do GA4) por tipo de página e taxa de conversão sobre as sessões do período.',
+  fn: (leads, ga_daily) => {
+    const sess = ga_daily.reduce((s, r) => s + (Number(r.sessoes) || 0), 0);
     const totalL = leads.reduce((s, r) => s + (Number(r.leads) || 0), 0);
-    const rows = leads.map((r) => ({ tipo: r.tipo, leads: r.leads, leads_pagos: r.leads_pagos, outras: r.leads_pagos == null ? null : r.leads - r.leads_pagos, qualificados: r.qualificados, qualificados_pagos: r.qualificados_pagos, conv: sess ? r.leads / sess : null, regra: r.regra, disparo: r.disparo }));
-    const sumN = (k) => { const v = leads.map((r) => r[k]).filter((x) => x != null); return v.length ? v.reduce((a, b) => a + b, 0) : null; };
-    rows.push({ tipo: 'Total', leads: totalL, leads_pagos: sumN('leads_pagos'), outras: null, qualificados: sumN('qualificados'), qualificados_pagos: sumN('qualificados_pagos'), conv: sess ? totalL / sess : null, regra: 'Mídia paga informada só para Novos Negócios', disparo: '' });
+    const rows = leads.map((r) => ({ tipo: r.tipo, leads: r.leads, conv: sess ? r.leads / sess : null, regra: r.regra, disparo: r.disparo }));
+    rows.push({ tipo: 'Total', leads: totalL, conv: sess ? totalL / sess : null, regra: 'Soma dos três tipos de página', disparo: '' });
     return rows;
   },
 });
@@ -1510,8 +1516,8 @@ function fillFilters() {
   selP.replaceChildren(new Option('Todas as plataformas', ''), ...plats.map((n) => new Option(n, n)));
   selP.value = p.platform ?? '';
   const cs = camps.filter((r) => !p.platform || r.plataforma === p.platform);
-  selC.replaceChildren(new Option('Todas as campanhas', ''), ...cs.map((r) => new Option(r.campanha, r.campanha)));
-  selC.value = p.campaign ?? '';
+  $('#dl-campaign').replaceChildren(...cs.map((r) => new Option(r.campanha, r.campanha)));
+  if (document.activeElement !== selC) selC.value = p.campaign ?? '';
   updateRangeLabel();
   if (!$('#dr-pop').hidden) renderCal();
 }
@@ -1540,7 +1546,10 @@ $('#tab-perf').addEventListener('click', () => showTab('perf'));
 $('#tab-org').addEventListener('click', () => showTab('org'));
 document.querySelectorAll('.subtab').forEach((b) => b.addEventListener('click', () => { orgPlat = b.dataset.sub === 'ig' ? 'instagram' : 'linkedin'; document.querySelectorAll('.subtab').forEach((x) => x.setAttribute('aria-selected', String(x === b))); showTab('org'); }));
 $('#f-platform').addEventListener('change', (e) => dash.setParams({ platform: e.target.value || null, campaign: null }));
-$('#f-campaign').addEventListener('change', (e) => dash.setParams({ campaign: e.target.value || null }));
+let campT = null;
+const setCamp = () => dash.setParams({ campaign: $('#f-campaign').value.trim() || null });
+$('#f-campaign').addEventListener('input', () => { clearTimeout(campT); campT = setTimeout(setCamp, 500); });
+$('#f-campaign').addEventListener('change', () => { clearTimeout(campT); setCamp(); });
 $('#f-reset').addEventListener('click', () => { dash.resetParams(); closeCal(); });
 
 function chartOr(el, id, fn) { if (!el) return; const rows = rowsOf(id); if (rows) fn(rows); else if (failed(id)) failBox(el); }
@@ -1737,16 +1746,21 @@ if (location.hash === '#org') showTab('org');
 </script>
 
 <style>
-.refbtn { order: 1; margin-left: auto; font: inherit; font-size: 13px; font-weight: 600; color: var(--color-fg, #111); background: transparent; border: 1px solid var(--color-border-line, #ccc); border-radius: 8px; padding: 7px 14px; cursor: pointer; white-space: nowrap; }
+.refbtn { width: 38px; height: 38px; padding: 0; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--color-border-line, #ccc); background: transparent; color: var(--color-fg, #111); cursor: pointer; }
+.refbtn svg { width: 18px; height: 18px; display: block; }
 .refbtn:hover { border-color: #DB9B0E; background: rgba(219, 155, 14, .14); }
-.refbtn[disabled] { opacity: .65; cursor: progress; }
 .refbtn:focus-visible { outline: 2px solid #DB9B0E; outline-offset: 2px; }
-.refbtn.fixed { position: fixed; top: 10px; right: 250px; z-index: 40; margin: 0; }
-.mast .pdfbtn { order: 2; margin-left: 8px; }
+.refbtn[disabled] { cursor: progress; }
+.refbtn.spin svg { animation: refspin .9s linear infinite; }
+@keyframes refspin { to { transform: rotate(360deg); } }
+@keyframes refpulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .refbtn.spin svg { animation: refpulse 1.2s ease-in-out infinite; } }
+.refbtn.fixed { position: fixed; top: 10px; right: 250px; z-index: 40; }
 </style>
 <script>
 (function () {
-  var IDS = ["ads_table", "ai_daily", "ai_sources", "campaigns_table", "filter_campaigns", "ga_channels", "ga_channels_prev", "ga_daily", "ga_daily_prev", "ga_pages", "ga_since_leads", "ga_totals", "ig_daily", "ig_daily_prev", "ig_demo_cidade", "ig_demo_genero", "ig_demo_idade", "ig_demo_pais", "ig_followers", "ig_followers_daily", "ig_followers_daily_prev", "ig_top_posts", "ig_totals", "ig_totals_prev", "kpi_platform", "li_daily", "li_daily_prev", "li_demo_funcao", "li_demo_porte", "li_demo_senioridade", "li_demo_setor", "li_followers_daily", "li_followers_daily_prev", "li_followers_gain", "li_followers_total", "li_top_posts", "li_totals", "li_totals_prev", "spend_daily", "spend_daily_prev", "spend_windows"];
+  var IDS = ["ads_table", "ai_daily", "ai_sources", "campaigns_table", "filter_campaigns", "ga_channels", "ga_channels_prev", "ga_daily", "ga_daily_prev", "ga_leads_pag", "ga_pages", "ga_since_leads", "ga_totals", "ig_daily", "ig_daily_prev", "ig_demo_cidade", "ig_demo_genero", "ig_demo_idade", "ig_demo_pais", "ig_followers", "ig_followers_daily", "ig_followers_daily_prev", "ig_top_posts", "ig_totals", "ig_totals_prev", "kpi_platform", "li_daily", "li_daily_prev", "li_demo_funcao", "li_demo_porte", "li_demo_senioridade", "li_demo_setor", "li_followers_daily", "li_followers_daily_prev", "li_followers_gain", "li_followers_total", "li_top_posts", "li_totals", "li_totals_prev", "spend_daily", "spend_daily_prev", "spend_windows"];
+  var ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>';
   function msg(text, err) {
     var el = document.getElementById('refmsg');
     if (!el) { el = document.createElement('div'); el.id = 'refmsg'; el.className = 'pdfmsg'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
@@ -1759,26 +1773,29 @@ if (location.hash === '#org') showTab('org');
   }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function run(btn) {
-    var d = window.dash, label = btn.textContent;
+    var d = window.dash;
+    if (btn.disabled) return;
     if (!d || (typeof d.refreshAll !== 'function' && typeof d.refresh !== 'function')) { msg('Não foi possível atualizar daqui. Use o botão de atualizar do topo da página.', true); return; }
-    btn.disabled = true; btn.textContent = 'Atualizando...';
+    btn.disabled = true; btn.classList.add('spin'); btn.setAttribute('aria-busy', 'true'); btn.title = 'Atualizando...';
     if (typeof d.refreshAll === 'function') d.refreshAll(); else IDS.forEach(function (id) { try { d.refresh(id); } catch (e) {} });
     var t0 = Date.now(), quiet = 0;
     var iv = setInterval(function () {
       quiet = busy() ? 0 : quiet + 1;
       if (quiet >= 3 || Date.now() - t0 > 120000) {
-        clearInterval(iv); btn.disabled = false; btn.textContent = label;
-        var n = new Date(); msg('Dados atualizados às ' + pad(n.getHours()) + ':' + pad(n.getMinutes()) + '. Os números novos dependem da última sincronização da Nekt.');
+        clearInterval(iv); btn.disabled = false; btn.classList.remove('spin'); btn.removeAttribute('aria-busy');
+        var n = new Date(), hh = pad(n.getHours()) + ':' + pad(n.getMinutes());
+        btn.title = 'Atualizar dados. Última atualização às ' + hh;
+        msg('Dados atualizados às ' + hh + '. Os números novos dependem da última sincronização da Nekt.');
       }
     }, 700);
   }
   function add() {
     if (document.querySelector('.refbtn')) return;
-    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'refbtn'; btn.textContent = 'Atualizar dados';
-    btn.setAttribute('aria-label', 'Atualizar os dados do dashboard');
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'refbtn'; btn.innerHTML = ICON;
+    btn.setAttribute('aria-label', 'Atualizar dados'); btn.title = 'Atualizar dados';
     btn.addEventListener('click', function () { run(btn); });
-    var mast = document.querySelector('.mast');
-    if (mast) mast.appendChild(btn); else { btn.className += ' fixed'; document.body.appendChild(btn); }
+    var reset = document.getElementById('f-reset');
+    if (reset && reset.parentNode) reset.insertAdjacentElement('afterend', btn); else { btn.className += ' fixed'; document.body.appendChild(btn); }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
 })();
