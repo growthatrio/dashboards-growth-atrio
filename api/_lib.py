@@ -99,7 +99,7 @@ def _literal(name, value):
         return "'%s'" % v
     if name in _ENUMS and v not in _ENUMS[name]:
         raise ValueError('valor inválido em %s' % name)
-    if len(v) > 200:
+    if len(v) > (4000 if name in ('hotel', 'grupo', 'marca') else 200):
         raise ValueError('valor muito longo em %s' % name)
     v = v.replace('\\', '\\\\').replace("'", "\\'").replace('\n', ' ').replace('\r', ' ')
     return "'%s'" % v

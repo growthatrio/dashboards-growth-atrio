@@ -76,6 +76,25 @@
 .ai [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
 .ai [hidden] { display: none !important; }
 @media (prefers-reduced-motion: no-preference) { .ai .hb .fi { transition: width var(--cds-dur-slow) var(--cds-ease-out); } }
+
+.ai .msel { position: relative; }
+.ai .msel-btn { min-width: 11rem; max-width: 18rem; display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; }
+.ai .msel-btn .msel-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ai .msel-btn::after { content: ''; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); flex: none; opacity: .7; }
+.ai .msel-btn.on { border-color: var(--b-gold); background: rgba(219, 155, 14, .12); font-weight: 600; }
+.ai .msel-pop { position: absolute; top: calc(100% + 4px); left: 0; z-index: 30; min-width: 15rem; max-width: min(92vw, 24rem); background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-sm); }
+.ai .msel-pop[hidden] { display: none; }
+.ai .msel-q { width: 100%; box-sizing: border-box; font: inherit; font-size: var(--cds-font-size-body); color: var(--color-fg); background: var(--color-bg, transparent); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: 0 10px; min-height: 38px; margin-bottom: 6px; }
+.ai .msel-q:focus-visible, .ai .msel-act:focus-visible, .ai .msel-opt input:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
+.ai .msel-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 2px 4px 6px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.ai .msel-act { font: inherit; font-size: var(--cds-font-size-caption); background: transparent; border: 0; color: var(--color-fg-muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 6px 4px; }
+.ai .msel-act:hover { color: var(--color-fg); }
+.ai .msel-list { max-height: 16rem; overflow: auto; }
+.ai .msel-gh { font-size: var(--cds-font-size-caption); font-weight: 700; color: var(--color-fg-muted); padding: 8px 6px 2px; text-transform: uppercase; letter-spacing: .04em; }
+.ai .msel-opt { display: flex; align-items: center; gap: 10px; padding: 8px 6px; min-height: 36px; border-radius: 6px; cursor: pointer; font-size: var(--cds-font-size-body); color: var(--color-fg); }
+.ai .msel-opt:hover { background: rgba(219, 155, 14, .12); }
+.ai .msel-opt input { width: 16px; height: 16px; accent-color: var(--b-gold); flex: none; }
+.ai .msel-empty { padding: 10px 6px; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
 </style>
 <style>
 .ai .ch-h { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
@@ -202,9 +221,9 @@
     </div>
     <div class="tb-row">
       <label class="fld">Plataforma<select id="f-platform" aria-label="Plataforma"></select></label>
-      <label class="fld">Grupo de hotéis<select id="f-grupo" aria-label="Grupo de hotéis"></select></label>
-      <label class="fld">Marca<select id="f-marca" aria-label="Marca"></select></label>
-      <label class="fld">Hotel<input id="f-hotel" type="search" list="dl-hotel" placeholder="Digite ou escolha" autocomplete="off" aria-label="Hotel" data-source="filter_hotels"><datalist id="dl-hotel"></datalist></label>
+      <div class="fld msel" id="w-grupo"><span class="msel-lbl" id="lbl-grupo">Grupo de hotéis</span><button type="button" class="ctl msel-btn" id="ms-grupo" aria-haspopup="true" aria-expanded="false" aria-labelledby="lbl-grupo ms-grupo"><span class="msel-txt">Todos os hotéis e marcas</span></button><div class="msel-pop" role="group" aria-label="Grupo de hotéis" hidden><div class="msel-top"><span class="msel-count" aria-live="polite"></span><button type="button" class="msel-act" data-act="clear">Limpar seleção</button></div><div class="msel-list"></div></div></div>
+      <div class="fld msel" id="w-marca"><span class="msel-lbl" id="lbl-marca">Marca</span><button type="button" class="ctl msel-btn" id="ms-marca" aria-haspopup="true" aria-expanded="false" aria-labelledby="lbl-marca ms-marca"><span class="msel-txt">Todas as marcas</span></button><div class="msel-pop" role="group" aria-label="Marca" hidden><div class="msel-top"><span class="msel-count" aria-live="polite"></span><button type="button" class="msel-act" data-act="clear">Limpar seleção</button></div><div class="msel-list"></div></div></div>
+      <div class="fld msel" id="w-hotel"><span class="msel-lbl" id="lbl-hotel">Hotel</span><button type="button" class="ctl msel-btn" id="ms-hotel" aria-haspopup="true" aria-expanded="false" aria-labelledby="lbl-hotel ms-hotel"><span class="msel-txt">Todos os hotéis</span></button><div class="msel-pop" role="group" aria-label="Hotel" hidden><input type="search" class="msel-q" placeholder="Buscar" aria-label="Buscar em Hotel" autocomplete="off"><div class="msel-top"><span class="msel-count" aria-live="polite"></span><button type="button" class="msel-act" data-act="clear">Limpar seleção</button></div><div class="msel-list"></div></div></div><span hidden data-source="filter_hotels"></span>
       <label class="fld">Agência<select id="f-agencia" aria-label="Agência"></select></label>
       <label class="fld">Nome da campanha (contém)<input id="f-campaign" type="search" list="dl-campaign" placeholder="Ex.: ESQUENTA" autocomplete="off" aria-label="Nome da campanha (contém)" data-source="filter_campaigns"><datalist id="dl-campaign"></datalist></label>
     </div>
@@ -1055,15 +1074,8 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !$('#d
 
 const plat = $('#f-platform');
 plat.replaceChildren(new Option('Todas as plataformas', ''), new Option('Meta Ads', 'Meta Ads'), new Option('Google Ads', 'Google Ads'));
-const mar = $('#f-marca');
-(function () {
-  const og = (label, names) => { const g = document.createElement('optgroup'); g.label = label; names.forEach((n) => g.append(new Option(n, n))); return g; };
-  mar.replaceChildren(new Option('Todas as marcas', ''), og('Hotéis Accor', ['ibis', 'ibis Styles', 'ibis Budget', 'Novotel', 'Mercure', 'Grand Mercure']), og('Marcas próprias e independentes', ['LK Design', 'Xtay', 'Aéra', 'K-Platz', 'Montissi', 'Himmelblau']));
-})();
 const ag = $('#f-agencia');
 ag.replaceChildren(new Option('Todas as agências', ''), ...['TAB', 'Prosperitas', 'H2M', 'Okey Comunicação', 'TMD', 'B2K', 'Bold Comunicação', 'Freelancer', 'Sem agência identificada'].map((n) => new Option(n, n)));
-const grp = $('#f-grupo');
-grp.replaceChildren(new Option('Todos os hotéis e marcas', ''), new Option('Hotéis Accor', 'Hotéis Accor'), new Option('Marcas próprias e independentes', 'Marcas próprias e independentes'));
 function fillList(id, rows, field) {
   const dl = $(id);
   const key = rows ? rows.length + ':' + (rows[0] ? rows[0][field] : '') : '';
@@ -1071,15 +1083,52 @@ function fillList(id, rows, field) {
   dl.dataset.key = key;
   dl.replaceChildren(...(rows || []).map((r) => { const o = document.createElement('option'); o.value = r[field]; return o; }));
 }
+
+const MS = {};
+function makeMS(key, wid, allLabel, staticOpts) {
+  const wrap = $('#w-' + wid), btn = wrap.querySelector('.msel-btn'), pop = wrap.querySelector('.msel-pop'), q = wrap.querySelector('.msel-q');
+  const list = wrap.querySelector('.msel-list'), txt = wrap.querySelector('.msel-txt'), cnt = wrap.querySelector('.msel-count');
+  let opts = staticOpts || [], optKey = '';
+  const sel = () => { const v = dash.params()[key]; return v ? String(v).split('|').filter(Boolean) : []; };
+  const label = () => { const s = sel(); txt.textContent = !s.length ? allLabel : s.length === 1 ? s[0] : s.length + ' selecionados'; btn.title = s.join(', '); btn.classList.toggle('on', s.length > 0); cnt.textContent = s.length ? s.length + (s.length === 1 ? ' selecionado' : ' selecionados') : 'Nenhum filtro: mostra todos'; };
+  const set = (arr) => dash.setParams({ [key]: arr.length ? arr.join('|') : null });
+  const render = () => {
+    const s = new Set(sel()), f = q ? q.value.trim().toLowerCase() : '';
+    list.replaceChildren();
+    let lastG = null;
+    opts.filter((o) => !f || o.v.toLowerCase().includes(f)).forEach((o) => {
+      if (o.g && o.g !== lastG) { const gh = document.createElement('div'); gh.className = 'msel-gh'; gh.textContent = o.g; list.append(gh); lastG = o.g; }
+      const lb = document.createElement('label'); lb.className = 'msel-opt';
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = o.v; cb.checked = s.has(o.v);
+      cb.addEventListener('change', () => { const cur = sel(), i = cur.indexOf(o.v); if (cb.checked && i < 0) cur.push(o.v); if (!cb.checked && i >= 0) cur.splice(i, 1); set(cur); label(); });
+      lb.append(cb, document.createTextNode(o.v)); list.append(lb);
+    });
+    if (!list.children.length) { const e = document.createElement('div'); e.className = 'msel-empty'; e.textContent = opts.length ? 'Nenhuma opção encontrada' : 'Carregando opções...'; list.append(e); }
+  };
+  const close = () => { pop.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+  const open = () => { Object.values(MS).forEach((m) => m.close()); pop.hidden = false; btn.setAttribute('aria-expanded', 'true'); if (q) q.value = ''; render(); if (q && opts.length > 8) q.focus(); };
+  btn.addEventListener('click', () => (pop.hidden ? open() : close()));
+  if (q) q.addEventListener('input', render);
+  wrap.querySelector('[data-act="clear"]').addEventListener('click', () => { set([]); label(); render(); });
+  wrap.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !pop.hidden) { close(); btn.focus(); } });
+  label();
+  return {
+    close, sync() { label(); if (!pop.hidden) render(); },
+    setOptions(names) { const k = names.length + ':' + (names[0] || ''); if (k === optKey) return; optKey = k; opts = names.map((v) => ({ v })); if (!pop.hidden) render(); },
+  };
+}
+document.addEventListener('click', (ev) => { if (!ev.target.closest || !ev.target.closest('.msel')) Object.values(MS).forEach((m) => m.close()); });
+MS.grupo = makeMS('grupo', 'grupo', 'Todos os hotéis e marcas', [{ v: 'Hotéis Accor' }, { v: 'Marcas próprias e independentes' }]);
+MS.marca = makeMS('marca', 'marca', 'Todas as marcas', [...['ibis', 'ibis Styles', 'ibis Budget', 'Novotel', 'Mercure', 'Grand Mercure'].map((v) => ({ v, g: 'Hotéis Accor' })), ...['LK Design', 'Xtay', 'Aéra', 'K-Platz', 'Montissi', 'Himmelblau'].map((v) => ({ v, g: 'Marcas próprias e independentes' }))]);
+MS.hotel = makeMS('hotel', 'hotel', 'Todos os hotéis', []);
+const multiTxt = (v) => String(v).split('|').filter(Boolean).join(', ');
 function fillFilters() {
   const p = dash.params();
   plat.value = p.platform ?? '';
-  grp.value = p.grupo ?? '';
-  mar.value = p.marca ?? '';
   ag.value = p.agencia ?? '';
-  if ($('#f-hotel') !== document.activeElement) $('#f-hotel').value = p.hotel ?? '';
+  MS.hotel.setOptions((rowsOf('filter_hotels') || []).map((r) => r.hotel));
+  MS.grupo.sync(); MS.marca.sync(); MS.hotel.sync();
   if ($('#f-campaign') !== document.activeElement) $('#f-campaign').value = p.campaign ?? '';
-  fillList('#dl-hotel', rowsOf('filter_hotels'), 'hotel');
   fillList('#dl-campaign', rowsOf('filter_campaigns'), 'campanha');
   updateRangeLabel();
   if (!$('#dr-pop').hidden) renderCal();
@@ -1206,24 +1255,22 @@ let tab = 'perf';
 let gran = 'dia';
 const applyText = (id, key) => { const v = $(id).value.trim(); if (v !== (dash.params()[key] ?? '')) dash.setParams({ [key]: v || null }); };
 plat.addEventListener('change', (e) => dash.setParams({ platform: e.target.value || null }));
-grp.addEventListener('change', (e) => dash.setParams({ grupo: e.target.value || null }));
-mar.addEventListener('change', (e) => dash.setParams({ marca: e.target.value || null }));
 ag.addEventListener('change', (e) => dash.setParams({ agencia: e.target.value || null }));
-[['#f-hotel', 'hotel', '#dl-hotel'], ['#f-campaign', 'campaign', '#dl-campaign']].forEach(([id, key, dl]) => {
+[['#f-campaign', 'campaign', '#dl-campaign']].forEach(([id, key, dl]) => {
   const el = $(id);
   el.addEventListener('change', () => applyText(id, key));
   el.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { applyText(id, key); el.blur(); } });
   el.addEventListener('input', () => { const v = el.value.trim(); if ([...$(dl).options].some((o) => o.value === v)) applyText(id, key); });
 });
-$('#f-reset').addEventListener('click', () => { dash.resetParams(); $('#f-hotel').value = ''; $('#f-campaign').value = ''; closeCal(); setStage(stageToday()); });
+$('#f-reset').addEventListener('click', () => { dash.resetParams(); $('#f-campaign').value = ''; closeCal(); Object.values(MS).forEach((m) => { m.sync(); m.close(); }); setStage(stageToday()); });
 function renderChips() {
   const p = dash.params();
   const items = [];
   if (p.platform) items.push(['Plataforma', p.platform, 'platform']);
-  if (p.grupo) items.push(['Grupo', p.grupo, 'grupo']);
-  if (p.marca) items.push(['Marca', p.marca, 'marca']);
+  if (p.grupo) items.push(['Grupo', multiTxt(p.grupo), 'grupo']);
+  if (p.marca) items.push(['Marca', multiTxt(p.marca), 'marca']);
   if (p.agencia) items.push(['Agência', p.agencia, 'agencia']);
-  if (p.hotel) items.push(['Hotel', p.hotel, 'hotel']);
+  if (p.hotel) items.push(['Hotel', multiTxt(p.hotel), 'hotel']);
   if (p.campaign) items.push(['Campanha', p.campaign, 'campaign']);
   const el = $('#chips');
   el.replaceChildren(...items.map(([l, v, k]) => {
@@ -1232,7 +1279,7 @@ function renderChips() {
     b.setAttribute('aria-label', 'Remover filtro ' + l + ': ' + v);
     const x = document.createElement('span'); x.textContent = '×'; x.setAttribute('aria-hidden', 'true');
     b.append(document.createTextNode(l + ': ' + v), x);
-    b.addEventListener('click', () => { dash.setParams({ [k]: null }); if (k === 'hotel') $('#f-hotel').value = ''; if (k === 'campaign') $('#f-campaign').value = ''; });
+    b.addEventListener('click', () => { dash.setParams({ [k]: null }); if (k === 'campaign') $('#f-campaign').value = ''; if (MS[k]) MS[k].sync(); });
     return b;
   }));
   el.hidden = !items.length;
