@@ -120,6 +120,17 @@
 .ai .ins-ok { border-top: 3px solid #2EA05A; }
 .ai .ins-opp { border-top: 3px solid var(--b-gold); }
 .ai .ins-mel { border-top: 3px solid #D64545; }
+
+.ai .bar { justify-content: space-between; row-gap: var(--cds-gap-sm); }
+.ai .bar-l, .ai .bar-r { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: flex-end; }
+.ai .bar-r { margin-left: auto; justify-content: flex-end; align-items: flex-end; }
+.ai .bar-r .drp { left: auto; right: 0; }
+.ai input#f-campaign { font: inherit; font-size: var(--cds-font-size-body); color: var(--color-fg); background-color: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: 0 12px 0 36px; min-height: 44px; min-width: 16rem; max-width: 24rem; box-sizing: border-box; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238A8780' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"); background-repeat: no-repeat; background-position: 12px center; }
+.ai input#f-campaign::placeholder { color: var(--color-fg-muted); opacity: .85; }
+.ai input#f-campaign:hover { border-color: var(--b-gold); }
+.ai input#f-campaign:focus-visible { outline: 2px solid var(--b-gold); outline-offset: 2px; }
+.ai #f-reset { background: transparent; border-color: transparent; color: var(--color-fg-muted); text-decoration: underline; text-underline-offset: 3px; padding: 0 8px; }
+.ai #f-reset:hover { color: var(--color-fg); }
 </style>
 <style>
 .ai .ch-h { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
@@ -137,8 +148,9 @@
   </header>
 
   <div class="bar" id="filtros">
+      <div class="bar-l">
     <label class="fld" id="w-platform">Plataforma de anúncio<select id="f-platform" aria-label="Plataforma de anúncio"></select></label>
-    <label class="fld" id="w-campaign">Nome da campanha (contém)<input id="f-campaign" type="search" list="dl-campaign" placeholder="Digite ou escolha" autocomplete="off" aria-label="Nome da campanha, aceita parte do nome" data-source="filter_campaigns"><datalist id="dl-campaign"></datalist></label>
+    <label class="fld" id="w-campaign">Nome da campanha<input id="f-campaign" type="search" list="dl-campaign" placeholder="Digite parte do nome ou escolha" autocomplete="off" aria-label="Nome da campanha. Digite parte do nome ou escolha uma sugestão" data-source="filter_campaigns"><datalist id="dl-campaign"></datalist></label></div><div class="bar-r">
     <div class="fld" id="w-date"><span id="dr-label">Período</span>
       <button class="ctl" id="dr-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="dr-label dr-btn">—</button>
       <div class="drp" id="dr-pop" role="dialog" aria-label="Selecionar período" hidden>
@@ -146,7 +158,7 @@
         <div class="cal"><div class="hd"><button type="button" id="cal-prev" aria-label="Mês anterior">‹</button><span id="cal-title"></span><button type="button" id="cal-next" aria-label="Próximo mês">›</button></div><div class="gr" id="cal-grid"></div><p class="hint" id="cal-hint"></p></div>
       </div>
     </div>
-    <button class="ctl" id="f-reset" type="button">Limpar filtros</button>
+    <button class="ctl" id="f-reset" type="button">Limpar filtros</button></div>
   </div>
 
   <div class="tabs" role="tablist">
