@@ -94,6 +94,7 @@
 .ai .msel-opt { display: flex; align-items: center; gap: 10px; padding: 8px 6px; min-height: 36px; border-radius: 6px; cursor: pointer; font-size: var(--cds-font-size-body); color: var(--color-fg); }
 .ai .msel-opt:hover { background: rgba(219, 155, 14, .12); }
 .ai .msel-opt input { width: 16px; height: 16px; accent-color: var(--b-gold); flex: none; }
+.ai .msel-opt.off { opacity: .5; cursor: not-allowed; }
 .ai .msel-empty { padding: 10px 6px; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
 .ai .subtabs { display: flex; gap: 8px; margin: 4px 0 6px; flex-wrap: wrap; }
 .ai .subtab { font: inherit; display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--color-border-line); background: transparent; color: var(--color-fg); cursor: pointer; font-weight: 600; }
@@ -126,6 +127,12 @@
 .ai .kpi-inline { display: flex; align-items: baseline; gap: 10px; margin: 2px 0 10px; }
 .ai .kpi-inline .l { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
 .ai .kpi-inline .v { font-size: clamp(1.5rem, 2.2vw, 2rem); font-weight: 700; font-variant-numeric: tabular-nums; }
+.ai .ig-info { margin: 4px 0 10px; padding: 8px 12px; border: 1px solid var(--color-border-line); border-left: 4px solid var(--b-gold); border-radius: var(--cds-radius); background: var(--color-panel); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.45; }
+.ai .ig-info.warn { border-left-color: var(--neg, #C62828); color: var(--color-fg); }
+
+.ai .kpi .v { font-size: 1.4rem; line-height: 1.15; overflow-wrap: anywhere; }
+.ai .grid.k1 .kpi .v { font-size: clamp(2rem, 2.9vw, 2.5rem); line-height: 1.12; letter-spacing: -0.01em; font-weight: 700; }
+.ai .grid.k2 .kpi .v { font-size: 1.7rem; line-height: 1.15; font-weight: 700; }
 </style>
 <style>
 .ai .ch-h { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
@@ -309,7 +316,7 @@
   </ul>
 </div>
   <div id="org" hidden>
-  <div id="org-ig">
+  <div id="ig-info" class="ig-info" role="status" hidden></div><div id="org-ig">
     <p class="note">Instagram dos hotéis e marcas com conta conectada (LK Design, Grand Mercure SP Pinheiros, Xtay, Aéra Copacabana e Montissi), nos filtros de grupo, marca, hotel e agência. O filtro de data vale para a aba, exceto seguidores totais e demografia, que são o retrato mais recente. Os filtros de plataforma e campanha não se aplicam aqui.</p>
     <h2 id="ig-geral">Alcance, seguidores e engajamento (Instagram)</h2>
     <div class="grid">
@@ -1430,7 +1437,7 @@ const MS = {};
 function makeMS(key, wid, allLabel, staticOpts) {
   const wrap = $('#w-' + wid), btn = wrap.querySelector('.msel-btn'), pop = wrap.querySelector('.msel-pop'), q = wrap.querySelector('.msel-q');
   const list = wrap.querySelector('.msel-list'), txt = wrap.querySelector('.msel-txt'), cnt = wrap.querySelector('.msel-count');
-  let opts = staticOpts || [], optKey = '';
+  let opts = staticOpts || [], optKey = '', avail = null;
   const sel = () => { const v = dash.params()[key]; return v ? String(v).split('|').filter(Boolean) : []; };
   const label = () => { const s = sel(); txt.textContent = !s.length ? allLabel : s.length === 1 ? s[0] : s.length + ' selecionados'; btn.title = s.join(', '); btn.classList.toggle('on', s.length > 0); cnt.textContent = s.length ? s.length + (s.length === 1 ? ' selecionado' : ' selecionados') : 'Nenhum filtro: mostra todos'; };
   const set = (arr) => dash.setParams({ [key]: arr.length ? arr.join('|') : null });
@@ -1442,8 +1449,9 @@ function makeMS(key, wid, allLabel, staticOpts) {
       if (o.g && o.g !== lastG) { const gh = document.createElement('div'); gh.className = 'msel-gh'; gh.textContent = o.g; list.append(gh); lastG = o.g; }
       const lb = document.createElement('label'); lb.className = 'msel-opt';
       const cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = o.v; cb.checked = s.has(o.v);
+      const off = !!(avail && !avail(o.v)); cb.disabled = off && !cb.checked; lb.classList.toggle('off', off);
       cb.addEventListener('change', () => { const cur = sel(), i = cur.indexOf(o.v); if (cb.checked && i < 0) cur.push(o.v); if (!cb.checked && i >= 0) cur.splice(i, 1); set(cur); label(); });
-      lb.append(cb, document.createTextNode(o.v)); list.append(lb);
+      lb.append(cb, document.createTextNode(o.v + (off ? ' (sem Instagram)' : ''))); list.append(lb);
     });
     if (!list.children.length) { const e = document.createElement('div'); e.className = 'msel-empty'; e.textContent = opts.length ? 'Nenhuma opção encontrada' : 'Carregando opções...'; list.append(e); }
   };
@@ -1456,6 +1464,7 @@ function makeMS(key, wid, allLabel, staticOpts) {
   label();
   return {
     close, sync() { label(); if (!pop.hidden) render(); },
+    setAvail(fn) { avail = fn; if (!pop.hidden) render(); },
     setOptions(names) { const k = names.length + ':' + (names[0] || ''); if (k === optKey) return; optKey = k; opts = names.map((v) => ({ v })); if (!pop.hidden) render(); },
   };
 }
@@ -1723,8 +1732,24 @@ function drawOrg() {
   renderPosts('#posts-ig', rowsOf('ig_h_posts'), 'ig', 'ig_h_posts');
   renderInsights('#ins-ig', rowsOf('ig_h_insights'), 'ig_h_insights');
 }
+const IGACC = [{"nome": "LK Design Hotel", "grupo": "Marcas próprias e independentes", "marca": "LK Design", "agencia": "Prosperitas"}, {"nome": "Grand Mercure São Paulo Pinheiros", "grupo": "Hotéis Accor", "marca": "Grand Mercure", "agencia": "TAB"}, {"nome": "Xtay (marca)", "grupo": "Marcas próprias e independentes", "marca": "Xtay", "agencia": "TAB"}, {"nome": "Aéra Rio de Janeiro Copacabana", "grupo": "Marcas próprias e independentes", "marca": "Aéra", "agencia": "TAB"}, {"nome": "Montissi Resort & Spa", "grupo": "Marcas próprias e independentes", "marca": "Montissi", "agencia": "Prosperitas"}];
+const IGAG = [...new Set(IGACC.map((a) => a.agencia))];
+const igName = (a) => a.nome.replace(' (marca)', '');
+const igMatch = (p) => IGACC.filter((a) => (!p.grupo || String(p.grupo).split('|').includes(a.grupo)) && (!p.marca || String(p.marca).split('|').includes(a.marca)) && (!p.agencia || p.agencia === a.agencia) && (!p.hotel || String(p.hotel).split('|').some((h) => { const t = h.trim().toLowerCase(); return igName(a).toLowerCase() === t || a.nome.toLowerCase().includes(t); })));
+function igAvail() {
+  const on = tab === 'org';
+  MS.marca.setAvail(on ? (v) => IGACC.some((a) => a.marca === v) : null);
+  MS.hotel.setAvail(on ? (v) => IGACC.some((a) => igName(a).toLowerCase() === String(v).toLowerCase()) : null);
+  Array.from($('#f-agencia').options).forEach((o) => { if (!o.dataset.t) o.dataset.t = o.textContent; const off = on && o.value && !IGAG.includes(o.value); o.disabled = off; o.textContent = o.dataset.t + (off ? ' (sem Instagram)' : ''); });
+  const box = $('#ig-info'); if (!box) return;
+  const m = igMatch(dash.params());
+  box.hidden = !on;
+  box.className = 'ig-info' + (m.length ? '' : ' warn');
+  box.textContent = m.length ? 'Contas de Instagram incluídas (' + m.length + ' de ' + IGACC.length + '): ' + m.map(igName).join(', ') + '.' : 'Nenhuma conta de Instagram conectada atende aos filtros escolhidos. Contas conectadas: ' + IGACC.map((a) => igName(a) + ' (' + a.agencia + ')').join(', ') + '. Use "Limpar filtros" para voltar a ver os dados.';
+}
 
 function draw() {
+  igAvail();
   drawOrg();
   drawPerfExtra();
   applyTheme();

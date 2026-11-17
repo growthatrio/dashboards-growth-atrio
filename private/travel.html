@@ -94,6 +94,7 @@
 .ai .msel-opt { display: flex; align-items: center; gap: 10px; padding: 8px 6px; min-height: 36px; border-radius: 6px; cursor: pointer; font-size: var(--cds-font-size-body); color: var(--color-fg); }
 .ai .msel-opt:hover { background: rgba(219, 155, 14, .12); }
 .ai .msel-opt input { width: 16px; height: 16px; accent-color: var(--b-gold); flex: none; }
+.ai .msel-opt.off { opacity: .5; cursor: not-allowed; }
 .ai .msel-empty { padding: 10px 6px; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
 </style>
 <style>
@@ -1088,7 +1089,7 @@ const MS = {};
 function makeMS(key, wid, allLabel, staticOpts) {
   const wrap = $('#w-' + wid), btn = wrap.querySelector('.msel-btn'), pop = wrap.querySelector('.msel-pop'), q = wrap.querySelector('.msel-q');
   const list = wrap.querySelector('.msel-list'), txt = wrap.querySelector('.msel-txt'), cnt = wrap.querySelector('.msel-count');
-  let opts = staticOpts || [], optKey = '';
+  let opts = staticOpts || [], optKey = '', avail = null;
   const sel = () => { const v = dash.params()[key]; return v ? String(v).split('|').filter(Boolean) : []; };
   const label = () => { const s = sel(); txt.textContent = !s.length ? allLabel : s.length === 1 ? s[0] : s.length + ' selecionados'; btn.title = s.join(', '); btn.classList.toggle('on', s.length > 0); cnt.textContent = s.length ? s.length + (s.length === 1 ? ' selecionado' : ' selecionados') : 'Nenhum filtro: mostra todos'; };
   const set = (arr) => dash.setParams({ [key]: arr.length ? arr.join('|') : null });
@@ -1100,8 +1101,9 @@ function makeMS(key, wid, allLabel, staticOpts) {
       if (o.g && o.g !== lastG) { const gh = document.createElement('div'); gh.className = 'msel-gh'; gh.textContent = o.g; list.append(gh); lastG = o.g; }
       const lb = document.createElement('label'); lb.className = 'msel-opt';
       const cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = o.v; cb.checked = s.has(o.v);
+      const off = !!(avail && !avail(o.v)); cb.disabled = off && !cb.checked; lb.classList.toggle('off', off);
       cb.addEventListener('change', () => { const cur = sel(), i = cur.indexOf(o.v); if (cb.checked && i < 0) cur.push(o.v); if (!cb.checked && i >= 0) cur.splice(i, 1); set(cur); label(); });
-      lb.append(cb, document.createTextNode(o.v)); list.append(lb);
+      lb.append(cb, document.createTextNode(o.v + (off ? ' (sem Instagram)' : ''))); list.append(lb);
     });
     if (!list.children.length) { const e = document.createElement('div'); e.className = 'msel-empty'; e.textContent = opts.length ? 'Nenhuma opção encontrada' : 'Carregando opções...'; list.append(e); }
   };
@@ -1114,6 +1116,7 @@ function makeMS(key, wid, allLabel, staticOpts) {
   label();
   return {
     close, sync() { label(); if (!pop.hidden) render(); },
+    setAvail(fn) { avail = fn; if (!pop.hidden) render(); },
     setOptions(names) { const k = names.length + ':' + (names[0] || ''); if (k === optKey) return; optKey = k; opts = names.map((v) => ({ v })); if (!pop.hidden) render(); },
   };
 }
