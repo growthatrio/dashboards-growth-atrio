@@ -1014,7 +1014,7 @@ function multiLine(el, rows, o) {
   if (prev) { const b = document.createElement('span'); const s2 = document.createElement('span'); s2.className = 'sw'; s2.style.background = 'transparent'; s2.style.border = '2px dashed var(--color-fg)'; s2.style.height = '0'; s2.style.borderRadius = '0'; b.append(s2, document.createTextNode('Total do período anterior')); lg.append(b); }
   el.append(lg);
   const all = [...series.flatMap((s) => s.pts), ...pp];
-  const H = 240, m = { t: 8, r: 10, b: 22, l: o.money ? 56 : 40 }, iw = w - m.l - m.r, ih = H - m.t - m.b;
+  const H = 240, m = { t: 8, r: 10, b: 22, l: o.money ? 78 : 44 }, iw = w - m.l - m.r, ih = H - m.t - m.b;
   const x = d3.scaleUtc(d3.extent(all, (p) => p.d), [0, iw]);
   const y = d3.scaleLinear([0, d3.max(all, (p) => p.v) || 1], [ih, 0]).nice();
   const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${H}`).attr('width', '100%');
@@ -1067,7 +1067,7 @@ function stackBars(el, rows, o) {
   if (prev) { const b = document.createElement('span'); const s2 = document.createElement('span'); s2.className = 'sw'; s2.style.background = 'transparent'; s2.style.border = '2px dashed var(--color-fg)'; s2.style.height = '0'; s2.style.borderRadius = '0'; b.append(s2, document.createTextNode('Total do período anterior')); lg.append(b); }
   el.append(lg);
   if (o.badge) { const bd = mk('div', 'chart-badge'); bd.append(document.createTextNode(o.badgeLabel || 'Total de seguidores hoje'), mk('b', null, o.badge)); el.append(bd); }
-  const H = 240, m = { t: 8, r: 10, b: 22, l: o.money ? 56 : 40 }, iw = w - m.l - m.r, ih = H - m.t - m.b;
+  const H = 240, m = { t: 8, r: 10, b: 22, l: o.money ? 78 : 44 }, iw = w - m.l - m.r, ih = H - m.t - m.b;
   const x = d3.scaleBand(days, [0, iw]).padding(0.18);
   const maxCur = stack.length ? d3.max(stack[stack.length - 1], (d) => d[1]) : 0;
   const y = d3.scaleLinear([0, Math.max(maxCur || 0, d3.max([...ptot.values()]) || 0, 1)], [ih, 0]).nice();
