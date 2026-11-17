@@ -96,6 +96,13 @@
 .ai .msel-opt input { width: 16px; height: 16px; accent-color: var(--b-gold); flex: none; }
 .ai .msel-opt.off { opacity: .5; cursor: not-allowed; }
 .ai .msel-empty { padding: 10px 6px; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+
+.ai .leads-kpi .orig-h { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--color-border-line); font-size: var(--cds-font-size-caption); font-weight: 700; color: var(--color-fg-muted); text-transform: uppercase; letter-spacing: .04em; }
+.ai .leads-kpi #leads-orig-kpi { margin-top: 4px; }
+
+.ai .kgroup { font-size: var(--cds-font-size-body); font-weight: 700; margin: 18px 0 8px; color: var(--color-fg); }
+.ai .kgroup:first-of-type { margin-top: 8px; }
+.ai p.note.scope { margin: 2px 0 6px; }
 </style>
 <style>
 .ai .ch-h { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
@@ -243,7 +250,7 @@
   <h2 id="metas">Metas da etapa</h2>
   <p class="note" id="stage-note"></p>
   <div class="grid3">
-    <div class="card gauge-card" data-stages="todo pre"><h3>Leads</h3><p class="note">Meta de 7.000 leads, de 03/11 a 16/11. Conta só o evento generate_lead do GA4 do Destinos Atrio.</p><div class="gauge" id="gauge-leads" data-source="gauges"></div><div class="gv"><b class="v" data-source="gauges" data-field="valor" data-row="0" data-fmt="int">—</b><span class="l">de <b data-source="gauges" data-field="meta" data-row="0" data-fmt="int">—</b> · <b data-source="gauges" data-field="pct" data-row="0" data-fmt="pct2">—</b></span><span class="sm" id="gs-leads"><b data-source="gauges" data-field="status" data-row="0" data-fmt="txt">—</b></span></div><div class="origens"><p class="note">Principais origens dos leads (origem / mídia)</p><div id="leads-origem" data-source="g_leads_origem"></div></div></div>
+    <div class="card gauge-card" data-stages="todo pre"><h3>Leads</h3><p class="note">Meta de 7.000 leads, de 03/11 a 16/11. Conta só o evento generate_lead do GA4 do Destinos Atrio.</p><div class="gauge" id="gauge-leads" data-source="gauges"></div><div class="gv"><b class="v" data-source="gauges" data-field="valor" data-row="0" data-fmt="int">—</b><span class="l">de <b data-source="gauges" data-field="meta" data-row="0" data-fmt="int">—</b> · <b data-source="gauges" data-field="pct" data-row="0" data-fmt="pct2">—</b></span><span class="sm" id="gs-leads"><b data-source="gauges" data-field="status" data-row="0" data-fmt="txt">—</b></span></div></div>
     <div class="card gauge-card" data-stages="todo esquenta tw ressaca"><h3>Clique em Reservar</h3><p class="note">Meta de 4.500 cliques (3% de 150 mil), acumulados desde 17/11. Fonte: GA4 do Destinos Atrio.</p><div class="gauge" id="gauge-cliques" data-source="gauges"></div><div class="gv"><b class="v" data-source="gauges" data-field="valor" data-row="1" data-fmt="int">—</b><span class="l">de <b data-source="gauges" data-field="meta" data-row="1" data-fmt="int">—</b> · <b data-source="gauges" data-field="pct" data-row="1" data-fmt="pct2">—</b></span><span class="sm" id="gs-cliques"><b data-source="gauges" data-field="status" data-row="1" data-fmt="txt">—</b></span></div></div>
     <div class="card gauge-card" data-stages="todo esquenta tw ressaca"><h3>Receita Web Direto</h3><p class="note">Meta de R$ 4.720.000, acumulada desde 17/11.</p><div class="gauge" id="gauge-receita" data-source="gauges"></div><div class="gv"><b class="v" data-source="gauges" data-field="valor" data-row="2" data-fmt="brl">—</b><span class="l">de <b data-source="gauges" data-field="meta" data-row="2" data-fmt="brl">—</b> · <b data-source="gauges" data-field="pct" data-row="2" data-fmt="pct2">—</b></span><span class="sm" id="gs-receita"><b data-source="gauges" data-field="status" data-row="2" data-fmt="txt">—</b></span></div></div>
     <div class="card gauge-card" data-stages="todo esquenta tw ressaca"><h3>ROAS Web Direto</h3><p class="note">Receita Web Direto desde 17/11 ÷ investimento Travel Week até o fim da etapa.</p><div class="gauge" id="gauge-roas" data-source="gauges"></div><div class="gv"><b class="v" data-source="gauges" data-field="valor" data-row="3" data-fmt="x">—</b><span class="l">meta: <b data-source="gauges" data-field="meta" data-row="3" data-fmt="x">—</b> · <b data-source="gauges" data-field="pct" data-row="3" data-fmt="pct2">—</b></span><span class="sm" id="gs-roas"><b data-source="gauges" data-field="status" data-row="3" data-fmt="txt">—</b></span></div></div>
@@ -251,7 +258,8 @@
   </div>
 
   <h2 id="geral">Métricas gerais</h2>
-  <div class="grid kp"><div class="card kpi wide"><span class="l">Investimento total</span><b class="v" data-source="kpi_total" data-field="gasto" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="gasto_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="gasto_prev" data-row="0" data-fmt="brl">—</b></span></span><table data-source="kpi_platform" data-row-key="plataforma" id="t-platform"><thead><tr><th class="t" data-field="plataforma">Plataforma</th><th data-field="gasto" data-fmt="brl">Investido</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="conversoes" data-fmt="int">Conversões</th></tr></thead><tbody></tbody></table></div><div class="card kpi "><span class="l">Alcance (soma dos dias)</span><b class="v" data-source="kpi_total" data-field="alcance" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="alc_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="alc_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">Só o Meta informa alcance.</span></div><div class="card kpi "><span class="l">Impressões</span><b class="v" data-source="kpi_total" data-field="impressoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="imp_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="imp_prev" data-row="0" data-fmt="int">—</b></span></span></div><div class="card kpi "><span class="l">Cliques</span><b class="v" data-source="kpi_total" data-field="cliques" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="clk_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="clk_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">CTR <b data-source="kpi_total" data-field="ctr" data-row="0" data-fmt="pct2">—</b> · CPC <b data-source="kpi_total" data-field="cpc" data-row="0" data-fmt="brl">—</b></span><span class="cmp-l"><b data-source="cmp_perf" data-field="ctr_pp" data-row="0" data-fmt="pp">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="ctr_prev" data-row="0" data-fmt="pct2">—</b></span></span></div><div class="card kpi "><span class="l">Conversões</span><b class="v" data-source="kpi_total" data-field="conversoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="conv_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="conv_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">generate_lead <b data-source="kpi_total" data-field="gleads" data-row="0" data-fmt="int">—</b> · clique_reservar <b data-source="kpi_total" data-field="cliqres" data-row="0" data-fmt="int">—</b></span><span class="sm">form lead <b data-source="kpi_total" data-field="leads" data-row="0" data-fmt="int">—</b> · Google Ads <b data-source="kpi_total" data-field="conv_google" data-row="0" data-fmt="int">—</b></span></div><div class="card kpi "><span class="l">Custo por conversão</span><b class="v" data-source="kpi_total" data-field="cpa" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="cpa_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="cpa_prev" data-row="0" data-fmt="brl">—</b></span></span><span class="sm">Investimento total ÷ conversões.</span></div><div class="card kpi "><span class="l">Reservas Web Direto</span><b class="v" data-source="res_total" data-field="reservas" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="resv_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="resv_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">Fonte: Reservas Atrio (Web Direto), dados até 27/10.</span></div><div class="card kpi "><span class="l">Receita Web Direto</span><b class="v" data-source="res_total" data-field="receita" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="rec_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="rec_prev" data-row="0" data-fmt="brl">—</b></span></span></div><div class="card kpi "><span class="l">Reservas atribuídas</span><b class="v" data-source="ga_purch" data-field="transacoes" data-row="0" data-fmt="int">—</b><span class="sm">Compras (evento purchase) do GA4 do Destinos Atrio, no período e na etapa escolhidos.</span></div><div class="card kpi "><span class="l">Receita de reservas atribuídas</span><b class="v" data-source="ga_purch" data-field="receita" data-row="0" data-fmt="brl">—</b><span class="sm">Receita das compras (purchaseRevenue) do GA4 do Destinos Atrio.</span></div><div class="card kpi "><span class="l">ROAS Web Direto</span><b class="v" data-source="cmp_perf" data-field="roas" data-row="0" data-fmt="x">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="roas_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="roas_prev" data-row="0" data-fmt="x">—</b></span></span><span class="sm">Receita Web Direto ÷ investimento total do período (todas as plataformas e campanhas), sem influência dos filtros de plataforma e campanha.</span></div></div>
+  <p class="note scope">Anúncios (investimento, campanhas e conversões): só campanhas do Meta Ads e do Google Ads cujo nome contém <b>“Travel”</b>, sempre. Sessões, leads e reservas atribuídas vêm do GA4 do Destinos Atrio e não mudam com os filtros de hotel, marca, grupo, agência e campanha.</p>
+  <h3 class="kgroup">Mídia e tráfego</h3><div class="grid kp"><div class="card kpi wide"><span class="l">Investimento total</span><b class="v" data-source="kpi_total" data-field="gasto" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="gasto_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="gasto_prev" data-row="0" data-fmt="brl">—</b></span></span><table data-source="kpi_platform" data-row-key="plataforma" id="t-platform"><thead><tr><th class="t" data-field="plataforma">Plataforma</th><th data-field="gasto" data-fmt="brl">Investido</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="conversoes" data-fmt="int">Conversões</th></tr></thead><tbody></tbody></table></div><div class="card kpi"><span class="l">Sessões no Site</span><b class="v" data-source="ga_sess_kpi" data-field="valor" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_sess" data-field="delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_sess" data-field="prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">GA4 do Destinos Atrio, todas as origens. Não muda com os filtros de hotel e campanha.</span></div><div class="card kpi leads-kpi"><span class="l">Leads (generate_lead)</span><b class="v" data-source="ga_leads_kpi" data-field="valor" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_leads" data-field="delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_leads" data-field="prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">GA4 do Destinos Atrio, no período e na etapa escolhidos.</span><div class="orig-h">Principais canais de origem</div><div id="leads-orig-kpi" data-source="ga_leads_orig ga_leads_kpi"></div></div><div class="card kpi "><span class="l">Alcance (soma dos dias)</span><b class="v" data-source="kpi_total" data-field="alcance" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="alc_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="alc_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">Só o Meta informa alcance.</span></div><div class="card kpi "><span class="l">Impressões</span><b class="v" data-source="kpi_total" data-field="impressoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="imp_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="imp_prev" data-row="0" data-fmt="int">—</b></span></span></div><div class="card kpi "><span class="l">Cliques</span><b class="v" data-source="kpi_total" data-field="cliques" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="clk_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="clk_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">CTR <b data-source="kpi_total" data-field="ctr" data-row="0" data-fmt="pct2">—</b> · CPC <b data-source="kpi_total" data-field="cpc" data-row="0" data-fmt="brl">—</b></span><span class="cmp-l"><b data-source="cmp_perf" data-field="ctr_pp" data-row="0" data-fmt="pp">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="ctr_prev" data-row="0" data-fmt="pct2">—</b></span></span></div></div><h3 class="kgroup">Resultados das campanhas</h3><div class="grid kp"><div class="card kpi "><span class="l">Conversões</span><b class="v" data-source="kpi_total" data-field="conversoes" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="conv_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="conv_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">generate_lead <b data-source="kpi_total" data-field="gleads" data-row="0" data-fmt="int">—</b> · clique_reservar <b data-source="kpi_total" data-field="cliqres" data-row="0" data-fmt="int">—</b></span><span class="sm">form lead <b data-source="kpi_total" data-field="leads" data-row="0" data-fmt="int">—</b> · Google Ads <b data-source="kpi_total" data-field="conv_google" data-row="0" data-fmt="int">—</b></span></div><div class="card kpi "><span class="l">Custo por conversão</span><b class="v" data-source="kpi_total" data-field="cpa" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="cpa_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="cpa_prev" data-row="0" data-fmt="brl">—</b></span></span><span class="sm">Investimento total ÷ conversões.</span></div></div><h3 class="kgroup">Reservas e receita</h3><div class="grid kp"><div class="card kpi "><span class="l">Reservas Web Direto</span><b class="v" data-source="res_total" data-field="reservas" data-row="0" data-fmt="int">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="resv_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="resv_prev" data-row="0" data-fmt="int">—</b></span></span><span class="sm">Fonte: Reservas Atrio (Web Direto), dados até 27/10.</span></div><div class="card kpi "><span class="l">Receita Web Direto</span><b class="v" data-source="res_total" data-field="receita" data-row="0" data-fmt="brl">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="rec_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="rec_prev" data-row="0" data-fmt="brl">—</b></span></span></div><div class="card kpi "><span class="l">Reservas atribuídas</span><b class="v" data-source="ga_purch" data-field="transacoes" data-row="0" data-fmt="int">—</b><span class="sm">Compras (evento purchase) do GA4 do Destinos Atrio, no período e na etapa escolhidos.</span></div><div class="card kpi "><span class="l">Receita de reservas atribuídas</span><b class="v" data-source="ga_purch" data-field="receita" data-row="0" data-fmt="brl">—</b><span class="sm">Receita das compras (purchaseRevenue) do GA4 do Destinos Atrio.</span></div><div class="card kpi "><span class="l">ROAS Web Direto</span><b class="v" data-source="cmp_perf" data-field="roas" data-row="0" data-fmt="x">—</b><span class="cmp-l"><b data-source="cmp_perf" data-field="roas_delta" data-row="0" data-fmt="delta">—</b> <span class="l">vs. anterior: <b data-source="cmp_perf" data-field="roas_prev" data-row="0" data-fmt="x">—</b></span></span><span class="sm">Receita Web Direto ÷ investimento total do período (todas as plataformas e campanhas), sem influência dos filtros de plataforma e campanha.</span></div></div>
 
   <h2 id="funil">Funil de conversão</h2>
   <div class="grid2">
@@ -259,9 +267,10 @@
     <div class="card"><h3>Conversões por tipo</h3><p class="note">generate_lead, clique_reservar e form lead do Meta, e conversões configuradas no Google Ads.</p><table data-source="funnel_conv" data-row-key="tipo" id="t-fconv"><thead><tr><th class="t" data-field="tipo">Conversões por tipo</th><th data-field="valor" data-fmt="int">Total</th></tr></thead><tbody></tbody></table></div>
   </div>
 
-  <h2 id="invest">Investimento e conversões</h2>
+  <h2 id="invest">Investimento, sessões e conversões</h2>
   <div class="ch-h" style="margin-bottom:8px"><p class="note" style="margin:0">Agrupe os gráficos por dia, semana ou mês.</p><div class="seg" role="group" aria-label="Agrupar o gráfico por"><button type="button" data-g="dia" aria-pressed="true">Dia</button><button type="button" data-g="semana" aria-pressed="false">Semana</button><button type="button" data-g="mes" aria-pressed="false">Mês</button></div></div>
-  <div class="grid2"><div class="card"><div class="ch-h"><div><h3>Investimento</h3><p class="note">Em reais, por plataforma.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="spend"> Comparar com o período anterior</label></div><div class="chart" id="ch-spend" data-source="spend_daily spend_daily_prev"></div></div><div class="card"><div class="ch-h"><div><h3>Conversões</h3><p class="note">Meta: generate_lead, clique_reservar e form lead. Google: conversões configuradas.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="conv"> Comparar com o período anterior</label></div><div class="chart" id="ch-conv" data-source="conv_daily conv_daily_prev"></div></div></div>
+  <div class="grid2"><div class="card"><div class="ch-h"><div><h3>Investimento</h3><p class="note">Em reais, por plataforma.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="spend"> Comparar com o período anterior</label></div><div class="chart" id="ch-spend" data-source="spend_daily spend_daily_prev"></div></div><div class="card"><div class="ch-h"><div><h3>Sessões no site por dia</h3><p class="note">GA4 do Destinos Atrio, todas as origens.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="sess"> Comparar com o período anterior</label></div><div class="chart" id="ch-sess" data-source="ga_sess_daily ga_sess_daily_prev"></div></div></div>
+  <div class="grid2" style="margin-top:var(--cds-gap-md)"><div class="card"><div class="ch-h"><div><h3>Origem das sessões</h3><p class="note">Participação de cada canal nas sessões do período.</p></div></div><div class="chart" id="ch-canais" data-source="ga_sess_canais"></div></div><div class="card"><div class="ch-h"><div><h3>Conversões</h3><p class="note">Meta: generate_lead, clique_reservar e form lead. Google: conversões configuradas.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="conv"> Comparar com o período anterior</label></div><div class="chart" id="ch-conv" data-source="conv_daily conv_daily_prev"></div></div></div>
 
   <h2 id="hoteis">Hotéis e marcas</h2>
   <div class="card"><p class="note">Todos os hotéis e marcas, por investimento. ROAS Web Direto = receita Web Direto ÷ investimento total do hotel. Clique no título para ordenar.</p><div class="scroll"><table data-source="hotels_table" data-row-key="hotel" data-pagesize="20" id="t-hotels"><thead><tr><th class="t" data-field="hotel">Hotel</th><th class="t" data-field="marca">Marca</th><th data-field="gasto" data-fmt="brl">Gasto</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpa" data-fmt="brl">Custo por conversão</th><th data-field="reservas" data-fmt="int">Reservas Web Direto</th><th data-field="receita" data-fmt="brl">Receita Web Direto</th><th data-field="roas" data-fmt="x">ROAS Web Direto</th></tr></thead><tbody></tbody></table></div><div class="pager" data-for="t-hotels"></div></div>
@@ -655,6 +664,110 @@ dash.loader('ga_purch', {
     return { columns: cols, rows, cut: !!a.data_truncated };
   },
 });
+dash.loader('ga_leads_kpi', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_leads_kpi_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_leads_orig', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["origem"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_sess_kpi', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_sess_kpi_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = [];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_sess_daily', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "serie"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_sess_daily_prev', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["dia", "serie"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
+dash.loader('ga_sess_canais', {
+  description: 'Resposta da Nekt (colunas e linhas) transformada em tabela; números convertidos.',
+  fn: ({ answer }) => {
+    let a = answer;
+    if (a && Array.isArray(a.content)) a = a.content.map((c) => c.text || '').join('');
+    if (typeof a === 'string') a = JSON.parse(a);
+    if (!a || a.error || (a.status && a.status !== 'succeeded')) throw new Error((a && (a.error || a.message)) || 'Falha na consulta à Nekt');
+    const txt = ["canal"];
+    const cols = a.columns || [];
+    const rows = (a.data || []).map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] == null || r[i] === '' ? null : (txt.includes(c) ? r[i] : Number(r[i]))])));
+    return { columns: cols, rows, cut: !!a.data_truncated };
+  },
+});
 const $ = (s) => document.querySelector(s);
 const PAL = {
   light: ['#DB9B0E', '#1F1F1F', '#A5ACAD', '#8A5A00', '#F0CE7A', '#5B6466', '#D9D2C0', '#7A6A4F'],
@@ -825,11 +938,11 @@ function stackBars(el, rows, o) {
   if (!rows.length && !(prev && prev.length)) { msgBox(el, 'Sem dados no filtro atual.'); return; }
   el.replaceChildren();
   const F = o.money ? FMT.brl : FMT.int;
-  const n = prev ? windowN() : 0;
+  const n = prev && !o.noShift ? windowN() : 0;
   const order = o.colors ? Object.keys(o.colors) : [];
   const keys = [...new Set(rows.map((r) => r[o.s]))].sort((a, b) => (order.indexOf(a) < 0 ? 99 : order.indexOf(a)) - (order.indexOf(b) < 0 ? 99 : order.indexOf(b)));
   const colorOf = (k, i) => (o.colors && o.colors[k]) || COL[i % 8];
-  const ptot = new Map(); if (prev) prev.forEach((r) => { const k = addDays(r[o.x], n); ptot.set(k, (ptot.get(k) || 0) + (r[o.y] || 0)); });
+  const ptot = new Map(); if (prev) prev.forEach((r) => { const k = o.noShift ? r[o.x] : addDays(r[o.x], n); ptot.set(k, (ptot.get(k) || 0) + (r[o.y] || 0)); });
   const days = [...new Set([...rows.map((r) => r[o.x]), ...ptot.keys()])].sort();
   const by = new Map(days.map((d) => [d, {}]));
   rows.forEach((r) => { const m0 = by.get(r[o.x]); m0[r[o.s]] = (m0[r[o.s]] || 0) + (r[o.y] || 0); });
@@ -850,7 +963,7 @@ function stackBars(el, rows, o) {
     g.append('text').attr('x', -6).attr('y', y(tk)).attr('dy', '0.32em').attr('text-anchor', 'end').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(F(tk));
   });
   const step = Math.max(1, Math.ceil(days.length / 7));
-  days.forEach((d, i) => { if (i % step === 0) g.append('text').attr('x', x(d) + x.bandwidth() / 2).attr('y', ih + 15).attr('text-anchor', 'middle').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text(fdate(parseDay(d))); });
+  days.forEach((d, i) => { if (i % step === 0) g.append('text').attr('x', x(d) + x.bandwidth() / 2).attr('y', ih + 15).attr('text-anchor', 'middle').attr('font-size', 10).style('fill', 'var(--color-fg-muted)').text((o.fx ? o.fx(d) : fdate(parseDay(d)))); });
   stack.forEach((layer, i) => {
     g.selectAll(null).data(layer).join('rect').attr('x', (d) => x(d.data.d)).attr('y', (d) => y(d[1])).attr('width', x.bandwidth()).attr('height', (d) => Math.max(0, y(d[0]) - y(d[1]))).attr('fill', colorOf(keys[i], i));
   });
@@ -863,7 +976,7 @@ function stackBars(el, rows, o) {
       const [mx] = d3.pointer(ev);
       const idx = Math.max(0, Math.min(days.length - 1, Math.floor(mx / x.step())));
       const d = days[idx]; const v = by.get(d);
-      const lines = [{ text: fdate(parseDay(d)) }];
+      const lines = [{ text: (o.fx ? o.fx(d) : fdate(parseDay(d))) }];
       keys.forEach((k, i) => lines.push({ color: colorOf(k, i), text: k + ': ' + F(v[k] || 0) }));
       lines.push({ text: 'Total: ' + F(keys.reduce((s, k) => s + (v[k] || 0), 0)) });
       if (prev) lines.push({ text: 'Total do período anterior: ' + (ptot.has(d) ? F(ptot.get(d)) : '—') });
@@ -1139,6 +1252,18 @@ function fillFilters() {
 
 
 const sumk = (a, k) => a.reduce((t, r) => t + (Number(r[k]) || 0), 0);
+dash.calc('cmp_leads', {
+  inputs: ['ga_leads_kpi', 'ga_leads_kpi_prev'],
+  title: 'Leads: comparação com o período anterior',
+  description: 'Total de generate_lead do período, do período anterior e a variação.',
+  fn: (a, b) => { const c = Number((a[0] || {}).valor) || 0, p = Number((b[0] || {}).valor) || 0; return [{ valor: c, prev: p, delta: p > 0 ? (c - p) / p : null }]; },
+});
+dash.calc('cmp_sess', {
+  inputs: ['ga_sess_kpi', 'ga_sess_kpi_prev'],
+  title: 'Sessões: comparação com o período anterior',
+  description: 'Total de sessões do período, do período anterior e a variação.',
+  fn: (a, b) => { const c = Number((a[0] || {}).valor) || 0, p = Number((b[0] || {}).valor) || 0; return [{ valor: c, prev: p, delta: p > 0 ? (c - p) / p : null }]; },
+});
 dash.calc('cmp_perf', {
   inputs: ['kpi_total', 'kpi_prev', 'res_total', 'res_prev', 'inv_total', 'inv_prev'],
   title: 'Comparação com o período anterior',
@@ -1354,10 +1479,19 @@ function draw() {
   renderChips();
   fillMarks();
   drawGauges();
-  chartOr($('#leads-origem'), 'g_leads_origem', (rows) => hbars($('#leads-origem'), rows, { l: 'origem', v: 'leads' }));
+  chartOr($('#leads-orig-kpi'), 'ga_leads_orig', (rows) => {
+    const tk = rowsOf('ga_leads_kpi'); const total = Number(tk && tk[0] ? tk[0].valor : 0) || rows.reduce((s, r) => s + (Number(r.leads) || 0), 0);
+    hbars($('#leads-orig-kpi'), rows.map((r) => ({ ...r, origem: r.origem + ' · ' + (total ? (r.leads / total * 100).toLocaleString('pt-BR', { maximumFractionDigits: 0 }) + '%' : '—') })), { l: 'origem', v: 'leads' });
+  });
   applyStage();
   document.querySelectorAll('#ai-root table[data-row-key]').forEach((t) => fillTable(t));
-  chartOr($('#ch-spend'), 'spend_daily', (rows) => stackBars($('#ch-spend'), rows, { x: 'dia', s: 'plataforma', y: 'gasto', money: true, colors: PLATCOL, prev: cmpOn.spend ? rowsOf('spend_daily_prev') || [] : null }));
+  chartOr($('#ch-spend'), 'spend_daily', (rows) => {
+    const o = { x: 'dia', s: 'plataforma', y: 'gasto' };
+    const fx = gran === 'mes' ? (s) => s.slice(5, 7) + '/' + s.slice(2, 4) : null;
+    stackBars($('#ch-spend'), bucketRows(rows, o, 0), { ...o, money: true, colors: PLATCOL, noShift: true, fx, prev: cmpOn.spend ? bucketRows(rowsOf('spend_daily_prev') || [], o, windowN()) : null });
+  });
+  timeChart('#ch-sess', 'ga_sess_daily', 'ga_sess_daily_prev', 'sess', { x: 'dia', s: 'serie', y: 'sessoes' });
+  chartOr($('#ch-canais'), 'ga_sess_canais', (rows) => pie($('#ch-canais'), rows, null));
   timeChart('#ch-conv', 'conv_daily', 'conv_daily_prev', 'conv', { x: 'dia', s: 'serie', y: 'valor' });
   chartOr($('#hb-funnel'), 'funnel', (rows) => hbars($('#hb-funnel'), rows, { l: 'etapa', v: 'valor', colors: true }));
 }
@@ -1534,7 +1668,7 @@ dash.onData(draw);
 </style>
 <script>
 (function () {
-  var IDS = ["ads_table", "alerts", "campaigns_table", "conv_daily", "conv_daily_prev", "filter_campaigns", "filter_hotels", "g_cliques", "g_leads", "g_leads_origem", "g_receita", "g_reservas", "g_roas", "ga_conv", "ga_conv_prev", "ga_purch", "hotels_table", "ins_ads", "ins_camp", "inv_prev", "inv_total", "kpi_platform", "kpi_prev", "kpi_total", "res_prev", "res_total", "spend_daily", "spend_daily_prev"];
+  var IDS = ["ads_table", "alerts", "campaigns_table", "conv_daily", "conv_daily_prev", "filter_campaigns", "filter_hotels", "g_cliques", "g_leads", "g_leads_origem", "g_receita", "g_reservas", "g_roas", "ga_conv", "ga_conv_prev", "ga_leads_kpi", "ga_leads_kpi_prev", "ga_leads_orig", "ga_purch", "ga_sess_canais", "ga_sess_daily", "ga_sess_daily_prev", "ga_sess_kpi", "ga_sess_kpi_prev", "hotels_table", "ins_ads", "ins_camp", "inv_prev", "inv_total", "kpi_platform", "kpi_prev", "kpi_total", "res_prev", "res_total", "spend_daily", "spend_daily_prev"];
   var ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>';
   function msg(text, err) {
     var el = document.getElementById('refmsg');
