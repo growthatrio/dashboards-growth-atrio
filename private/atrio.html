@@ -342,8 +342,8 @@
 
     <h2 id="investimento">Investimento e Tráfego</h2>
     <div class="grid2">
-      <div class="card"><div class="ch-h"><div><h3>Investimento por dia</h3><p class="note">Total investido por dia, em reais. Cada cor é uma plataforma.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="spend"> Comparar com o período anterior</label></div><div class="chart" id="ch-spend" data-source="spend_daily spend_daily_prev"></div></div>
-      <div class="card"><div class="ch-h"><div><h3>Tráfego: sessões por dia</h3><p class="note">GA4, todos os canais.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="sessions"> Comparar com o período anterior</label></div><div class="chart" id="ch-sessions" data-source="ga_daily ga_daily_prev"></div></div>
+      <div class="card"><div class="ch-h"><div><h3>Investimento por dia</h3><p class="note">Total investido por dia, em reais. Cada cor é uma plataforma.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="spend"> Comparar com o período anterior</label></div><div class="chart" id="ch-spend" data-source="spend_daily spend_daily_prev"></div><div class="outl" id="ol-spend"></div></div>
+      <div class="card"><div class="ch-h"><div><h3>Tráfego: sessões por dia</h3><p class="note">GA4, todos os canais.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="sessions"> Comparar com o período anterior</label></div><div class="chart" id="ch-sessions" data-source="ga_daily ga_daily_prev"></div><div class="outl" id="ol-sess"></div></div>
     </div>
     <div class="grid2" style="margin-top:var(--cds-gap-md)">
       <div class="card"><div class="ch-h"><div><h3>Origem do tráfego</h3><p class="note">Participação de cada canal nas sessões do período.</p></div><label class="cmp"><input type="checkbox" role="switch" data-cmp="origem"> Comparar com o período anterior</label></div><div class="chart" id="ch-origem" data-source="ga_channels ga_channels_prev"></div></div>
@@ -368,7 +368,7 @@
     <h2 id="campanhas">Campanhas</h2>
     <div class="card"><p class="note">Desempenho por campanha no filtro atual. Alcance só existe para o Meta e é a soma dos dias. CPL é o valor gasto dividido pelas conversões da plataforma.</p>
       <div class="scroll"><table data-source="campaigns_table" data-row-key="chave" id="t-campaigns">
-        <thead><tr><th class="t" data-field="plataforma">Plataforma</th><th class="t" data-field="campanha">Campanha</th><th data-field="alcance" data-fmt="int">Alcance</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpl" data-fmt="brl">CPL</th><th data-field="gasto" data-fmt="brl">Valor gasto</th></tr></thead><tbody></tbody>
+        <thead><tr><th class="t" data-field="plataforma">Plataforma</th><th class="t" data-field="campanha">Campanha</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="alcance" data-fmt="int">Alcance</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cpl" data-fmt="brl">CPL</th><th data-field="gasto" data-fmt="brl">Valor gasto</th></tr></thead><tbody></tbody>
       </table></div>
     </div>
 
@@ -376,7 +376,7 @@
     <div class="card">
       <p class="note">Ordenados por gasto. A legenda aparece quando a fonte a traz: vem do Google Ads e do Meta Ads; o LinkedIn não entrega legenda na Nekt. Alcance só existe para o Meta. Conversões e CAC são os da plataforma de anúncio, não do generate_lead do GA4.</p>
       <div class="scroll"><table data-source="ads_table" data-row-key="chave" id="t-ads">
-        <thead><tr><th class="t" data-field="anuncio" data-fmt="namecap">Anúncio e legenda</th><th class="t" data-field="campanha">Campanha</th><th data-field="alcance" data-fmt="nd">Alcance</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cac" data-fmt="brl">CAC</th><th data-field="gasto" data-fmt="brl">Gasto</th></tr></thead><tbody></tbody>
+        <thead><tr><th class="t" data-field="anuncio" data-fmt="namecap">Anúncio e legenda</th><th class="t" data-field="campanha">Campanha</th><th data-field="impressoes" data-fmt="int">Impressões</th><th data-field="alcance" data-fmt="nd">Alcance</th><th data-field="cliques" data-fmt="int">Cliques</th><th data-field="ctr" data-fmt="pct2">CTR</th><th data-field="conversoes" data-fmt="int">Conversões</th><th data-field="cac" data-fmt="brl">CAC</th><th data-field="gasto" data-fmt="brl">Gasto</th></tr></thead><tbody></tbody>
       </table></div>
     </div>
 
@@ -1463,7 +1463,7 @@ const _med = (a) => { const s = [...a].sort((x, y) => x - y), n = s.length; retu
 const _mean = (a) => (a.length ? a.reduce((s, x) => s + x, 0) / a.length : 0);
 const _dm = (s) => s.slice(8, 10) + '/' + s.slice(5, 7);
 const _addD = (s, k) => { const t = new Date(s + 'T12:00:00'); t.setDate(t.getDate() + k); return t.toISOString().slice(0, 10); };
-function dayTotals(rows) { const m = new Map(); rows.forEach((r) => m.set(r.dia, (m.get(r.dia) || 0) + (Number(r.valor) || 0))); return [...m.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)); }
+function dayTotals(rows, vk) { const k = vk || 'valor', m = new Map(); rows.forEach((r) => m.set(r.dia, (m.get(r.dia) || 0) + (Number(r[k]) || 0))); return [...m.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)); }
 function findOutliers(series) {
   const v = series.map((x) => x[1]); if (v.length < 7) return { list: [], med: _med(v) };
   const med = _med(v), mad = _med(v.map((x) => Math.abs(x - med)));
@@ -1472,27 +1472,37 @@ function findOutliers(series) {
   const list = series.map(([d, x]) => ({ d, x, z: (x - med) / sc })).filter((o) => Math.abs(o.z) >= 3.5 && Math.abs(o.x - med) >= Math.max(1, med * 0.4)).sort((a, b) => Math.abs(b.z) - Math.abs(a.z)).slice(0, 3).sort((a, b) => (a.d < b.d ? -1 : 1));
   return { list, med };
 }
-function spendByDay(rows, plat) { const m = new Map(); (rows || []).filter((r) => r.plataforma === plat).forEach((r) => m.set(r.dia, (m.get(r.dia) || 0) + (Number(r.gasto) || 0))); return m; }
+function spendByDay(rows, plat) { const m = new Map(); (rows || []).filter((r) => !plat || r.plataforma === plat).forEach((r) => m.set(r.dia, (m.get(r.dia) || 0) + (Number(r.gasto) || 0))); return m; }
+function explainSpend(c, o, ctx) {
+  const up = o.x > ctx.med, ratio = ctx.med ? o.x / ctx.med : null, rows = (ctx.platDay.get(o.d) || []).filter((x) => x[1] > 0).sort((a, b) => b[1] - a[1]);
+  const head = '<b>' + _dm(o.d) + ' (' + DIAS[new Date(o.d + 'T12:00:00').getDay()] + ')</b>: ' + FMT.brl(o.x) + (ratio != null ? (up ? ', ' + ratio.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '× a mediana diária (' : ', ' + Math.round((1 - ratio) * 100) + '% abaixo da mediana diária (') + FMT.brl(ctx.med) + ')' : '');
+  const why = [];
+  if (up) { if (rows.length) why.push(rows[0][0] + ' concentrou ' + Math.round(rows[0][1] / o.x * 100) + '% do investimento do dia'); why.push('verba maior que o normal no dia (campanha nova ou aumento de orçamento); confira as campanhas ativas'); }
+  else { const wk = new Date(o.d + 'T12:00:00').getDay(); if (wk === 0 || wk === 6) why.push('fim de semana'); why.push(o.x === 0 ? 'sem investimento no dia (campanhas pausadas ou dados ainda não sincronizados)' : 'verba menor que o normal no dia (campanha pausada, orçamento reduzido ou dados incompletos)'); }
+  return head + '. Possível causa: ' + why.join('; ') + '.';
+}
 function explainPoint(c, o, ctx) {
+  if (c.kind === 'spend') return explainSpend(c, o, ctx);
   const up = o.x > ctx.med, why = [];
   const ratio = ctx.med ? o.x / ctx.med : null;
-  const head = '<b>' + _dm(o.d) + ' (' + DIAS[new Date(o.d + 'T12:00:00').getDay()] + ')</b>: ' + FMT.int(Math.round(o.x)) + (ratio != null && up ? ', ' + ratio.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '× a mediana diária (' + FMT.int(Math.round(ctx.med)) + ')' : (ratio != null ? ', ' + Math.round((1 - ratio) * 100) + '% abaixo da mediana diária (' + FMT.int(Math.round(ctx.med)) + ')' : ''));
+  const head = '<b>' + _dm(o.d) + ' (' + DIAS[new Date(o.d + 'T12:00:00').getDay()] + ')</b>: ' + FMT.int(Math.round(o.x)) + (c.unit ? ' ' + c.unit : '') + (ratio != null && up ? ', ' + ratio.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '× a mediana diária (' + FMT.int(Math.round(ctx.med)) + ')' : (ratio != null ? ', ' + Math.round((1 - ratio) * 100) + '% abaixo da mediana diária (' + FMT.int(Math.round(ctx.med)) + ')' : ''));
   const near = ctx.posts.filter((p) => p.data_post && p.data_post >= _addD(o.d, -1) && p.data_post <= o.d).sort((a, b) => (Number(b.alcance) || Number(b.impressoes) || 0) - (Number(a.alcance) || Number(a.impressoes) || 0));
   const sp = ctx.spend.get(o.d) || 0, spMed = _med([...ctx.spend.values()].filter((x) => x > 0)), sr = spMed ? sp / spMed : null;
   if (up) {
     if (near.length) { const p = near[0]; why.push('coincide com o post “' + clip(pautaOf(p), 70) + '”' + (p.hotel ? ' (' + p.hotel + ')' : '') + (Number(p.alcance) ? ' (alcance ' + FMT.int(p.alcance) + ')' : '')); }
-    if (sr != null && sr >= 1.5) why.push('investimento em ' + ctx.plat + ' de ' + FMT.brl(sp) + ' no dia, ' + sr.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '× o normal');
+    if (sr != null && sr >= 1.5) why.push('investimento' + (ctx.plat ? ' em ' + ctx.plat : ' total') + ' de ' + FMT.brl(sp) + ' no dia, ' + sr.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '× o normal');
     if (c.kind === 'fol' && ctx.paidShare != null && ctx.paidShare.get(o.d) >= 0.6) why.push(Math.round(ctx.paidShare.get(o.d) * 100) + '% dos novos seguidores do dia vieram de anúncios');
-    if (!why.length) why.push('não há post do período nem pico de investimento no dia; possíveis causas: compartilhamentos orgânicos, Reels ou Stories fora da lista de posts');
+    if (!why.length) why.push(c.posts ? 'não há post do período nem pico de investimento no dia; possíveis causas: compartilhamentos orgânicos, Reels ou Stories fora da lista de posts' : 'sem pico de investimento no dia; possíveis causas: criativo ou público que respondeu melhor, tráfego de outros canais ou conversões atribuídas a dias anteriores');
   } else {
-    if (sr != null && sr <= 0.5) why.push('investimento em ' + ctx.plat + (sp ? ' de ' + FMT.brl(sp) + ', ' + Math.round((1 - sr) * 100) + '% abaixo do normal' : ' zerado no dia'));
+    if (sr != null && sr <= 0.5) why.push('investimento' + (ctx.plat ? ' em ' + ctx.plat : ' total') + (sp ? ' de ' + FMT.brl(sp) + ', ' + Math.round((1 - sr) * 100) + '% abaixo do normal' : ' zerado no dia'));
     const wk = new Date(o.d + 'T12:00:00').getDay(); if (wk === 0 || wk === 6) why.push('fim de semana');
-    if (!ctx.posts.some((p) => p.data_post && p.data_post >= _addD(o.d, -3) && p.data_post <= o.d)) why.push('nenhum post nos 3 dias até a data');
+    if (c.posts && !ctx.posts.some((p) => p.data_post && p.data_post >= _addD(o.d, -3) && p.data_post <= o.d)) why.push('nenhum post nos 3 dias até a data');
     if (!why.length) why.push('sem causa clara nos dados (pode ser instabilidade de coleta da plataforma ou queda orgânica)');
   }
   return head + '. Possível causa: ' + why.join('; ') + '.';
 }
-function trendNote(series, ctx) {
+function trendNote(series, ctx, c) {
+  const fv = (v) => (c && c.fmt === 'brl' ? FMT.brl(v) : FMT.int(Math.round(v)));
   if (series.length < 21) return null;
   const a = series.slice(-7).map((x) => x[1]), b = series.slice(-14, -7).map((x) => x[1]);
   const ma = _mean(a), mb = _mean(b); if (!mb || Math.abs(ma / mb - 1) < 0.4 || Math.abs(ma - mb) * 7 < 5) return null;
@@ -1500,24 +1510,25 @@ function trendNote(series, ctx) {
   const np = (from, to) => ctx.posts.filter((p) => p.data_post && p.data_post >= from && p.data_post <= to).length;
   const pa = np(d0, series[series.length - 1][0]), pb = np(d1, _addD(d0, -1));
   const up = ma > mb;
-  return '<b>Últimos 7 dias</b>: média diária de ' + FMT.int(Math.round(ma)) + ', ' + Math.round(Math.abs(ma / mb - 1) * 100) + '% ' + (up ? 'acima' : 'abaixo') + ' dos 7 dias anteriores (' + FMT.int(Math.round(mb)) + '). Possível causa: ' + (pa !== pb ? pa + ' posts na semana, contra ' + pb + ' na anterior' : 'ritmo de posts parecido nas duas semanas; verifique campanhas e mudanças de público') + '.';
+  return '<b>Últimos 7 dias</b>: média diária de ' + fv(ma) + ', ' + Math.round(Math.abs(ma / mb - 1) * 100) + '% ' + (up ? 'acima' : 'abaixo') + ' dos 7 dias anteriores (' + fv(mb) + '). Possível causa: ' + (pa !== pb ? pa + ' posts na semana, contra ' + pb + ' na anterior' : 'ritmo de posts parecido nas duas semanas; verifique campanhas e mudanças de público') + '.';
 }
 function renderOutliers(el, rows, c) {
-  const series = dayTotals(rows);
+  const series = dayTotals(rows, c.vk);
   const { list, med } = findOutliers(series);
   const posts = (c.posts && rowsOf(c.posts)) || [];
   const spend = spendByDay(rowsOf('spend_daily'), c.plat);
   let paidShare = null;
   if (c.kind === 'fol') { paidShare = new Map(); const tot = new Map(), paid = new Map(); rows.forEach((r) => { tot.set(r.dia, (tot.get(r.dia) || 0) + (Number(r.valor) || 0)); if (/pago/i.test(r.serie)) paid.set(r.dia, (paid.get(r.dia) || 0) + (Number(r.valor) || 0)); }); tot.forEach((v, d) => paidShare.set(d, v ? (paid.get(d) || 0) / v : 0)); }
-  const ctx = { med, posts, spend, plat: c.plat, paidShare };
-  const items = list.map((o) => explainPoint(c, o, ctx)); const tn = trendNote(series, ctx); if (tn) items.push(tn);
+  const platDay = new Map(); if (c.kind === 'spend') (rowsOf('spend_daily') || []).forEach((r) => { const a = platDay.get(r.dia) || []; a.push([r.plataforma, Number(r.gasto) || 0]); platDay.set(r.dia, a); });
+  const ctx = { med, posts, spend, plat: c.plat, paidShare, platDay };
+  const items = list.map((o) => explainPoint(c, o, ctx)); const tn = trendNote(series, ctx, c); if (tn) items.push(tn);
   el.replaceChildren();
   const h = document.createElement('div'); h.className = 'outl-h'; h.textContent = items.length ? 'Pontos fora da curva' : 'Pontos fora da curva: nenhum no período'; el.append(h);
   if (items.length) { const ul = document.createElement('ul'); items.forEach((t) => { const li = document.createElement('li'); li.innerHTML = t; ul.append(li); }); el.append(ul); }
   const f = document.createElement('div'); f.className = 'outl-f'; f.textContent = 'Detecção estatística (mediana e desvio robusto) sobre o período filtrado. As causas são hipóteses cruzadas com posts e investimento; confirme na plataforma.'; el.append(f);
 }
 function drawNotes() {
-  NOTECFG.forEach((c) => {
+  NOTECFG.concat(window.NOTECFG2 || []).forEach((c) => {
     const el = document.getElementById(c.el); if (!el || el.closest('[hidden]')) return;
     const rows = rowsOf(c.ds); if (!rows) return;
     if (c.sum) { const s = document.getElementById(c.sum); if (s) s.textContent = FMT.int(Math.round(rows.reduce((a, r) => a + (Number(r.valor) || 0), 0))); }
@@ -1864,6 +1875,7 @@ document.addEventListener('change', (ev) => {
   if (t) { cmpOn[t.dataset.cmp] = t.checked; draw(); }
 });
 document.querySelectorAll('.sec-nav [data-go]').forEach((b) => b.addEventListener('click', () => { const el = document.getElementById(b.dataset.go); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
+window.NOTECFG2 = [{ el: 'ol-spend', ds: 'spend_daily', vk: 'gasto', kind: 'spend', fmt: 'brl' }, { el: 'ol-sess', ds: 'ga_daily', vk: 'sessoes', kind: 'reach', unit: 'sessões' }];
 
 const _med2 = (a) => { const s = [...a].sort((x, y) => x - y), n = s.length; return n ? (n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2) : 0; };
 const dayMap = (rows, vk) => { const m = new Map(); (rows || []).forEach((r) => m.set(r.dia, (m.get(r.dia) || 0) + (Number(r[vk]) || 0))); return [...m.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)); };
