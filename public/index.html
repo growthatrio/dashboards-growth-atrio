@@ -16,10 +16,14 @@
   button { margin-top: 20px; width: 100%; padding: 11px; border: 0; border-radius: 8px; background: #DB9B0E; color: #000; font-weight: 600; font-size: 14px; cursor: pointer; }
   button[disabled] { opacity: .6; cursor: wait; }
   #msg { color: var(--color-bad); font-size: 13px; margin-top: 12px; min-height: 18px; }
+  .lg { display: block; height: 30px; width: auto; margin: 0 0 18px; }
+  .lg-d { display: none; }
+  @media (prefers-color-scheme: dark) { .lg-d { display: block; } .lg-l { display: none; } }
 </style>
 </head>
 <body>
 <main class="box">
+  <img class="lg lg-d" alt="Atrio" src="/assets/atrio-logo-dark.png"><img class="lg lg-l" alt="Atrio" src="/assets/atrio-logo-light.png">
   <h1>Dashboards Atrio</h1>
   <p>Acesso restrito. Entre com seu e-mail e senha.</p>
   <form id="f">
