@@ -370,6 +370,8 @@
 .ai .ch-h .note { margin: 2px 0 0; }
 .ai .ch-ctl { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; flex: 1 1 100%; }
 .ai .ch-ctl .cmp { white-space: nowrap; margin-left: auto; }
+.ai .rs-kpis.three { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: var(--cds-gap-md, 16px); }
+@media (max-width: 700px) { .ai .rs-kpis.three { grid-template-columns: minmax(0, 1fr); } }
 .ai .rs-kpis.one { grid-template-columns: minmax(0, 1fr); margin-top: var(--cds-gap-md, 16px); }
 .ai .ch-leg { margin: 0; font-size: 0.75rem; line-height: 1.4; color: var(--color-fg-muted); }
 .ai .ch-leg b { color: var(--color-fg); font-weight: 600; }

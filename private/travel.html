@@ -366,6 +366,8 @@
 .ai .ch-h .note { margin: 2px 0 0; }
 .ai .ch-ctl { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; flex: 1 1 100%; }
 .ai .ch-ctl .cmp { white-space: nowrap; margin-left: auto; }
+.ai .rs-kpis.three { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: var(--cds-gap-md, 16px); }
+@media (max-width: 700px) { .ai .rs-kpis.three { grid-template-columns: minmax(0, 1fr); } }
 .ai .rs-kpis.one { grid-template-columns: minmax(0, 1fr); margin-top: var(--cds-gap-md, 16px); }
 .ai .ch-leg { margin: 0; font-size: 0.75rem; line-height: 1.4; color: var(--color-fg-muted); }
 .ai .ch-leg b { color: var(--color-fg); font-weight: 600; }
@@ -1603,14 +1605,15 @@ const STAGES = [
   { id: 'ressaca', nome: 'Ressaca', ini: '2026-12-04', fim: '2026-12-06', obj: 'Objetivo: clique_reservar (GA4), reservas e receita Web Direto.' },
 ];
 const stageToday = () => 'todo';
+function setDefault() { const cl = (d) => (d < MIN ? MIN : d > MAXD ? MAXD : d); dash.setParams({ etapa: 'todo', start: cl(addDays(TODAY, -29)), end: cl(TODAY) }); }
 function setStage(id) { const s = STAGES.find((x) => x.id === id) || STAGES[0]; dash.setParams({ etapa: s.id, start: s.ini, end: s.fim }); }
 let stageInit = false;
 function applyStage() {
   const p = dash.params();
-  if (!stageInit) { stageInit = true; if (!p.etapa && !p.start && !p.end) { setStage(stageToday()); return; } }
-  const s = STAGES.find((x) => x.id === (p.etapa || stageToday())) || STAGES[0];
+  if (!stageInit) { stageInit = true; if (!p.etapa && !p.start && !p.end) { setDefault(); return; } }
+  const s = STAGES.find((x) => x.id === (p.etapa || 'todo')) || STAGES[0];
   document.querySelectorAll('#ai-root .stage-tab').forEach((bt) => { const on = bt.dataset.stage === s.id; bt.setAttribute('aria-selected', String(on)); bt.tabIndex = on ? 0 : -1; });
-  const nt = $('#stage-note'); if (nt) nt.textContent = s.nome + ': ' + s.obj + ' Período: ' + dBR(s.ini) + ' a ' + dBR(s.fim) + '.';
+  const nt = $('#stage-note'); if (nt) nt.textContent = s.nome + ': ' + s.obj + ' Período: ' + dBR(p.start || s.ini) + ' a ' + dBR(p.end || s.fim) + '.';
   document.querySelectorAll('#ai-root [data-stages]').forEach((el) => { el.hidden = !el.dataset.stages.split(' ').includes(s.id); });
 }
 document.querySelectorAll('#ai-root .stage-tab').forEach((bt) => bt.addEventListener('click', () => setStage(bt.dataset.stage)));
@@ -1626,7 +1629,7 @@ ag.addEventListener('change', (e) => dash.setParams({ agencia: e.target.value ||
   el.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { applyText(id, key); el.blur(); } });
   el.addEventListener('input', () => { const v = el.value.trim(); if ([...$(dl).options].some((o) => o.value === v)) applyText(id, key); });
 });
-$('#f-reset').addEventListener('click', () => { dash.resetParams(); $('#f-campaign').value = ''; closeCal(); Object.values(MS).forEach((m) => { m.sync(); m.close(); }); setStage(stageToday()); });
+$('#f-reset').addEventListener('click', () => { dash.resetParams(); $('#f-campaign').value = ''; closeCal(); Object.values(MS).forEach((m) => { m.sync(); m.close(); }); setDefault(); });
 function renderChips() {
   const p = dash.params();
   const items = [];
